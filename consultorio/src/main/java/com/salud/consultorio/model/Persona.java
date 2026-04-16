@@ -54,7 +54,7 @@ public class Persona {
     @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
     private Paciente paciente;
 
-    @OneToMany(mappedBy = "persona",fetch = FetchType.LAZY)
-    private List<Doctor> doctores;
+    @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
+    private Doctor doctor;
 
 }

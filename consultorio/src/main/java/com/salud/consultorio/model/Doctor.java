@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,11 +21,11 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "id_persona",nullable = false)
     private Persona persona;
 
-    @ManyToOneg
+    @ManyToOne
     @JoinColumn(name = "id_especialidad",nullable = false)
     private Especialidad especialidad;
 
@@ -41,5 +43,8 @@ public class Doctor {
 
     @Column(name = "estado", nullable = false)
     private Integer estado;
+
+    @OneToMany(mappedBy = "doctor",fetch = FetchType.LAZY)
+    private List<HorarioAtencion> horarios;
 
 }
