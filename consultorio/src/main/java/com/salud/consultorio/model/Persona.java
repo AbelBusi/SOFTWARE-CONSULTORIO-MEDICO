@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -52,5 +53,8 @@ public class Persona {
 
     @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
     private Paciente paciente;
+
+    @OneToMany(mappedBy = "persona",fetch = FetchType.LAZY)
+    private List<Doctor> doctores;
 
 }
