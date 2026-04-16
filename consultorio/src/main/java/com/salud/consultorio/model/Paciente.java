@@ -20,8 +20,8 @@ public class Paciente {
     private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "id_paciente",nullable = false,unique = true)
-    private Paciente paciente;
+    @JoinColumn(name = "id_persona",nullable = false,unique = true)
+    private Persona persona;
 
     @Column(name = "entidad_aseguradora", length = 8, nullable = false, unique = true)
     private String entidadAseguradora;
