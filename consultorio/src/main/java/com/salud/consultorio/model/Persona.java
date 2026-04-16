@@ -1,11 +1,6 @@
 package com.salud.consultorio.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.Column;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,5 +46,11 @@ public class Persona {
 
     @Column(name = "estado", nullable = false)
     private Integer estado;
+
+    @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
+    private Recepcionista recepcionista;
+
+    @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
+    private Paciente paciente;
 
 }

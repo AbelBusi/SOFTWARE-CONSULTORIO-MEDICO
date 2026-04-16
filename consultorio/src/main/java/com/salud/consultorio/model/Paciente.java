@@ -1,4 +1,35 @@
 package com.salud.consultorio.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Entity
+@Table(name = "paciente")
 public class Paciente {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @OneToOne
+    @JoinColumn(name = "id_paciente",nullable = false,unique = true)
+    private Paciente paciente;
+
+    @Column(name = "entidad_aseguradora", length = 8, nullable = false, unique = true)
+    private String entidadAseguradora;
+
+    @Column(name = "codigo_aseguradora", length = 20, nullable = false)
+    private String codigoAseguradora;
+
+    @Column(name = "estado",nullable = false)
+    private Integer estado;
+
 }
