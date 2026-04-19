@@ -3,15 +3,15 @@ package com.salud.consultorio.service;
 import java.util.List;
 import java.util.Optional;
 
-public interface IBasicoServicio<T,ID>{
+public interface IBasicoServicio<T,DTO,ID>{
 
     List<T> listarTodos();
 
     Optional<T> obtenerPorId(ID id);
 
-    T crear(T t);
+    T crear(DTO dto);
 
-    T actualizar(T t);
+    T actualizar(DTO dto);
 
     void eliminarPorId(ID id);
 

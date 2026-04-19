@@ -1,5 +1,7 @@
 package com.salud.consultorio.impl;
 
+import com.salud.consultorio.model.mapper.IEspecialidadMapper;
+import com.salud.consultorio.model.dto.EspecialidadDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.repository.IEspecialidadRepositorio;
 import com.salud.consultorio.service.IEspecialidadServicio;
@@ -15,11 +17,14 @@ import java.util.Optional;
 public class EspecialidadServicioImpl implements IEspecialidadServicio {
 
     private final IEspecialidadRepositorio especialidadRepositorio;
+    private final IEspecialidadMapper especialidadMapper;
 
     @Transactional(readOnly = true)
     @Override
     public List<Especialidad> listarTodos() {
+
         return especialidadRepositorio.findAll();
+
     }
 
     @Transactional(readOnly = true)
@@ -28,13 +33,18 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
         return Optional.empty();
     }
 
+    @Transactional
     @Override
-    public Especialidad crear(Especialidad especialidad) {
-        return null;
+    public Especialidad crear(EspecialidadDTO especialidadDTO) {
+
+        Especialidad especialidad = especialidadMapper.especialidadDtoToEspecialidad(especialidadDTO);
+
+        return especialidadRepositorio.save(especialidad);
     }
 
     @Override
-    public Especialidad actualizar(Especialidad especialidad) {
+    public Especialidad actualizar(EspecialidadDTO especialidad) {
+
         return null;
     }
 
