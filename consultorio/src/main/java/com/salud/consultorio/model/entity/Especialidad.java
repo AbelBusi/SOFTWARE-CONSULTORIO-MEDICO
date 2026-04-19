@@ -1,4 +1,4 @@
-package com.salud.consultorio.model;
+package com.salud.consultorio.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

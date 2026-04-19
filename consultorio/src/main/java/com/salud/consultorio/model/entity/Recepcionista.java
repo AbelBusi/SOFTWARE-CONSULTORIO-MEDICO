@@ -1,4 +1,4 @@
-package com.salud.consultorio.model;
+package com.salud.consultorio.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,8 +14,8 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Table(name = "paciente")
-public class Paciente {
+@Table(name = "recepcionista")
+public class Recepcionista {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,16 +25,13 @@ public class Paciente {
     @JoinColumn(name = "id_persona",nullable = false,unique = true)
     private Persona persona;
 
-    @Column(name = "entidad_aseguradora", length = 8, nullable = false, unique = true)
-    private String entidadAseguradora;
-
-    @Column(name = "codigo_aseguradora", length = 20, nullable = false)
-    private String codigoAseguradora;
+    @Column(name = "codigo_empleado", length = 25, nullable = false, unique = true)
+    private String codigoEmpleado;
 
     @Column(name = "estado",nullable = false)
     private Integer estado;
 
-    @OneToMany(mappedBy = "paciente",fetch = FetchType.LAZY)
-    private List<CitaMedica> citaMedicas;
+    @OneToMany(mappedBy = "recepcionista",fetch = FetchType.LAZY)
+    private List<CitaMedica> citas;
 
 }
