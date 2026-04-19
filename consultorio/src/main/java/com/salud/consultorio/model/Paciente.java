@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,5 +33,8 @@ public class Paciente {
 
     @Column(name = "estado",nullable = false)
     private Integer estado;
+
+    @OneToMany(mappedBy = "paciente",fetch = FetchType.LAZY)
+    private List<CitaMedica> citaMedicas;
 
 }

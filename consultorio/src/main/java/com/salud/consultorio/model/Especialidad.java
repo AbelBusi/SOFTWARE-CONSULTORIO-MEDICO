@@ -33,4 +33,7 @@ public class Especialidad {
     @OneToMany(mappedBy = "especialidad",fetch = FetchType.LAZY)
     private List<Doctor> doctores;
 
+    @OneToMany(mappedBy = "especialidad",fetch = FetchType.LAZY)
+    private List<CitaMedica> citaMedicas;
+
 }
