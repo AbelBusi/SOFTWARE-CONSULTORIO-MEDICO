@@ -7,6 +7,7 @@ import com.salud.consultorio.model.dto.PersonaDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.payload.MensajeResponse;
+import com.salud.consultorio.service.IPersonaServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PersonaController {
 
-    private final PersonaServicioImpl personaServicio;
+    private final IPersonaServicio personaServicio;
 
     @PostMapping
     public ResponseEntity<?> crearPersona(@Valid @RequestBody PersonaDTO personaDTO){

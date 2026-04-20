@@ -21,14 +21,14 @@ public class Paciente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_persona",nullable = false,unique = true)
     private Persona persona;
 
-    @Column(name = "entidad_aseguradora", length = 8, nullable = false, unique = true)
+    @Column(name = "entidad_aseguradora", length = 8, nullable = false, unique = false)
     private String entidadAseguradora;
 
-    @Column(name = "codigo_aseguradora", length = 20, nullable = false)
+    @Column(name = "codigo_aseguradora", length = 20, nullable = false,unique = true)
     private String codigoAseguradora;
 
     @Column(name = "estado",nullable = false)

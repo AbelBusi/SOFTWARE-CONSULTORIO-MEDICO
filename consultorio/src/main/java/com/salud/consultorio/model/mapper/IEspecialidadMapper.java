@@ -10,6 +10,8 @@ public interface IEspecialidadMapper {
 
 
     @Mapping(target = "id",ignore = true)
+    @Mapping(target = "doctores",ignore = true)
+    @Mapping(target = "citaMedicas",ignore = true)
     Especialidad especialidadDtoToEspecialidad (EspecialidadDTO especialidadDTO);
 
 }

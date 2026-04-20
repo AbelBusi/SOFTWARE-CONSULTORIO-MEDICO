@@ -4,6 +4,7 @@ import com.salud.consultorio.impl.EspecialidadServicioImpl;
 import com.salud.consultorio.model.dto.EspecialidadDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.model.payload.MensajeResponse;
+import com.salud.consultorio.service.IEspecialidadServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class EspcialidadController {
 
-    private final EspecialidadServicioImpl especialidadServicio;
+    private final IEspecialidadServicio especialidadServicio;
 
     @PostMapping
     public ResponseEntity<?> crearEspecialidad(@Valid @RequestBody EspecialidadDTO especialidadDTO){
