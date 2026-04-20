@@ -21,7 +21,7 @@ public class Recepcionista {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_persona",nullable = false,unique = true)
     private Persona persona;
 
