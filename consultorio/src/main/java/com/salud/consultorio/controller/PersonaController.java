@@ -1,10 +1,7 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.impl.EspecialidadServicioImpl;
-import com.salud.consultorio.impl.PersonaServicioImpl;
-import com.salud.consultorio.model.dto.EspecialidadDTO;
+
 import com.salud.consultorio.model.dto.PersonaDTO;
-import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPersonaServicio;

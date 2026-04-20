@@ -30,7 +30,9 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
     @Transactional(readOnly = true)
     @Override
     public Optional<Especialidad> obtenerPorId(Integer integer) {
-        return Optional.empty();
+
+        return especialidadRepositorio.findById(integer);
+
     }
 
     @Transactional

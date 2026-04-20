@@ -17,10 +17,4 @@ public interface IPacienteMapper {
     @Mapping(target = "citaMedicas",ignore = true)
     Paciente pacienteDtoToPaciente (PacienteDTO pacienteDTO);
 
-    @Mapping(target = "id",ignore = true)
-    @Mapping(target = "recepcionista", ignore = true)
-    @Mapping(target = "paciente", ignore = true)
-    @Mapping(target = "doctor", ignore = true)
-    Persona personaDtoToPersona(PersonaDTO personaDTO);
-
 }

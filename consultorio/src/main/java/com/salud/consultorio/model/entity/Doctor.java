@@ -21,7 +21,7 @@ public class Doctor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_persona",nullable = false)
     private Persona persona;
 
@@ -32,7 +32,7 @@ public class Doctor {
     @Column(name = "cpm", length = 20, nullable = false)
     private String cpm;
 
-    @Column(name = "telefono", length = 20, nullable = true)
+    @Column(name = "rne", length = 20, nullable = true)
     private String rne;
 
     @Column(name = "consejo_regional", length = 50, nullable = false)

@@ -1,9 +1,9 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.model.dto.EspecialidadDTO;
-import com.salud.consultorio.model.entity.Especialidad;
+import com.salud.consultorio.model.dto.DoctorDTO;
+import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.payload.MensajeResponse;
-import com.salud.consultorio.service.IEspecialidadServicio;
+import com.salud.consultorio.service.IDoctorServicio;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/especialidades")
+@RequestMapping("api/v1/doctores")
 @RequiredArgsConstructor
-public class EspcialidadController {
+public class DoctorController {
 
-    private final IEspecialidadServicio especialidadServicio;
+    private final IDoctorServicio doctorServicio;
 
     @PostMapping
-    public ResponseEntity<?> crearEspecialidad(@Valid @RequestBody EspecialidadDTO especialidadDTO){
+    public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorDTO doctorDTO){
 
-        Especialidad especialidad =especialidadServicio.crear(especialidadDTO);
+        Doctor doctor =doctorServicio.crear(doctorDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
-                .mensaje("Especialidad agregada con exito")
-                .object(especialidadDTO).build(), HttpStatus.CREATED);
+                .mensaje("Doctor agregado con exito")
+                .object(doctorDTO).build(), HttpStatus.CREATED);
 
     }
 
