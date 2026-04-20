@@ -27,7 +27,7 @@ public class PacienteController {
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Paciente agregado con exito")
-                .object(paciente).build(), HttpStatus.CREATED);
+                .object(pacienteDTO).build(), HttpStatus.CREATED);
 
     }
 
