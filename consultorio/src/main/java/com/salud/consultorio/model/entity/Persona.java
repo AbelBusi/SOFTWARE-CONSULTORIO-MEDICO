@@ -1,10 +1,7 @@
 package com.salud.consultorio.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -12,6 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "persona")
 public class Persona {

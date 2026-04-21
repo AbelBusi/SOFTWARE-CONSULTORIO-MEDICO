@@ -36,7 +36,7 @@ public class DoctorDTO {
 
     @Valid
     @NotNull(message = "La especialidad del doctor es obligatoria")
-    private EspecialidadRefDoctor especialidad;
+    private EspecialidadRefDoctorDTO especialidad;
 
     private Integer estado;
 

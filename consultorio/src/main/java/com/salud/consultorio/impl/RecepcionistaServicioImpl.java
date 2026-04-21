@@ -28,9 +28,10 @@ public class RecepcionistaServicioImpl implements IRecepcionistaServicio {
         return recepcionistaRepositorio.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Recepcionista> obtenerPorId(Integer integer) {
-        return Optional.empty();
+        return recepcionistaRepositorio.findById(integer);
     }
 
     @Transactional
