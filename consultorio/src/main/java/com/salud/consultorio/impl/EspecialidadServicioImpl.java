@@ -51,19 +51,14 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
         if (especialidadDTO.getId() == null) {
             throw new RuntimeException("El ID no puede ser null para actualizar");
         }
-        // 1. Buscar si existe en la BD
         Optional<Especialidad> optional = especialidadRepositorio.findById(especialidadDTO.getId());
 
         if (optional.isPresent()) {
 
-            // 2. Obtener la entidad actual
             Especialidad especialidadExistente = optional.get();
 
-            // 3. Actualizar campos (IMPORTANTE)
             especialidadExistente.setNombre(especialidadDTO.getNombre());
-            // agrega más campos si existen
 
-            // 4. Guardar cambios
             return especialidadRepositorio.save(especialidadExistente);
 
         } else {
@@ -75,13 +70,15 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
     @Override
     public void eliminarPorId(Integer id) {
 
-        // 1. Verificar si existe
         if (!especialidadRepositorio.existsById(id)) {
             throw new RuntimeException("Especialidad no encontrada con ID: " + id);
         }
 
-        // 2. Eliminar
         especialidadRepositorio.deleteById(id);
     }
 
+    @Override
+    public void ejemplo() {
+
+    }
 }

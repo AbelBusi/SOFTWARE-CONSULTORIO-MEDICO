@@ -14,4 +14,6 @@ public interface ICitaMedicaMapper {
     @Mapping(target = "id",ignore = true)
     CitaMedica citaMedicaDtoToCitaMedica (CitaMedicaDTO citaMedicaDTO);
 
+    CitaMedicaDTO citaMedicaToCitaMedicaDto(CitaMedica citaMedica);
+
 }

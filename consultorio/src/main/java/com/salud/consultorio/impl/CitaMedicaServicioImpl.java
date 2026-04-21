@@ -1,6 +1,7 @@
 package com.salud.consultorio.impl;
 
 import com.salud.consultorio.model.dto.CitaMedicaDTO;
+import com.salud.consultorio.model.dto.LeerCitaMedicaDTO;
 import com.salud.consultorio.model.entity.*;
 import com.salud.consultorio.model.mapper.ICitaMedicaMapper;
 import com.salud.consultorio.model.mapper.IPacienteMapper;
@@ -33,9 +34,10 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         return citaMedicaRepositorio.findAll();
     }
 
+    @Transactional
     @Override
     public Optional<CitaMedica> obtenerPorId(Integer integer) {
-        return Optional.empty();
+        return citaMedicaRepositorio.findById(integer);
     }
 
     @Transactional
@@ -79,5 +81,21 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     @Override
     public void eliminarPorId(Integer integer) {
 
+    }
+
+    @Transactional
+    @Override
+    public CitaMedicaDTO mostrarCitaMedicaPorId(CitaMedica citaMedica) {
+
+        CitaMedica cita = obtenerPorId(citaMedica.getId()).orElseThrow(()-> new EntityNotFoundException("No existe en la entidad"));
+
+        CitaMedicaDTO citaMedicaDTO =citaMedicaMapper.citaMedicaToCitaMedicaDto(cita);
+
+        return  citaMedicaDTO;
+    }
+
+    @Override
+    public List<LeerCitaMedicaDTO> leerCitasMedicas() {
+        return citaMedicaRepositorio.leerCitasMedicas();
     }
 }
