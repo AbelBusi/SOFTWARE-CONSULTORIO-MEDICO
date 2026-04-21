@@ -11,6 +11,7 @@ import com.salud.consultorio.repository.IDoctorRepositorio;
 import com.salud.consultorio.service.IDoctorServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +31,14 @@ public class DoctorServicioImpl implements IDoctorServicio {
         return doctorRepositorio.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Optional<Doctor> obtenerPorId(Integer integer) {
-        return Optional.empty();
+        return doctorRepositorio.findById(integer);
     }
 
+
+    @Transactional
     @Override
     public Doctor crear(DoctorDTO doctorDTO) {
 

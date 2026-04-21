@@ -1,10 +1,7 @@
 package com.salud.consultorio.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +12,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
+@Builder(toBuilder = true)
 @Table(name = "cita_medica")
 public class CitaMedica {
 
@@ -22,19 +20,19 @@ public class CitaMedica {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_recepcionista",nullable = false)
     private Recepcionista recepcionista;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_paciente",nullable = false)
     private Paciente paciente;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_doctor",nullable = false)
     private Doctor doctor;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "id_especialidad",nullable = false)
     private Especialidad especialidad;
 
