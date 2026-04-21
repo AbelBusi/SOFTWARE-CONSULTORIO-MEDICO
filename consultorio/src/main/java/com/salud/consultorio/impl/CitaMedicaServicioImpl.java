@@ -81,6 +81,8 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     @Override
     public void eliminarPorId(Integer integer) {
 
+
+
     }
 
     @Transactional
