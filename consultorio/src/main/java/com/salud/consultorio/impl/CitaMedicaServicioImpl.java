@@ -46,14 +46,11 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     @Override
     public CitaMedica crear(CitaMedicaDTO citaMedicaDTO) {
 
-        Doctor doctor = doctorServicio.obtenerPorId(citaMedicaDTO.getDoctor().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Doctor no encontrado en el sistema"));
+        Doctor doctor = referenciaServicio.getRef(Doctor.class,citaMedicaDTO.getDoctor().getId());
 
-        Especialidad especialidad = especialidadServicio.obtenerPorId(citaMedicaDTO.getEspecialidad().getId())
-                .orElseThrow(() -> new EntityNotFoundException("Especialidad mo encontrada"));
+        Especialidad especialidad = referenciaServicio.getRef(Especialidad.class, citaMedicaDTO.getEspecialidad().getId());
 
-        Recepcionista recepcionista = recepcionistaServicio.obtenerPorId(citaMedicaDTO.getRecepcionista().getId())
-                .orElseThrow(()-> new EntityNotFoundException("Recepcionista no encontrado "));
+        Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class, citaMedicaDTO.getRecepcionista().getId());
 
         Persona persona = personaMapper.personaDtoToPersona(citaMedicaDTO.getPaciente().getPersona());
 
@@ -108,6 +105,15 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
     @Override
     public void eliminarPorId(Integer integer) {
+
+        CitaMedica citaMedica = obtenerPorId(integer).orElseThrow(
+                () -> new EntityNotFoundException("No existe la cita medica")
+        );
+
+        citaMedica.setEstado(0);
+
+        citaMedicaRepositorio.save(citaMedica);
+
     }
 
     @Transactional

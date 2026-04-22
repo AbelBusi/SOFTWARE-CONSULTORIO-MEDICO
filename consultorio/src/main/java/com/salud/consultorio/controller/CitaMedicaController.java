@@ -90,6 +90,23 @@ public class CitaMedicaController {
 
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensajeResponse> eliminarCitaMedica(@PathVariable Integer id){
+
+        if (!citaMedicaServicio.obtenerPorId(id).isPresent()){
+
+            return new ResponseEntity<>(MensajeResponse.builder()
+                    .mensaje("La cita medica no se puede eliminar porque no existe")
+                    .object(null).build(),HttpStatus.NOT_FOUND);
+        }
+
+        citaMedicaServicio.eliminarPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("La cita medica se elimino con exito")
+                .object(null).build(),HttpStatus.NO_CONTENT);
+    }
+
 
 
 }
