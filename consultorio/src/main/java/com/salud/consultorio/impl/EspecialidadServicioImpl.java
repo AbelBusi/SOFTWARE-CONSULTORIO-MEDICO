@@ -1,5 +1,6 @@
 package com.salud.consultorio.impl;
 
+import com.salud.consultorio.model.dto.NombreEspecialidadesDTO;
 import com.salud.consultorio.model.mapper.IEspecialidadMapper;
 import com.salud.consultorio.model.dto.EspecialidadDTO;
 import com.salud.consultorio.model.entity.Especialidad;
@@ -77,9 +78,8 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
         especialidadRepositorio.deleteById(id);
     }
 
-
     @Override
-    public void ejemplo() {
-
+    public List<NombreEspecialidadesDTO> listaNombres() {
+        return especialidadRepositorio.listarEspecialidades();
     }
 }

@@ -1,5 +1,6 @@
 package com.salud.consultorio.impl;
 
+import com.salud.consultorio.model.dto.NombreRecepcionistaDTO;
 import com.salud.consultorio.model.dto.RecepcionistaDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.entity.Recepcionista;
@@ -58,4 +59,8 @@ public class RecepcionistaServicioImpl implements IRecepcionistaServicio {
 
     }
 
+    @Override
+    public List<NombreRecepcionistaDTO> listaNombres() {
+        return recepcionistaRepositorio.listarRecepcionistasNombres();
+    }
 }

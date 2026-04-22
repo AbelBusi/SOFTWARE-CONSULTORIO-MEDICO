@@ -1,5 +1,6 @@
 package com.salud.consultorio.impl;
 
+import com.salud.consultorio.model.dto.NombrePacientesDTO;
 import com.salud.consultorio.model.dto.PacienteDTO;
 import com.salud.consultorio.model.entity.Paciente;
 import com.salud.consultorio.model.entity.Persona;
@@ -56,4 +57,8 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     }
 
+    @Override
+    public List<NombrePacientesDTO> listarPacientesDtoList() {
+        return pacienteRepositorio.listarPacientesResumen();
+    }
 }

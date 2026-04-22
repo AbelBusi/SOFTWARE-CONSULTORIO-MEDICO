@@ -1,5 +1,6 @@
 package com.salud.consultorio.controller;
 
+import com.salud.consultorio.model.dto.NombreRecepcionistaDTO;
 import com.salud.consultorio.model.dto.RecepcionistaDTO;
 import com.salud.consultorio.model.entity.Recepcionista;
 import com.salud.consultorio.model.payload.MensajeResponse;
@@ -8,10 +9,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/recepcionistas")
@@ -31,4 +31,19 @@ public class RecepcionistaController {
 
     }
 
+    @GetMapping("/resumen")
+    public ResponseEntity<MensajeResponse> listaNombres() {
+        List<NombreRecepcionistaDTO> leerRecepcionistaDTOS = recepcionistaServicio.listaNombres();
+
+        if (leerRecepcionistaDTOS == null) {
+
+            return new ResponseEntity<>(MensajeResponse.builder()
+                    .mensaje("No existen recepcionistas todavia")
+                    .object(null).build(), HttpStatus.NOT_FOUND);
+
+        }
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("LISTA DE RECEPCIONISTAS")
+                .object(leerRecepcionistaDTOS).build(), HttpStatus.OK);
+    }
 }
