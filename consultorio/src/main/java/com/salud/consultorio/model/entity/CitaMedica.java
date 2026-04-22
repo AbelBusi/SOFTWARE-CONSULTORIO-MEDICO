@@ -36,7 +36,7 @@ public class CitaMedica {
     @JoinColumn(name = "id_especialidad",nullable = false)
     private Especialidad especialidad;
 
-    @Column(name = "motivo", length = 500, nullable = false, unique = true)
+    @Column(name = "motivo", length = 500, nullable = false)
     private String motivo;
 
     @Column(name = "fecha",nullable = false)
