@@ -61,7 +61,7 @@ public class DoctorServicioImpl implements IDoctorServicio {
     }
 
     @Override
-    public Doctor actualizar(DoctorDTO doctorDTO) {
+    public Doctor actualizar(DoctorDTO doctorDTO, Integer id) {
         return null;
     }
 
@@ -69,4 +69,5 @@ public class DoctorServicioImpl implements IDoctorServicio {
     public void eliminarPorId(Integer integer) {
 
     }
+
 }

@@ -46,7 +46,7 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
 
     @Transactional
     @Override
-    public Especialidad actualizar(EspecialidadDTO especialidadDTO) {
+    public Especialidad actualizar(EspecialidadDTO especialidadDTO, Integer id) {
 
         if (especialidadDTO.getId() == null) {
             throw new RuntimeException("El ID no puede ser null para actualizar");
@@ -76,6 +76,7 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
 
         especialidadRepositorio.deleteById(id);
     }
+
 
     @Override
     public void ejemplo() {

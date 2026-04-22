@@ -41,7 +41,7 @@ public class PersonaServicioImpl implements IPersonaServicio {
     }
 
     @Override
-    public Persona actualizar(PersonaDTO personaDTO) {
+    public Persona actualizar(PersonaDTO personaDTO, Integer id) {
         return null;
     }
 
@@ -49,4 +49,5 @@ public class PersonaServicioImpl implements IPersonaServicio {
     public void eliminarPorId(Integer integer) {
 
     }
+
 }

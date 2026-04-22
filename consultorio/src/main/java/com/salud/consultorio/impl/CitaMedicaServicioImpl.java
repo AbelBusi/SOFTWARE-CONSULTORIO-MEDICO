@@ -1,5 +1,6 @@
 package com.salud.consultorio.impl;
 
+import com.salud.consultorio.model.dto.ActualizarCitaMedicaDTO;
 import com.salud.consultorio.model.dto.CitaMedicaDTO;
 import com.salud.consultorio.model.dto.LeerCitaMedicaDTO;
 import com.salud.consultorio.model.entity.*;
@@ -22,6 +23,7 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
     private final ICitaMedicaRepositorio citaMedicaRepositorio;
     private final DoctorServicioImpl doctorServicio;
+    private final ReferenciaServicio referenciaServicio;
     private final EspecialidadServicioImpl especialidadServicio;
     private final PacienteServicioImpl pacienteServicio;
     private final RecepcionistaServicioImpl recepcionistaServicio;
@@ -74,15 +76,38 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     }
 
     @Override
-    public CitaMedica actualizar(CitaMedicaDTO citaMedicaDTO) {
+    public CitaMedica actualizar(CitaMedicaDTO citaMedicaDTO, Integer integer) {
         return null;
+    }
+
+    @Transactional
+    @Override
+    public CitaMedica actualizarCita(ActualizarCitaMedicaDTO actualizarCitaMedicaDTO, Integer id) {
+
+        CitaMedica citaMedica = obtenerPorId(id).orElseThrow(() ->
+                new EntityNotFoundException("Cita Medica no existe"));
+
+        citaMedicaMapper.actualizarCitaDtoToActualizarCita(actualizarCitaMedicaDTO,citaMedica);
+
+        Doctor doctor = referenciaServicio.getRef(Doctor.class,actualizarCitaMedicaDTO.getDoctor().getId());
+
+        Especialidad especialidad = referenciaServicio.getRef(Especialidad.class, actualizarCitaMedicaDTO.getEspecialidad().getId());
+
+        Paciente paciente = referenciaServicio.getRef(Paciente.class, actualizarCitaMedicaDTO.getPaciente().getId());
+
+        Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class, actualizarCitaMedicaDTO.getRecepcionista().getId());
+
+        citaMedica.setDoctor(doctor);
+        citaMedica.setEspecialidad(especialidad);
+        citaMedica.setPaciente(paciente);
+        citaMedica.setRecepcionista(recepcionista);
+
+        return citaMedicaRepositorio.save(citaMedica);
+
     }
 
     @Override
     public void eliminarPorId(Integer integer) {
-
-
-
     }
 
     @Transactional

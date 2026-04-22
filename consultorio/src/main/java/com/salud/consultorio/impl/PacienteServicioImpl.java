@@ -30,7 +30,7 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     @Override
     public Optional<Paciente> obtenerPorId(Integer integer) {
-        return Optional.empty();
+        return pacienteRepositorio.findById(integer);
     }
 
     @Transactional
@@ -47,7 +47,7 @@ public class PacienteServicioImpl implements IPacienteServicio {
     }
 
     @Override
-    public Paciente actualizar(PacienteDTO pacienteDTO) {
+    public Paciente actualizar(PacienteDTO pacienteDTO, Integer id) {
         return null;
     }
 
@@ -55,4 +55,5 @@ public class PacienteServicioImpl implements IPacienteServicio {
     public void eliminarPorId(Integer integer) {
 
     }
+
 }

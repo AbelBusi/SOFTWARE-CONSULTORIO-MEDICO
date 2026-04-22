@@ -49,7 +49,7 @@ public class RecepcionistaServicioImpl implements IRecepcionistaServicio {
     }
 
     @Override
-    public Recepcionista actualizar(RecepcionistaDTO recepcionistaDTO) {
+    public Recepcionista actualizar(RecepcionistaDTO recepcionistaDTO, Integer id) {
         return null;
     }
 
@@ -57,4 +57,5 @@ public class RecepcionistaServicioImpl implements IRecepcionistaServicio {
     public void eliminarPorId(Integer integer) {
 
     }
+
 }

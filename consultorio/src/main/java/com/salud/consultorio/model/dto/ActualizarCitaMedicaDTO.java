@@ -16,15 +16,13 @@ import java.time.LocalTime;
 @Setter
 public class ActualizarCitaMedicaDTO {
 
-    private Integer id;
-
     @Valid
     @NotNull(message = "El recepcionista es obligatorio")
     private RecepcionistaRefCitaMedicaDTO recepcionista;
 
     @Valid
     @NotNull(message = "El paciente es obligatorio")
-    private PacienteDTO paciente;
+    private PacienteRefCitaMedicaDTO paciente;
 
     @Valid
     @NotNull(message = "El doctor es obligatorio")

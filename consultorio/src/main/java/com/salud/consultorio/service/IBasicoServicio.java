@@ -11,8 +11,7 @@ public interface IBasicoServicio<T,DTO,ID>{
 
     T crear(DTO dto);
 
-    T actualizar(DTO dto);
+    T actualizar(DTO dto, ID id);
 
     void eliminarPorId(ID id);
-
 }

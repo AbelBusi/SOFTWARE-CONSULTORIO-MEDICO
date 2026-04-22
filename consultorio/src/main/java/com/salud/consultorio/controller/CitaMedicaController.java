@@ -1,5 +1,6 @@
 package com.salud.consultorio.controller;
 
+import com.salud.consultorio.model.dto.ActualizarCitaMedicaDTO;
 import com.salud.consultorio.model.dto.CitaMedicaDTO;
 import com.salud.consultorio.model.dto.LeerCitaMedicaDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
@@ -68,6 +69,24 @@ public class CitaMedicaController {
                 .mensaje("LISTA DE CITAS MEDICAS")
                 .object(leerCitas).build(), HttpStatus.OK);
 
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MensajeResponse> actualizarCitaMedica(@PathVariable Integer id, @Valid @RequestBody ActualizarCitaMedicaDTO actualizarCitaMedicaDTO){
+
+        if (!citaMedicaServicio.obtenerPorId(id).isPresent()){
+
+            return new ResponseEntity<>(MensajeResponse.builder()
+                    .mensaje("La cita que desea actualizar no se encuentra en la entidad.")
+                    .object(null).build(), HttpStatus.NOT_FOUND);
+        }
+
+        CitaMedica citaMedica = citaMedicaServicio.actualizarCita(actualizarCitaMedicaDTO,id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Cita Medica actualizada con exito")
+                .object(actualizarCitaMedicaDTO).build(), HttpStatus.CREATED);
 
     }
 
