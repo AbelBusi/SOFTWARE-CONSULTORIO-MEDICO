@@ -1,0 +1,35 @@
+package com.salud.consultorio.controller;
+
+
+import com.salud.consultorio.model.dto.PersonaCrearDTO;
+import com.salud.consultorio.model.entity.Persona;
+import com.salud.consultorio.model.payload.MensajeResponse;
+import com.salud.consultorio.service.IPersonaServicio;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("api/v1/personas")
+@RequiredArgsConstructor
+public class PersonaController {
+
+    private final IPersonaServicio personaServicio;
+
+    @PostMapping
+    public ResponseEntity<?> crearPersona(@Valid @RequestBody PersonaCrearDTO personaCrearDTO){
+
+        Persona persona =personaServicio.crear(personaCrearDTO);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Persona agregada con exito")
+                .object(personaCrearDTO).build(), HttpStatus.CREATED);
+
+    }
+
+}
