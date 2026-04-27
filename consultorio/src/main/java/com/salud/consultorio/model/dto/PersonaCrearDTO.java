@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PersonaDTO {
+public class PersonaCrearDTO {
 
     private Integer id;
 

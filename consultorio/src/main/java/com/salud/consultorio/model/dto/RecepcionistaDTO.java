@@ -19,7 +19,7 @@ public class RecepcionistaDTO {
 
     @Valid
     @NotNull(message = "La persona es obligatoria")
-    private PersonaDTO persona;
+    private PersonaCrearDTO persona;
 
     @NotBlank(message = "El código de empleado es obligatorio")
     @Size(max = 25, message = "El código de empleado no debe exceder 25 caracteres")

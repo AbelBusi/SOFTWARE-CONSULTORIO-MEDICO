@@ -32,7 +32,7 @@ public class DoctorDTO {
 
     @Valid
     @NotNull(message = "La persona es obligatoria")
-    private PersonaDTO persona;
+    private PersonaCrearDTO persona;
 
     @Valid
     @NotNull(message = "La especialidad del doctor es obligatoria")

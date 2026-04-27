@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class PacienteDTO {
+public class PacienteCrearDTO {
 
     private Integer id;
 
@@ -24,6 +24,6 @@ public class PacienteDTO {
 
     @Valid
     @NotNull(message = "La persona es obligatoria")
-    private PersonaDTO persona;
+    private PersonaCrearDTO persona;
 
 }

@@ -1,7 +1,7 @@
 package com.salud.consultorio.controller;
 
 
-import com.salud.consultorio.model.dto.PersonaDTO;
+import com.salud.consultorio.model.dto.PersonaCrearDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPersonaServicio;
@@ -22,13 +22,13 @@ public class PersonaController {
     private final IPersonaServicio personaServicio;
 
     @PostMapping
-    public ResponseEntity<?> crearPersona(@Valid @RequestBody PersonaDTO personaDTO){
+    public ResponseEntity<?> crearPersona(@Valid @RequestBody PersonaCrearDTO personaCrearDTO){
 
-        Persona persona =personaServicio.crear(personaDTO);
+        Persona persona =personaServicio.crear(personaCrearDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Persona agregada con exito")
-                .object(personaDTO).build(), HttpStatus.CREATED);
+                .object(personaCrearDTO).build(), HttpStatus.CREATED);
 
     }
 

@@ -22,11 +22,7 @@ import java.util.Optional;
 public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
     private final ICitaMedicaRepositorio citaMedicaRepositorio;
-    private final DoctorServicioImpl doctorServicio;
     private final ReferenciaServicio referenciaServicio;
-    private final EspecialidadServicioImpl especialidadServicio;
-    private final PacienteServicioImpl pacienteServicio;
-    private final RecepcionistaServicioImpl recepcionistaServicio;
     private final ICitaMedicaMapper citaMedicaMapper;
     private final IPacienteMapper pacienteMapper;
     private final IPersonaMapper personaMapper;
@@ -49,11 +45,9 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         Doctor doctor = referenciaServicio.getRef(Doctor.class,citaMedicaDTO.getDoctor().getId());
 
         Especialidad especialidad = referenciaServicio.getRef(Especialidad.class, citaMedicaDTO.getEspecialidad().getId());
-
         Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class, citaMedicaDTO.getRecepcionista().getId());
 
         Persona persona = personaMapper.personaDtoToPersona(citaMedicaDTO.getPaciente().getPersona());
-
         Paciente paciente = pacienteMapper.pacienteDtoToPaciente(citaMedicaDTO.getPaciente());
 
         CitaMedica citaMedica = citaMedicaMapper.citaMedicaDtoToCitaMedica(citaMedicaDTO);
@@ -68,8 +62,6 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         persona.setPaciente(paciente);
 
         return citaMedicaRepositorio.save(citaMedica);
-
-
     }
 
     @Override

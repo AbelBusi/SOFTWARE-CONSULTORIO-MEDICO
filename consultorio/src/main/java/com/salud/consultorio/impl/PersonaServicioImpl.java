@@ -1,10 +1,9 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.model.dto.PersonaDTO;
+import com.salud.consultorio.model.dto.PersonaCrearDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.repository.IPersonaRepositorio;
-import com.salud.consultorio.service.IEspecialidadServicio;
 import com.salud.consultorio.service.IPersonaServicio;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,20 +27,20 @@ public class PersonaServicioImpl implements IPersonaServicio {
 
     @Override
     public Optional<Persona> obtenerPorId(Integer integer) {
-        return Optional.empty();
+        return personaRepositorio.findById(integer);
     }
 
     @Transactional
     @Override
-    public Persona crear(PersonaDTO personaDTO) {
+    public Persona crear(PersonaCrearDTO personaCrearDTO) {
 
-        Persona persona =personaMapper.personaDtoToPersona(personaDTO);
+        Persona persona =personaMapper.personaDtoToPersona(personaCrearDTO);
 
         return personaRepositorio.save(persona);
     }
 
     @Override
-    public Persona actualizar(PersonaDTO personaDTO, Integer id) {
+    public Persona actualizar(PersonaCrearDTO personaCrearDTO, Integer id) {
         return null;
     }
 

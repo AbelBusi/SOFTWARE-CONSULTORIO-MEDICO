@@ -24,7 +24,7 @@ public class CitaMedicaDTO {
 
     @Valid
     @NotNull(message = "El paciente es obligatorio")
-    private PacienteDTO paciente;
+    private PacienteCrearDTO paciente;
 
     @Valid
     @NotNull(message = "El doctor es obligatorio")

@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Repository
@@ -28,5 +30,12 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
                 INNER JOIN doctor d ON c.id_doctor = d.id
                 INNER JOIN persona pd ON d.id_persona=pd.id; """,nativeQuery = true)
     List<LeerCitaMedicaDTO> leerCitasMedicas();
+
+    boolean existsByDoctor_IdAndFechaAndHoraInicioLessThanAndHoraSalidaGreaterThan(
+            Integer doctorId,
+            LocalDate fecha,
+            LocalTime horaSalida,
+            LocalTime horaInicio
+    );
 
 }

@@ -240,9 +240,9 @@ class CitaMedicaServicioImplTest {
         return ref;
     }
 
-    private PacienteDTO mockPacienteDTO() {
-        PacienteDTO dto = mock(PacienteDTO.class);
-        when(dto.getPersona()).thenReturn(mock(PersonaDTO.class));
+    private PacienteCrearDTO mockPacienteDTO() {
+        PacienteCrearDTO dto = mock(PacienteCrearDTO.class);
+        when(dto.getPersona()).thenReturn(mock(PersonaCrearDTO.class));
         return dto;
     }
 }
