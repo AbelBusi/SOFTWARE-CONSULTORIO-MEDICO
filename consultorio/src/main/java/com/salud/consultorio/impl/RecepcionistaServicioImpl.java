@@ -1,7 +1,7 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.model.dto.NombreRecepcionistaDTO;
-import com.salud.consultorio.model.dto.RecepcionistaDTO;
+import com.salud.consultorio.dto.NombreRecepcionistaDTO;
+import com.salud.consultorio.dto.RecepcionistaDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.entity.Recepcionista;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
@@ -44,8 +44,8 @@ public class RecepcionistaServicioImpl implements IRecepcionistaServicio {
         Recepcionista recepcionista = recepnionistaMapper.recepcionistaDtoToRecepcionista(recepcionistaDTO);
 
         recepcionista.setPersona(persona);
-        persona.setRecepcionista(recepcionista);
-
+        /*persona.setRecepcionista(recepcionista);
+*/
         return recepcionistaRepositorio.save(recepcionista);
     }
 

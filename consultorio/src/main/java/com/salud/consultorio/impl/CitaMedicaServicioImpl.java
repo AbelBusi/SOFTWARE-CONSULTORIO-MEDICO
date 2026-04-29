@@ -1,8 +1,8 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.model.dto.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.model.dto.CitaMedicaDTO;
-import com.salud.consultorio.model.dto.LeerCitaMedicaDTO;
+import com.salud.consultorio.dto.ActualizarCitaMedicaDTO;
+import com.salud.consultorio.dto.CitaMedicaDTO;
+import com.salud.consultorio.dto.LeerCitaMedicaDTO;
 import com.salud.consultorio.model.entity.*;
 import com.salud.consultorio.model.mapper.ICitaMedicaMapper;
 import com.salud.consultorio.model.mapper.IPacienteMapper;
@@ -59,8 +59,8 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
         paciente.setPersona(persona);
 
-        persona.setPaciente(paciente);
-
+       /* persona.setPaciente(paciente);
+*/
         return citaMedicaRepositorio.save(citaMedica);
     }
 

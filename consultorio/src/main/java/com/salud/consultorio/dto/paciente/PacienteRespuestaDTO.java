@@ -1,5 +1,6 @@
-package com.salud.consultorio.model.dto;
+package com.salud.consultorio.dto.paciente;
 
+import com.salud.consultorio.dto.PersonaCrearDTO;
 import lombok.*;
 
 @AllArgsConstructor

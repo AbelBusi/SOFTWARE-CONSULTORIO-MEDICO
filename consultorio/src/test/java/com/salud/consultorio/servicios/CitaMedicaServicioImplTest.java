@@ -1,8 +1,9 @@
 package com.salud.consultorio.servicios;
 
+import com.salud.consultorio.dto.*;
 import com.salud.consultorio.impl.CitaMedicaServicioImpl;
 import com.salud.consultorio.impl.ReferenciaServicio;
-import com.salud.consultorio.model.dto.*;
+import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
 import com.salud.consultorio.model.entity.*;
 import com.salud.consultorio.model.mapper.ICitaMedicaMapper;
 import com.salud.consultorio.model.mapper.IPacienteMapper;

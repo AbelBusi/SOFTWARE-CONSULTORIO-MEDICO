@@ -1,4 +1,4 @@
-package com.salud.consultorio.model.dto;
+package com.salud.consultorio.dto;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
@@ -14,9 +14,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CitaMedicaDTO {
-
-    private Integer id;
+public class ActualizarCitaMedicaDTO {
 
     @Valid
     @NotNull(message = "El recepcionista es obligatorio")
@@ -24,7 +22,7 @@ public class CitaMedicaDTO {
 
     @Valid
     @NotNull(message = "El paciente es obligatorio")
-    private PacienteCrearDTO paciente;
+    private PacienteRefCitaMedicaDTO paciente;
 
     @Valid
     @NotNull(message = "El doctor es obligatorio")

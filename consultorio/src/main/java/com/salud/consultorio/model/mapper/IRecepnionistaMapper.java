@@ -1,6 +1,6 @@
 package com.salud.consultorio.model.mapper;
 
-import com.salud.consultorio.model.dto.RecepcionistaDTO;
+import com.salud.consultorio.dto.RecepcionistaDTO;
 import com.salud.consultorio.model.entity.Recepcionista;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

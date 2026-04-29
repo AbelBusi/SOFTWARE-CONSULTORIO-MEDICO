@@ -1,6 +1,6 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.model.dto.PersonaCrearDTO;
+import com.salud.consultorio.dto.PersonaCrearDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.repository.IPersonaRepositorio;

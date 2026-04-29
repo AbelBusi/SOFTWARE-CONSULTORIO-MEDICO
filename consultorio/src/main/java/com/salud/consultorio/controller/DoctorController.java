@@ -1,8 +1,7 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.model.dto.DoctorDTO;
-import com.salud.consultorio.model.dto.NombreDoctoresDTO;
-import com.salud.consultorio.model.dto.NombrePacientesDTO;
+import com.salud.consultorio.dto.DoctorDTO;
+import com.salud.consultorio.dto.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IDoctorServicio;

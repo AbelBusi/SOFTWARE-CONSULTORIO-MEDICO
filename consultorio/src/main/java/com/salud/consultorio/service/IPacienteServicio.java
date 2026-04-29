@@ -1,6 +1,10 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.model.dto.*;
+import com.salud.consultorio.dto.paciente.LeerPacienteDTO;
+import com.salud.consultorio.dto.NombrePacientesDTO;
+import com.salud.consultorio.dto.paciente.PacienteActualizarDTO;
+import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
+import com.salud.consultorio.dto.paciente.PacienteRespuestaDTO;
 import com.salud.consultorio.model.entity.Paciente;
 
 import java.util.List;

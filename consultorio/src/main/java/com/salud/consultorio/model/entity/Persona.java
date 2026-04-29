@@ -1,5 +1,6 @@
 package com.salud.consultorio.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,13 +46,5 @@ public class Persona {
     @Column(name = "estado", nullable = false)
     private Integer estado;
 
-    @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
-    private Recepcionista recepcionista;
-
-    @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
-    private Paciente paciente;
-
-    @OneToOne(mappedBy = "persona",fetch = FetchType.LAZY)
-    private Doctor doctor;
 
 }

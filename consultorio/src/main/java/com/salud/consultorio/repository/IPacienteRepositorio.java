@@ -1,7 +1,7 @@
 package com.salud.consultorio.repository;
 
-import com.salud.consultorio.model.dto.LeerPacienteDTO;
-import com.salud.consultorio.model.dto.NombrePacientesDTO;
+import com.salud.consultorio.dto.paciente.LeerPacienteDTO;
+import com.salud.consultorio.dto.NombrePacientesDTO;
 import com.salud.consultorio.model.entity.Paciente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -62,5 +62,9 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     """)
     Optional<LeerPacienteDTO> traerPaciente(@Param("id") Integer id);
 
+    @Query("SELECT p FROM Paciente p JOIN FETCH p.persona WHERE p.id= :id")
+    Optional<Paciente> findAlTPacientes(@Param("id") Integer id);
 
+    @Query("SELECT p FROM Paciente p WHERE p.id = :id")
+    Optional<Paciente> findByIdConPersona(@Param("id") Integer id);
 }

@@ -1,6 +1,6 @@
 package com.salud.consultorio.model.mapper;
 
-import com.salud.consultorio.model.dto.EspecialidadDTO;
+import com.salud.consultorio.dto.EspecialidadDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

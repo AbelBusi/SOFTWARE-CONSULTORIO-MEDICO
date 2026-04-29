@@ -1,14 +1,20 @@
-package com.salud.consultorio.model.dto;
+package com.salud.consultorio.dto.paciente;
 
+import com.salud.consultorio.dto.PersonaCrearDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.*;
-import lombok.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class PacienteCrearDTO {
+public class PacienteActualizarDTO {
 
     private Integer id;
 

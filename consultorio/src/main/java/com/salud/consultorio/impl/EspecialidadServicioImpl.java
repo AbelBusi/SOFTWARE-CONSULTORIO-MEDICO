@@ -1,8 +1,8 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.model.dto.NombreEspecialidadesDTO;
+import com.salud.consultorio.dto.NombreEspecialidadesDTO;
 import com.salud.consultorio.model.mapper.IEspecialidadMapper;
-import com.salud.consultorio.model.dto.EspecialidadDTO;
+import com.salud.consultorio.dto.EspecialidadDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.repository.IEspecialidadRepositorio;
 import com.salud.consultorio.service.IEspecialidadServicio;

@@ -1,8 +1,8 @@
 package com.salud.consultorio.service;
 
 
-import com.salud.consultorio.model.dto.EspecialidadDTO;
-import com.salud.consultorio.model.dto.NombreEspecialidadesDTO;
+import com.salud.consultorio.dto.EspecialidadDTO;
+import com.salud.consultorio.dto.NombreEspecialidadesDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 
 import java.util.List;

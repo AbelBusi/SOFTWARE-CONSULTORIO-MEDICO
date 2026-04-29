@@ -1,6 +1,10 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.model.dto.*;
+import com.salud.consultorio.dto.paciente.LeerPacienteDTO;
+import com.salud.consultorio.dto.NombrePacientesDTO;
+import com.salud.consultorio.dto.paciente.PacienteActualizarDTO;
+import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
+import com.salud.consultorio.dto.paciente.PacienteRespuestaDTO;
 import com.salud.consultorio.model.entity.Paciente;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPacienteServicio;
@@ -79,13 +83,6 @@ public class PacienteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<MensajeResponse> actualizarCitaMedica(@PathVariable Integer id, @Valid @RequestBody PacienteActualizarDTO actualizarDTO){
-
-        if (!pacienteServicio.obtenerPorId(id).isPresent()){
-
-            return new ResponseEntity<>(MensajeResponse.builder()
-                    .mensaje("El paciente que desea actualizar no se encuentra en la entidad.")
-                    .object(null).build(), HttpStatus.NOT_FOUND);
-        }
 
         PacienteRespuestaDTO paciente = pacienteServicio.actualizarRespuesta(actualizarDTO,id);
 

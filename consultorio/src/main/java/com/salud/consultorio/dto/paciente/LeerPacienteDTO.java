@@ -1,9 +1,8 @@
-package com.salud.consultorio.model.dto;
+package com.salud.consultorio.dto.paciente;
 
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @NoArgsConstructor
 @Getter

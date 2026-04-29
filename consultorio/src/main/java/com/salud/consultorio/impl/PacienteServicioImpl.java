@@ -1,6 +1,10 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.model.dto.*;
+import com.salud.consultorio.dto.paciente.LeerPacienteDTO;
+import com.salud.consultorio.dto.NombrePacientesDTO;
+import com.salud.consultorio.dto.paciente.PacienteActualizarDTO;
+import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
+import com.salud.consultorio.dto.paciente.PacienteRespuestaDTO;
 import com.salud.consultorio.model.entity.Paciente;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.mapper.IPacienteMapper;
@@ -20,10 +24,8 @@ import java.util.Optional;
 public class PacienteServicioImpl implements IPacienteServicio {
 
     private final IPacienteRepositorio pacienteRepositorio;
-    private final PersonaServicioImpl personaServicio;
     private final IPacienteMapper pacienteMapper;
     private final IPersonaMapper personaMapper;
-    private final ReferenciaServicio referenciaServicio;
 
     @Transactional(readOnly = true)
     @Override
@@ -33,19 +35,22 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     @Override
     public Optional<Paciente> obtenerPorId(Integer integer) {
-        return pacienteRepositorio.findById(integer);
+        return pacienteRepositorio.findAlTPacientes(integer);
     }
 
     @Transactional
     @Override
-    public Paciente crear(PacienteCrearDTO pacienteCrearDTO) {
+    public Paciente crear(PacienteCrearDTO dto) {
 
-        Persona persona = personaMapper.personaDtoToPersona(pacienteCrearDTO.getPersona());
-
-        Paciente paciente =pacienteMapper.pacienteDtoToPaciente(pacienteCrearDTO);
-
+        // 1. Crear y guardar persona
+        Persona persona = personaMapper.personaDtoToPersona(dto.getPersona());
+        /*persona = personaServicio.crear(persona);
+*/
+        // 2. Crear paciente y asignar persona
+        Paciente paciente = pacienteMapper.pacienteDtoToPaciente(dto);
         paciente.setPersona(persona);
-        persona.setPaciente(paciente);
+
+        // 3. Guardar paciente
         return pacienteRepositorio.save(paciente);
     }
 
@@ -68,17 +73,19 @@ public class PacienteServicioImpl implements IPacienteServicio {
     @Override
     public PacienteRespuestaDTO actualizarRespuesta(PacienteActualizarDTO actualizarDTO, Integer id) {
 
-        Paciente pacienteExiste = obtenerPorId(id).orElseThrow(()-> new EntityNotFoundException("El paciente no existe"));
-
+        Paciente pacienteExiste = pacienteRepositorio.findByIdConPersona(id).orElseThrow();
         pacienteMapper.pacienteToPacienteDto(actualizarDTO,pacienteExiste);
 
         Persona personaExiste=pacienteExiste.getPersona();
 
         personaMapper.personaToPersonaDto(actualizarDTO.getPersona(),personaExiste);
 
-        pacienteRepositorio.save(pacienteExiste);
+        PacienteRespuestaDTO respuestaDTO= PacienteRespuestaDTO.builder()
+                .id(pacienteExiste.getId()).entidadAseguradora(pacienteExiste.getEntidadAseguradora())
+                .codigoAseguradora(pacienteExiste.getCodigoAseguradora())
+                .estado(personaExiste.getEstado()).persona(actualizarDTO.getPersona()).build();
 
-        return pacienteMapper.pacienteToPacienteRespuesta(pacienteExiste);
+        return respuestaDTO;
 
     }
 
@@ -95,7 +102,6 @@ public class PacienteServicioImpl implements IPacienteServicio {
     @Transactional(readOnly = true)
     @Override
     public LeerPacienteDTO traerPaciente(Integer id) {
-        Paciente paciente = referenciaServicio.getRef(Paciente.class,id);
         return pacienteRepositorio.traerPaciente(id).orElseThrow(()-> new EntityNotFoundException("No existe el paciente"));
     }
 

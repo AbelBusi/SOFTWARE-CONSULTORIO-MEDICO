@@ -1,7 +1,7 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.model.dto.NombreRecepcionistaDTO;
-import com.salud.consultorio.model.dto.RecepcionistaDTO;
+import com.salud.consultorio.dto.NombreRecepcionistaDTO;
+import com.salud.consultorio.dto.RecepcionistaDTO;
 import com.salud.consultorio.model.entity.Recepcionista;
 
 import java.util.List;

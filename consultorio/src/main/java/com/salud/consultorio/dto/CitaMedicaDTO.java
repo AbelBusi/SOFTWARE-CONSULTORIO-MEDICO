@@ -1,5 +1,6 @@
-package com.salud.consultorio.model.dto;
+package com.salud.consultorio.dto;
 
+import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -14,7 +15,9 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ActualizarCitaMedicaDTO {
+public class CitaMedicaDTO {
+
+    private Integer id;
 
     @Valid
     @NotNull(message = "El recepcionista es obligatorio")
@@ -22,7 +25,7 @@ public class ActualizarCitaMedicaDTO {
 
     @Valid
     @NotNull(message = "El paciente es obligatorio")
-    private PacienteRefCitaMedicaDTO paciente;
+    private PacienteCrearDTO paciente;
 
     @Valid
     @NotNull(message = "El doctor es obligatorio")
