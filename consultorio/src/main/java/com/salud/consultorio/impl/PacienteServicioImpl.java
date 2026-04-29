@@ -11,8 +11,10 @@ import com.salud.consultorio.model.mapper.IPacienteMapper;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.repository.IPacienteRepositorio;
 import com.salud.consultorio.service.IPacienteServicio;
+import com.salud.consultorio.service.IPersonaServicio;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,68 +26,54 @@ import java.util.Optional;
 public class PacienteServicioImpl implements IPacienteServicio {
 
     private final IPacienteRepositorio pacienteRepositorio;
+    private final IPersonaServicio personaServicio;
     private final IPacienteMapper pacienteMapper;
     private final IPersonaMapper personaMapper;
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<Paciente> listarTodos() {
-        return pacienteRepositorio.findAll();
-    }
 
     @Override
     public Optional<Paciente> obtenerPorId(Integer integer) {
         return pacienteRepositorio.findAlTPacientes(integer);
     }
 
-    @Transactional
     @Override
-    public Paciente crear(PacienteCrearDTO dto) {
-
-        // 1. Crear y guardar persona
-        Persona persona = personaMapper.personaDtoToPersona(dto.getPersona());
-        /*persona = personaServicio.crear(persona);
-*/
-        // 2. Crear paciente y asignar persona
-        Paciente paciente = pacienteMapper.pacienteDtoToPaciente(dto);
-        paciente.setPersona(persona);
-
-        // 3. Guardar paciente
-        return pacienteRepositorio.save(paciente);
+    public Boolean existePaciente(Integer id) {
+        return pacienteRepositorio.existsById(id);
     }
 
     @Transactional
     @Override
-    public Paciente actualizar(PacienteCrearDTO pacienteCrearDTO, Integer id) {
+    public PacienteRespuestaDTO crear(PacienteCrearDTO dto) {
 
-        Paciente pacienteExiste = obtenerPorId(id).orElseThrow(()-> new EntityNotFoundException("El paciente no existe"));
+        if (personaServicio.existePersonaDni(dto.getPersona().getDni())){
+            throw new DataIntegrityViolationException("No se puede agregar pacientes con dni duplicado.");
+        }
 
-        //pacienteMapper.pacienteToPacienteDto(pacienteCrearDTO,pacienteExiste);
+        Paciente paciente = pacienteMapper.pacienteDtoToPaciente(dto);
 
-        Persona personaExiste=pacienteExiste.getPersona();
+        Persona persona = personaMapper.personaDtoToPersona(dto.getPersona());
 
-        personaMapper.personaToPersonaDto(pacienteCrearDTO.getPersona(),personaExiste);
+        paciente.setPersona(persona);
 
-        return pacienteRepositorio.save(pacienteExiste);
+        pacienteRepositorio.save(paciente);
+
+        return pacienteMapper.toDto(paciente);
     }
 
     @Transactional
     @Override
     public PacienteRespuestaDTO actualizarRespuesta(PacienteActualizarDTO actualizarDTO, Integer id) {
 
-        Paciente pacienteExiste = pacienteRepositorio.findByIdConPersona(id).orElseThrow();
-        pacienteMapper.pacienteToPacienteDto(actualizarDTO,pacienteExiste);
+        Paciente pacienteExiste = pacienteRepositorio.findByIdConPersona(id).orElseThrow(
+                () -> new EntityNotFoundException("No existe el paciente en la entidad"));
 
-        Persona personaExiste=pacienteExiste.getPersona();
+        if (pacienteExiste.getPersona()==null){
+            throw new IllegalArgumentException("Paciente sin persona asociada");
+        }
+        pacienteMapper.updateFromDto(actualizarDTO, pacienteExiste);
 
-        personaMapper.personaToPersonaDto(actualizarDTO.getPersona(),personaExiste);
+        personaMapper.updateFromDto(actualizarDTO.getPersona(),pacienteExiste.getPersona());
 
-        PacienteRespuestaDTO respuestaDTO= PacienteRespuestaDTO.builder()
-                .id(pacienteExiste.getId()).entidadAseguradora(pacienteExiste.getEntidadAseguradora())
-                .codigoAseguradora(pacienteExiste.getCodigoAseguradora())
-                .estado(personaExiste.getEstado()).persona(actualizarDTO.getPersona()).build();
-
-        return respuestaDTO;
+        return pacienteMapper.toDto(pacienteExiste);
 
     }
 
@@ -101,8 +89,8 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     @Transactional(readOnly = true)
     @Override
-    public LeerPacienteDTO traerPaciente(Integer id) {
-        return pacienteRepositorio.traerPaciente(id).orElseThrow(()-> new EntityNotFoundException("No existe el paciente"));
+    public LeerPacienteDTO traerPacientePorId(Integer id) {
+        return pacienteRepositorio.traerPacientePorId(id).orElseThrow(()-> new EntityNotFoundException("No existe el paciente"));
     }
 
     @Transactional(readOnly = true)

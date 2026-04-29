@@ -1,6 +1,5 @@
 package com.salud.consultorio.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 

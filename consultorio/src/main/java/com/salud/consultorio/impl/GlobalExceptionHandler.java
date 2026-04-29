@@ -1,5 +1,6 @@
 package com.salud.consultorio.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,5 +30,24 @@ public class GlobalExceptionHandler {
 
         return errorMap;
     }
+/*
+    @ExceptionHandler(EntityNotFoundException.class)
+    public Map<String,String> entityNotFoundException(EntityNotFoundException e){
+
+        Map<String,String> errorMap= new HashMap<>();
+
+        e.getBindingResult().getAllErrors().forEach( error ->{
+
+                    String fieldName = ((FieldError) error).getField();
+
+                    String message = error.getDefaultMessage();
+
+                    errorMap.put(fieldName,message);
+
+                }
+        );
+
+        return errorMap;
+    }*/
 
 }

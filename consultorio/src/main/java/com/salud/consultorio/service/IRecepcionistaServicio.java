@@ -5,9 +5,20 @@ import com.salud.consultorio.dto.RecepcionistaDTO;
 import com.salud.consultorio.model.entity.Recepcionista;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface IRecepcionistaServicio extends IBasicoServicio<Recepcionista, RecepcionistaDTO, Integer>{
+public interface IRecepcionistaServicio{
 
     List<NombreRecepcionistaDTO> listaNombres();
+
+    List<Recepcionista> listarTodos();
+
+    Optional<Recepcionista> obtenerPorId(Integer id);
+
+    Recepcionista crear(RecepcionistaDTO dto);
+
+    Recepcionista actualizar(RecepcionistaDTO dto, Integer id);
+
+    void eliminarPorId(Integer id);
 
 }

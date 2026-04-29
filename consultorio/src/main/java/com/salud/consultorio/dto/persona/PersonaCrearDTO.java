@@ -1,4 +1,4 @@
-package com.salud.consultorio.dto;
+package com.salud.consultorio.dto.persona;
 
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -10,8 +10,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class PersonaCrearDTO {
-
-    private Integer id;
 
     @NotBlank(message = "El DNI es obligatorio")
     @Size(min = 8, max = 8, message = "El DNI debe tener 8 dígitos")

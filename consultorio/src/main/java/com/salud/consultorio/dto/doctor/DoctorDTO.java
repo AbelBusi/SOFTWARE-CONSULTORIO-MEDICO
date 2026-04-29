@@ -1,5 +1,7 @@
-package com.salud.consultorio.dto;
+package com.salud.consultorio.dto.doctor;
 
+import com.salud.consultorio.dto.EspecialidadRefDoctorDTO;
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -1,6 +1,6 @@
 package com.salud.consultorio.dto.paciente;
 
-import com.salud.consultorio.dto.PersonaCrearDTO;
+import com.salud.consultorio.dto.persona.PersonaRespuestaDTO;
 import lombok.*;
 
 @AllArgsConstructor
@@ -18,6 +18,6 @@ public class PacienteRespuestaDTO {
 
     private Integer estado;
 
-    private PersonaCrearDTO persona;
+    private PersonaRespuestaDTO persona;
 
 }

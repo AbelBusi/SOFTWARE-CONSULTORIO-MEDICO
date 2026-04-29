@@ -1,6 +1,6 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.dto.PersonaCrearDTO;
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.repository.IPersonaRepositorio;
@@ -47,6 +47,11 @@ public class PersonaServicioImpl implements IPersonaServicio {
     @Override
     public void eliminarPorId(Integer integer) {
 
+    }
+
+    @Override
+    public boolean existePersonaDni(String dni) {
+        return personaRepositorio.existsByDni(dni);
     }
 
 }

@@ -26,11 +26,11 @@ public class PacienteController {
     @PostMapping
     public ResponseEntity<MensajeResponse> crearPaciente(@Valid @RequestBody PacienteCrearDTO pacienteCrearDTO){
 
-        Paciente paciente = pacienteServicio.crear(pacienteCrearDTO);
+        PacienteRespuestaDTO paciente = pacienteServicio.crear(pacienteCrearDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Paciente agregado con exito")
-                .object(pacienteCrearDTO).build(), HttpStatus.CREATED);
+                .object(paciente).build(), HttpStatus.CREATED);
 
     }
 
@@ -53,7 +53,7 @@ public class PacienteController {
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerPacientePorID(@PathVariable Integer id){
 
-        LeerPacienteDTO dto = pacienteServicio.traerPaciente(id);
+        LeerPacienteDTO dto = pacienteServicio.traerPacientePorId(id);
         if (dto==null){
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("El paciente no existe")

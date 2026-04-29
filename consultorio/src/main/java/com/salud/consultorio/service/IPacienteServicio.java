@@ -8,16 +8,25 @@ import com.salud.consultorio.dto.paciente.PacienteRespuestaDTO;
 import com.salud.consultorio.model.entity.Paciente;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface IPacienteServicio extends IBasicoServicio<Paciente, PacienteCrearDTO,Integer>{
+public interface IPacienteServicio{
 
 
     List<NombrePacientesDTO> listarPacientesDtoList();
 
-    LeerPacienteDTO traerPaciente(Integer id);
+    LeerPacienteDTO traerPacientePorId(Integer id);
 
     List<LeerPacienteDTO> listarPacientes();
 
     PacienteRespuestaDTO actualizarRespuesta(PacienteActualizarDTO actualizarDTO, Integer id);
+
+    Optional<Paciente> obtenerPorId(Integer id);
+
+    Boolean existePaciente(Integer id);
+
+    PacienteRespuestaDTO crear(PacienteCrearDTO dto);
+
+    void eliminarPorId(Integer id);
 
 }

@@ -22,7 +22,7 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     List<NombrePacientesDTO> listarPacientesResumen();
 
     @Query("""
-    SELECT new com.salud.consultorio.model.dto.LeerPacienteDTO(
+    SELECT new com.salud.consultorio.dto.paciente.LeerPacienteDTO(
         p.id,
         pe.dni,
         pe.nombre,
@@ -42,7 +42,7 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     List<LeerPacienteDTO> leerPacientes();
 
     @Query("""
-    SELECT new com.salud.consultorio.model.dto.LeerPacienteDTO(
+    SELECT new com.salud.consultorio.dto.paciente.LeerPacienteDTO(
         p.id,
         pe.dni,
         pe.nombre,
@@ -60,7 +60,7 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     JOIN p.persona pe
     WHERE p.id = :id
     """)
-    Optional<LeerPacienteDTO> traerPaciente(@Param("id") Integer id);
+    Optional<LeerPacienteDTO> traerPacientePorId(@Param("id") Integer id);
 
     @Query("SELECT p FROM Paciente p JOIN FETCH p.persona WHERE p.id= :id")
     Optional<Paciente> findAlTPacientes(@Param("id") Integer id);

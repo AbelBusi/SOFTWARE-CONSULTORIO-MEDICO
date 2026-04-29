@@ -1,6 +1,7 @@
 package com.salud.consultorio.model.mapper;
 
-import com.salud.consultorio.dto.PersonaCrearDTO;
+import com.salud.consultorio.dto.persona.PersonaActualizarDTO;
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import com.salud.consultorio.model.entity.Persona;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,6 +15,8 @@ public interface IPersonaMapper {
     Persona personaDtoToPersona (PersonaCrearDTO personaCrearDTO);
 
     @Mapping(target = "id", ignore = true)
-    void personaToPersonaDto(PersonaCrearDTO personaCrearDTO, @MappingTarget Persona persona);
+    void updateFromDto(PersonaActualizarDTO personaActualizarDTO, @MappingTarget Persona persona);
+
+    PersonaActualizarDTO toDto(Persona persona);
 
 }

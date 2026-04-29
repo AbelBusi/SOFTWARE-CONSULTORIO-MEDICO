@@ -1,7 +1,7 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.dto.DoctorDTO;
-import com.salud.consultorio.dto.NombreDoctoresDTO;
+import com.salud.consultorio.dto.doctor.DoctorDTO;
+import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.model.entity.Persona;

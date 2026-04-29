@@ -1,5 +1,6 @@
 package com.salud.consultorio.dto;
 
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

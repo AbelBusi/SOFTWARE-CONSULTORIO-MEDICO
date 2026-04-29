@@ -1,6 +1,7 @@
 package com.salud.consultorio.servicios;
 
 import com.salud.consultorio.dto.*;
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import com.salud.consultorio.impl.CitaMedicaServicioImpl;
 import com.salud.consultorio.impl.ReferenciaServicio;
 import com.salud.consultorio.dto.paciente.PacienteCrearDTO;

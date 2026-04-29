@@ -1,6 +1,8 @@
 package com.salud.consultorio.dto.paciente;
 
-import com.salud.consultorio.dto.PersonaCrearDTO;
+import com.salud.consultorio.dto.persona.PersonaActualizarDTO;
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
+import com.salud.consultorio.dto.persona.PersonaRespuestaDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -30,6 +32,6 @@ public class PacienteActualizarDTO {
 
     @Valid
     @NotNull(message = "La persona es obligatoria")
-    private PersonaCrearDTO persona;
+    private PersonaActualizarDTO persona;
 
 }

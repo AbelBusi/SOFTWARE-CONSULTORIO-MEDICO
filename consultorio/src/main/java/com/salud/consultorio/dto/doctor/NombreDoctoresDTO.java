@@ -1,4 +1,4 @@
-package com.salud.consultorio.dto;
+package com.salud.consultorio.dto.doctor;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

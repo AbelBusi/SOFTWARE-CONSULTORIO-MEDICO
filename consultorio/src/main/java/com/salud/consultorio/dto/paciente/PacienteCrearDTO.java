@@ -1,6 +1,6 @@
 package com.salud.consultorio.dto.paciente;
 
-import com.salud.consultorio.dto.PersonaCrearDTO;
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
@@ -10,8 +10,6 @@ import lombok.*;
 @Getter
 @Setter
 public class PacienteCrearDTO {
-
-    private Integer id;
 
     @NotBlank(message = "La entidad aseguradora es obligatoria")
     @Size(max = 8, message = "La entidad aseguradora no debe exceder 8 caracteres")
