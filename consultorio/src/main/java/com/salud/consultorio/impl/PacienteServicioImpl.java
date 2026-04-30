@@ -1,10 +1,7 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.dto.paciente.LeerPacienteDTO;
+import com.salud.consultorio.dto.paciente.*;
 import com.salud.consultorio.dto.NombrePacientesDTO;
-import com.salud.consultorio.dto.paciente.PacienteActualizarDTO;
-import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
-import com.salud.consultorio.dto.paciente.PacienteRespuestaDTO;
 import com.salud.consultorio.model.entity.Paciente;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.mapper.IPacienteMapper;
@@ -30,11 +27,13 @@ public class PacienteServicioImpl implements IPacienteServicio {
     private final IPacienteMapper pacienteMapper;
     private final IPersonaMapper personaMapper;
 
+    @Transactional
     @Override
     public Optional<Paciente> obtenerPorId(Integer integer) {
         return pacienteRepositorio.findAlTPacientes(integer);
     }
 
+    @Transactional
     @Override
     public Boolean existePaciente(Integer id) {
         return pacienteRepositorio.existsById(id);
@@ -77,11 +76,30 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     }
 
+    @Transactional
     @Override
     public void eliminarPorId(Integer integer) {
 
+        if (!existePaciente(integer)){
+            throw new EntityNotFoundException("El paciente que desea eliminar no existe.");
+        }
+
+        pacienteRepositorio.PacienteCambiarEstado(0,integer);
+
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<PacienteActivoLeerDTO> listarPacientesActivos() {
+        return pacienteRepositorio.leerPacientesActivos();
+    }
+
+    @Override
+    public List<PacienteActivoLeerDTO> listarPacientesInativos() {
+        return pacienteRepositorio.leerPacientesInactivos();
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public List<NombrePacientesDTO> listarPacientesDtoList() {
         return pacienteRepositorio.listarPacientesResumen();
@@ -89,13 +107,13 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     @Transactional(readOnly = true)
     @Override
-    public LeerPacienteDTO traerPacientePorId(Integer id) {
+    public PacienteLeerDTO traerPacientePorId(Integer id) {
         return pacienteRepositorio.traerPacientePorId(id).orElseThrow(()-> new EntityNotFoundException("No existe el paciente"));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<LeerPacienteDTO> listarPacientes() {
+    public List<PacienteLeerDTO> listarPacientes() {
         return pacienteRepositorio.leerPacientes();
     }
 }

@@ -1,11 +1,8 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.dto.paciente.LeerPacienteDTO;
+import com.salud.consultorio.dto.paciente.*;
 import com.salud.consultorio.dto.NombrePacientesDTO;
-import com.salud.consultorio.dto.paciente.PacienteActualizarDTO;
-import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
-import com.salud.consultorio.dto.paciente.PacienteRespuestaDTO;
-import com.salud.consultorio.model.entity.Paciente;
+import com.salud.consultorio.model.enums.PacienteEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPacienteServicio;
 import jakarta.validation.Valid;
@@ -14,7 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/pacientes")
@@ -35,16 +34,39 @@ public class PacienteController {
     }
 
     @GetMapping
-    public ResponseEntity<MensajeResponse> listarPacientes() {
-        List<LeerPacienteDTO> leerPacientes = pacienteServicio.listarPacientes();
+    public ResponseEntity<MensajeResponse> listarPacientes(
+            @RequestParam(name = "estado",required = false) PacienteEstado pacienteEstado) {
+
+        if (pacienteEstado!=null) {
+
+            if (pacienteEstado.equals(pacienteEstado.ACTIVO)) {
+
+                List<PacienteActivoLeerDTO> pacientes = pacienteServicio.listarPacientesActivos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE PACIENTES ACTIVOS")
+                        .object(pacientes).build(), HttpStatus.OK);
+            }
+
+            if (pacienteEstado.equals(pacienteEstado.INACTIVO)) {
+
+                List<PacienteActivoLeerDTO> pacientes = pacienteServicio.listarPacientesInativos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE PACIENTES INACTIVOS")
+                        .object(pacientes).build(), HttpStatus.OK);
+            }
+
+        }
+
+        List<PacienteLeerDTO> leerPacientes = pacienteServicio.listarPacientes();
 
         if (leerPacientes == null) {
 
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("No existen pacientes todavia")
-                    .object(null).build(), HttpStatus.NOT_FOUND);
+                    .object(null).build(), HttpStatus.NO_CONTENT);
 
         }
+
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE PACIENTES")
                 .object(leerPacientes).build(), HttpStatus.OK);
@@ -53,7 +75,7 @@ public class PacienteController {
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerPacientePorID(@PathVariable Integer id){
 
-        LeerPacienteDTO dto = pacienteServicio.traerPacientePorId(id);
+        PacienteLeerDTO dto = pacienteServicio.traerPacientePorId(id);
         if (dto==null){
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("El paciente no existe")
@@ -91,5 +113,17 @@ public class PacienteController {
                 .object(paciente).build(), HttpStatus.CREATED);
 
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensajeResponse> eliminarPaciente(@PathVariable Integer id){
+
+        pacienteServicio.eliminarPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Paciente eliminado con exito")
+                .object(null).build(),HttpStatus.NO_CONTENT);
+
+    }
+
 
 }

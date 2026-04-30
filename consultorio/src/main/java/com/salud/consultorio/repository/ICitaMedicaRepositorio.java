@@ -3,7 +3,9 @@ package com.salud.consultorio.repository;
 import com.salud.consultorio.dto.LeerCitaMedicaDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -30,12 +32,5 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
                 INNER JOIN doctor d ON c.id_doctor = d.id
                 INNER JOIN persona pd ON d.id_persona=pd.id; """,nativeQuery = true)
     List<LeerCitaMedicaDTO> leerCitasMedicas();
-
-    boolean existsByDoctor_IdAndFechaAndHoraInicioLessThanAndHoraSalidaGreaterThan(
-            Integer doctorId,
-            LocalDate fecha,
-            LocalTime horaSalida,
-            LocalTime horaInicio
-    );
 
 }

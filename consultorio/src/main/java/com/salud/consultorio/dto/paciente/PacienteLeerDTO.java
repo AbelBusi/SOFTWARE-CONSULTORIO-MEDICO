@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class LeerPacienteDTO {
+public class PacienteLeerDTO {
 
     private Integer id;
     private String dni;
@@ -22,7 +22,7 @@ public class LeerPacienteDTO {
     private String codigoAseguradora;
     private Integer estado;
 
-    public LeerPacienteDTO(Integer id, String dni, String nombre, String apellidos, LocalDate fechaNacimiento, String genero, String telefono, String nacionalidad, String correo, String entidadAseguradora, String codigoAseguradora, Integer estado) {
+    public PacienteLeerDTO(Integer id, String dni, String nombre, String apellidos, LocalDate fechaNacimiento, String genero, String telefono, String nacionalidad, String correo, String entidadAseguradora, String codigoAseguradora, Integer estado) {
         this.id = id;
         this.dni = dni;
         this.nombre = nombre;
