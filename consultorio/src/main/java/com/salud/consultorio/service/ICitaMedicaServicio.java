@@ -1,8 +1,8 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.dto.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.dto.CitaMedicaDTO;
-import com.salud.consultorio.dto.LeerCitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.ActualizarCitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.CitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.LeerCitaMedicaDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
 
 import java.util.List;

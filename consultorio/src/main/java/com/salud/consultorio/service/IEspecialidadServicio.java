@@ -1,8 +1,8 @@
 package com.salud.consultorio.service;
 
 
-import com.salud.consultorio.dto.EspecialidadDTO;
-import com.salud.consultorio.dto.NombreEspecialidadesDTO;
+import com.salud.consultorio.dto.especialidad.EspecialidadDTO;
+import com.salud.consultorio.dto.especialidad.NombreEspecialidadesDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 
 import java.util.List;
@@ -21,5 +21,7 @@ public interface IEspecialidadServicio{
     Especialidad actualizar(EspecialidadDTO dto, Integer id);
 
     void eliminarPorId(Integer id);
+
+    boolean existeEspecialidad(Integer id);
 
 }

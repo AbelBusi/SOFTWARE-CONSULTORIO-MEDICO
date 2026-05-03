@@ -1,6 +1,6 @@
 package com.salud.consultorio.repository;
 
-import com.salud.consultorio.dto.NombreEspecialidadesDTO;
+import com.salud.consultorio.dto.especialidad.NombreEspecialidadesDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

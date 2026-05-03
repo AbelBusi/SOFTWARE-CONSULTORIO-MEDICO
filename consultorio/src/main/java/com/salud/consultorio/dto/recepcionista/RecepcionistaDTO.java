@@ -1,4 +1,4 @@
-package com.salud.consultorio.dto;
+package com.salud.consultorio.dto.recepcionista;
 
 import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import jakarta.validation.Valid;

@@ -1,6 +1,5 @@
 package com.salud.consultorio.dto.doctor;
 
-import com.salud.consultorio.dto.EspecialidadRefDoctorDTO;
 import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -13,9 +12,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class DoctorDTO {
+public class DoctorCrearDTO {
 
-    private Integer id;
 
     @NotBlank(message = "El CPM es obligatorio")
     @Size(max = 20, message = "El CPM no debe exceder 20 caracteres")

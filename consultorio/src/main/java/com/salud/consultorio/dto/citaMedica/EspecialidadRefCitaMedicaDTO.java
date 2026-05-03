@@ -1,4 +1,4 @@
-package com.salud.consultorio.dto;
+package com.salud.consultorio.dto.citaMedica;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

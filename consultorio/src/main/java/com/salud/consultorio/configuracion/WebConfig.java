@@ -30,8 +30,4 @@ public class WebConfig {
     }
 
 
-    /*public void addFormatters(FormatterRegistry registry){
-        registry.addConverter(new StringToEnumConverter());
-    }*/
-
 }

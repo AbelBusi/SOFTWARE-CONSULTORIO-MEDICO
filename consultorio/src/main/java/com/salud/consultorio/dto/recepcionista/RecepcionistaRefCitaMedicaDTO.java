@@ -1,4 +1,4 @@
-package com.salud.consultorio.dto;
+package com.salud.consultorio.dto.recepcionista;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -10,9 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class DoctorRefCitaMedicaDTO {
+public class RecepcionistaRefCitaMedicaDTO {
 
-    @NotNull(message = "El id del doctor es obligatorio")
+    @NotNull(message = "El id de la recepcionista es obligatorio")
     private Integer id;
 
 }

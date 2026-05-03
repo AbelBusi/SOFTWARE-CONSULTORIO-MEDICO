@@ -6,7 +6,8 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StringToEnumConverter implements Converter<String, PacienteEstado> {
+public class PacienteStringToEnumConverter implements Converter<String,PacienteEstado> {
+
 
     @Nullable
     @Override

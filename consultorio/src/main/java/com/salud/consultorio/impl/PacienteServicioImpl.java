@@ -1,7 +1,7 @@
 package com.salud.consultorio.impl;
 
 import com.salud.consultorio.dto.paciente.*;
-import com.salud.consultorio.dto.NombrePacientesDTO;
+import com.salud.consultorio.dto.paciente.NombrePacientesDTO;
 import com.salud.consultorio.model.entity.Paciente;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.mapper.IPacienteMapper;
@@ -53,9 +53,9 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
         paciente.setPersona(persona);
 
-        pacienteRepositorio.save(paciente);
+        Paciente guardado= pacienteRepositorio.save(paciente);
 
-        return pacienteMapper.toDto(paciente);
+        return pacienteMapper.toDto(guardado);
     }
 
     @Transactional

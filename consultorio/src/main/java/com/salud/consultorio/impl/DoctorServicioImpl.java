@@ -1,6 +1,8 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.dto.doctor.DoctorDTO;
+import com.salud.consultorio.dto.doctor.DoctorCrearDTO;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
+import com.salud.consultorio.dto.doctor.DoctorRespuestaDTO;
 import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.entity.Especialidad;
@@ -10,7 +12,9 @@ import com.salud.consultorio.model.mapper.IEspecialidadMapper;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.repository.IDoctorRepositorio;
 import com.salud.consultorio.service.IDoctorServicio;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +27,7 @@ public class DoctorServicioImpl implements IDoctorServicio {
 
     private final IDoctorRepositorio doctorRepositorio;
     private final EspecialidadServicioImpl especialidadServicio;
+    private final PersonaServicioImpl personaServicio;
     private final IDoctorMapper doctorMapper;
     private final IPersonaMapper personaMapper;
     private final IEspecialidadMapper especialidadMapper;
@@ -41,28 +46,33 @@ public class DoctorServicioImpl implements IDoctorServicio {
 
     @Transactional
     @Override
-    public Doctor crear(DoctorDTO doctorDTO) {
+    public DoctorRespuestaDTO crear(DoctorCrearDTO dto) {
 
-        Especialidad especialidad = especialidadServicio.obtenerPorId(
-                doctorDTO.getEspecialidad().getId())
-                .orElseThrow(() -> new RuntimeException("No existe la especialidad"));
+        if (!especialidadServicio.existeEspecialidad(dto.getEspecialidad().getId())){
+            throw new EntityNotFoundException("No existe la especialidad en la entidad");
+        }
 
-        Persona persona = personaMapper.personaDtoToPersona(doctorDTO.getPersona());
+        if (personaServicio.existePersonaDni(dto.getPersona().getDni())){
+            throw new DataIntegrityViolationException("El dni ya existe en la entidad");
+        }
 
+        Doctor doctor = doctorMapper.doctordDtoToDoctor(dto);
 
-        Doctor doctor = doctorMapper.doctordDtoToDoctor(doctorDTO);
+        Especialidad especialidad = especialidadMapper.especialidadRefDtoToEspecialidad(dto.getEspecialidad());
 
-        doctor.setPersona(persona);
+        Persona persona = personaMapper.personaDtoToPersona(dto.getPersona());
 
         doctor.setEspecialidad(especialidad);
 
-       /* persona.setDoctor(doctor);
-*/
-        return doctorRepositorio.save(doctor);
+        doctor.setPersona(persona);
+
+        Doctor guardado = doctorRepositorio.save(doctor);
+
+        return doctorMapper.toDto(guardado);
     }
 
     @Override
-    public Doctor actualizar(DoctorDTO doctorDTO, Integer id) {
+    public Doctor actualizar(DoctorCrearDTO doctorCrearDTO, Integer id) {
         return null;
     }
 
@@ -71,6 +81,25 @@ public class DoctorServicioImpl implements IDoctorServicio {
 
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidad() {
+        return doctorRepositorio.todosDoctoresEspecialidades();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidadActivos() {
+        return doctorRepositorio.todosDoctoresEspecialidadesActivos();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidadInactivos() {
+        return doctorRepositorio.todosDoctoresEspecialidadesInactivos();
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public List<NombreDoctoresDTO> listaNombreDoctoresDtos() {
         return doctorRepositorio.listarDoctoresResumen();

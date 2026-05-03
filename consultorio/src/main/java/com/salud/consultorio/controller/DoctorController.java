@@ -1,8 +1,11 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.dto.doctor.DoctorDTO;
+import com.salud.consultorio.dto.doctor.DoctorCrearDTO;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
+import com.salud.consultorio.dto.doctor.DoctorRespuestaDTO;
 import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
+import com.salud.consultorio.model.enums.DoctorEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IDoctorServicio;
 import jakarta.validation.Valid;
@@ -21,13 +24,13 @@ public class DoctorController {
     private final IDoctorServicio doctorServicio;
 
     @PostMapping
-    public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorDTO doctorDTO){
+    public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorCrearDTO doctorCrearDTO){
 
-        Doctor doctor =doctorServicio.crear(doctorDTO);
+        DoctorRespuestaDTO doctor =doctorServicio.crearDoctor(doctorCrearDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Doctor agregado con exito")
-                .object(doctorDTO).build(), HttpStatus.CREATED);
+                .object(doctorCrearDTO).build(), HttpStatus.CREATED);
 
     }
 
@@ -46,5 +49,36 @@ public class DoctorController {
                 .mensaje("LISTA DE DOCTORES")
                 .object(leerNombreDoctoresDTOS).build(), HttpStatus.OK);
     }
+
+    @GetMapping
+    public ResponseEntity<MensajeResponse> leerDoctores(
+            @RequestParam(required = false,name = "estado")DoctorEstado estado){
+
+        if (estado!=null){
+
+            if (estado.equals(estado.ACTIVO)){
+                List<DoctorEspecialidadLeerDTO> doctores =doctorServicio.todosDoctoresEspecialidadActivos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE DOCTORES POR ESTADO ACTIVO")
+                        .object(doctores).build(),HttpStatus.OK);
+            }
+
+            if (estado.equals(estado.INACTIVO)){
+                List<DoctorEspecialidadLeerDTO> doctores =doctorServicio.todosDoctoresEspecialidadInactivos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE DOCTORES POR ESTADO INACTIVO")
+                        .object(doctores).build(),HttpStatus.OK);
+            }
+
+        }
+        List<DoctorEspecialidadLeerDTO> doctores =doctorServicio.todosDoctoresEspecialidad();
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("LISTA DE DOCTORES")
+                .object(doctores).build(),HttpStatus.OK);
+
+    }
+
+
 
 }

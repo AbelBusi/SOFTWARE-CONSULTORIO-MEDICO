@@ -17,7 +17,6 @@ public interface IPacienteMapper {
     Paciente pacienteDtoToPaciente (PacienteCrearDTO pacienteCrearDTO);
 
 
-    @Mapping(target = "persona", source = "persona")
     PacienteRespuestaDTO toDto(Paciente paciente);
 
     @Mapping(target = "id",ignore = true)

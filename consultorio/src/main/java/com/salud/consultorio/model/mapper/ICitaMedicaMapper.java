@@ -1,7 +1,7 @@
 package com.salud.consultorio.model.mapper;
 
-import com.salud.consultorio.dto.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.dto.CitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.ActualizarCitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.CitaMedicaDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

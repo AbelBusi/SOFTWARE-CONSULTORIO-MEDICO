@@ -1,5 +1,6 @@
-package com.salud.consultorio.dto;
+package com.salud.consultorio.dto.citaMedica;
 
+import com.salud.consultorio.dto.recepcionista.RecepcionistaRefCitaMedicaDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
