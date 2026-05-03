@@ -1,9 +1,6 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.dto.doctor.DoctorCrearDTO;
-import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
-import com.salud.consultorio.dto.doctor.DoctorRespuestaDTO;
-import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
+import com.salud.consultorio.dto.doctor.*;
 import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.model.entity.Persona;
@@ -32,6 +29,7 @@ public class DoctorServicioImpl implements IDoctorServicio {
     private final IPersonaMapper personaMapper;
     private final IEspecialidadMapper especialidadMapper;
 
+    @Transactional(readOnly = true)
     @Override
     public List<Doctor> listarTodos() {
         return doctorRepositorio.findAll();
@@ -42,7 +40,6 @@ public class DoctorServicioImpl implements IDoctorServicio {
     public Optional<Doctor> obtenerPorId(Integer integer) {
         return doctorRepositorio.findById(integer);
     }
-
 
     @Transactional
     @Override
@@ -71,9 +68,35 @@ public class DoctorServicioImpl implements IDoctorServicio {
         return doctorMapper.toDto(guardado);
     }
 
+    @Transactional
     @Override
-    public Doctor actualizar(DoctorCrearDTO doctorCrearDTO, Integer id) {
-        return null;
+    public DoctorRespuestaDTO actualizar(DoctorActualizarDTO dto, Integer id) {
+
+        Doctor doctor = doctorRepositorio.findByIdConPersona(id).orElseThrow(
+                ()-> new EntityNotFoundException("El doctor no existe en la entidad")
+        );
+
+        if (!especialidadServicio.existeEspecialidad(dto.getEspecialidad().getId())){
+            throw new EntityNotFoundException("No existe la especialidad en la entidad");
+        }
+
+        Especialidad especialidad = especialidadMapper.especialidadRefDtoToEspecialidad(dto.getEspecialidad());
+
+        doctor.setEspecialidad(especialidad);
+
+        doctorMapper.updateFromDto(dto,doctor);
+
+        personaMapper.updateFromDto(dto.getPersona(),doctor.getPersona());
+
+        return doctorMapper.toDto(doctor);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public DoctorEspecialidadLeerDTO leerPorId(Integer id) {
+        return doctorRepositorio.todosDoctoresEspecialidadesPorId(id)
+                .orElseThrow( ()-> new EntityNotFoundException("No existe el doctor solicitado")
+        );
     }
 
     @Override

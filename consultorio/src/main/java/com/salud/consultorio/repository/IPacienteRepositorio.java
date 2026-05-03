@@ -67,7 +67,7 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     @Query("SELECT p FROM Paciente p JOIN FETCH p.persona WHERE p.id= :id")
     Optional<Paciente> findAlTPacientes(@Param("id") Integer id);
 
-    @Query("SELECT p FROM Paciente p WHERE p.id = :id")
+    @Query("SELECT p FROM Paciente p JOIN FETCH p.persona WHERE p.id = :id")
     Optional<Paciente> findByIdConPersona(@Param("id") Integer id);
 
     @Modifying
@@ -105,5 +105,6 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     WHERE p.estado=0
     """)
     List<PacienteActivoLeerDTO> leerPacientesInactivos();
+
 
 }

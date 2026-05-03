@@ -1,9 +1,6 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.dto.doctor.DoctorCrearDTO;
-import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
-import com.salud.consultorio.dto.doctor.DoctorRespuestaDTO;
-import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
+import com.salud.consultorio.dto.doctor.*;
 import com.salud.consultorio.model.entity.Doctor;
 
 import java.util.List;
@@ -19,7 +16,9 @@ public interface IDoctorServicio {
 
     DoctorRespuestaDTO crear(DoctorCrearDTO dto);
 
-    Doctor actualizar(DoctorCrearDTO dto, Integer id);
+    DoctorRespuestaDTO actualizar(DoctorActualizarDTO dto, Integer id);
+
+    DoctorEspecialidadLeerDTO leerPorId(Integer id);
 
     void eliminarPorId(Integer id);
 

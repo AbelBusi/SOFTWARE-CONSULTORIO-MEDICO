@@ -102,7 +102,9 @@ public class PacienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MensajeResponse> actualizarCitaMedica(@PathVariable Integer id, @Valid @RequestBody PacienteActualizarDTO actualizarDTO){
+    public ResponseEntity<MensajeResponse> actualizarCitaMedica(
+            @PathVariable Integer id,
+            @Valid @RequestBody PacienteActualizarDTO actualizarDTO){
 
         PacienteRespuestaDTO paciente = pacienteServicio.actualizarRespuesta(actualizarDTO,id);
 

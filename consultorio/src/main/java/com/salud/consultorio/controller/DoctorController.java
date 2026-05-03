@@ -1,9 +1,6 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.dto.doctor.DoctorCrearDTO;
-import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
-import com.salud.consultorio.dto.doctor.DoctorRespuestaDTO;
-import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
+import com.salud.consultorio.dto.doctor.*;
 import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.enums.DoctorEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
@@ -26,7 +23,7 @@ public class DoctorController {
     @PostMapping
     public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorCrearDTO doctorCrearDTO){
 
-        DoctorRespuestaDTO doctor =doctorServicio.crearDoctor(doctorCrearDTO);
+        DoctorRespuestaDTO doctor =doctorServicio.crear(doctorCrearDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Doctor agregado con exito")
@@ -79,6 +76,30 @@ public class DoctorController {
 
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<MensajeResponse> leerDoctorPorId(@PathVariable Integer id){
+
+        DoctorEspecialidadLeerDTO leer = doctorServicio.leerPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Informacion del doctor solicitado")
+                .object(leer).build(),HttpStatus.OK);
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MensajeResponse> actualizarDoctor(
+            @PathVariable Integer id,
+            @Valid @RequestBody DoctorActualizarDTO dto){
+
+        DoctorRespuestaDTO respuesta = doctorServicio.actualizar(dto,id);
+
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Doctor actualizado con exito")
+                .object(respuesta).build(), HttpStatus.CREATED);
+
+    }
 
 
 }

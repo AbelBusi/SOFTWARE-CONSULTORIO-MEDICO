@@ -18,8 +18,6 @@ import lombok.Setter;
 @Setter
 public class PacienteActualizarDTO {
 
-    private Integer id;
-
     @NotBlank(message = "La entidad aseguradora es obligatoria")
     @Size(max = 8, message = "La entidad aseguradora no debe exceder 8 caracteres")
     private String entidadAseguradora;
