@@ -1,7 +1,6 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.dto.recepcionista.NombreRecepcionistaDTO;
-import com.salud.consultorio.dto.recepcionista.RecepcionistaDTO;
+import com.salud.consultorio.dto.recepcionista.*;
 import com.salud.consultorio.model.entity.Recepcionista;
 
 import java.util.List;
@@ -15,10 +14,22 @@ public interface IRecepcionistaServicio{
 
     Optional<Recepcionista> obtenerPorId(Integer id);
 
-    Recepcionista crear(RecepcionistaDTO dto);
+    RecepcionistaRespuestaDTO crear(RecepcionistaCrearDTO dto);
 
-    Recepcionista actualizar(RecepcionistaDTO dto, Integer id);
+    RecepcionistaRespuestaDTO actualizar(RecepcionistaActualizarDTO dto, Integer id);
+
+    boolean existeCodigo(String codigo);
 
     void eliminarPorId(Integer id);
+
+    RecepcionistaLeerDTO leerPorId(Integer id);
+
+    List<RecepcionistaLeerDTO> listarRecepcionistasPersonas();
+
+    List<RecepcionistaLeerDTO> listarRecepcionistasActivos();
+
+    List<RecepcionistaLeerDTO> listarRecepcionistasInactivos();
+
+    boolean existeRecepcionista(Integer id);
 
 }

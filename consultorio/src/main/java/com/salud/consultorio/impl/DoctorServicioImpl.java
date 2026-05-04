@@ -37,6 +37,12 @@ public class DoctorServicioImpl implements IDoctorServicio {
 
     @Transactional(readOnly = true)
     @Override
+    public Boolean existeDoctor(Integer id) {
+        return doctorRepositorio.existsById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public Optional<Doctor> obtenerPorId(Integer integer) {
         return doctorRepositorio.findById(integer);
     }
@@ -99,8 +105,15 @@ public class DoctorServicioImpl implements IDoctorServicio {
         );
     }
 
+    @Transactional
     @Override
-    public void eliminarPorId(Integer integer) {
+    public void eliminarPorId(Integer id) {
+
+        if (!existeDoctor(id)){
+            throw new EntityNotFoundException("No existe el doctor que deseas eliminar");
+        }
+
+        doctorRepositorio.DoctorCambiarEstado(0,id);
 
     }
 

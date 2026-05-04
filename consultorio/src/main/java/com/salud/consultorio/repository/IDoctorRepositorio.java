@@ -6,6 +6,7 @@ import com.salud.consultorio.dto.paciente.PacienteActivoLeerDTO;
 import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.entity.Paciente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -95,5 +96,9 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
 
     @Query("SELECT d FROM Doctor d  JOIN FETCH d.persona JOIN FETCH d.especialidad WHERE d.id = :id")
     Optional<Doctor> findByIdConPersona(@Param("id") Integer id);
+
+    @Modifying
+    @Query("UPDATE Doctor d SET d.estado =:estado WHERE d.id=:id" )
+    void DoctorCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
 
 }

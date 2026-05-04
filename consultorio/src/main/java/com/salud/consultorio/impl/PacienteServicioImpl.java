@@ -33,7 +33,7 @@ public class PacienteServicioImpl implements IPacienteServicio {
         return pacienteRepositorio.findAlTPacientes(integer);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Boolean existePaciente(Integer id) {
         return pacienteRepositorio.existsById(id);
@@ -68,6 +68,7 @@ public class PacienteServicioImpl implements IPacienteServicio {
         if (pacienteExiste.getPersona()==null){
             throw new IllegalArgumentException("Paciente sin persona asociada");
         }
+
         pacienteMapper.updateFromDto(actualizarDTO, pacienteExiste);
 
         personaMapper.updateFromDto(actualizarDTO.getPersona(),pacienteExiste.getPersona());

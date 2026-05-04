@@ -12,6 +12,8 @@ public interface IDoctorServicio {
 
     List<Doctor> listarTodos();
 
+    Boolean existeDoctor(Integer id);
+
     Optional<Doctor> obtenerPorId(Integer id);
 
     DoctorRespuestaDTO crear(DoctorCrearDTO dto);

@@ -1,8 +1,7 @@
 package com.salud.consultorio.controller;
 
 import com.salud.consultorio.dto.doctor.*;
-import com.salud.consultorio.model.entity.Doctor;
-import com.salud.consultorio.model.enums.DoctorEstado;
+import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IDoctorServicio;
 import jakarta.validation.Valid;
@@ -49,7 +48,7 @@ public class DoctorController {
 
     @GetMapping
     public ResponseEntity<MensajeResponse> leerDoctores(
-            @RequestParam(required = false,name = "estado")DoctorEstado estado){
+            @RequestParam(required = false,name = "estado") EntidadEstado estado){
 
         if (estado!=null){
 
@@ -101,5 +100,15 @@ public class DoctorController {
 
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensajeResponse> eliminarDoctorPorId(@PathVariable Integer id){
+
+        doctorServicio.eliminarPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Doctor eliminado con exito")
+                .object(null).build(),HttpStatus.NO_CONTENT);
+
+    }
 
 }

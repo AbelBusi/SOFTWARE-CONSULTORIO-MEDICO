@@ -2,7 +2,7 @@ package com.salud.consultorio.controller;
 
 import com.salud.consultorio.dto.paciente.*;
 import com.salud.consultorio.dto.paciente.NombrePacientesDTO;
-import com.salud.consultorio.model.enums.PacienteEstado;
+import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPacienteServicio;
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class PacienteController {
 
     @GetMapping
     public ResponseEntity<MensajeResponse> listarPacientes(
-            @RequestParam(name = "estado",required = false) PacienteEstado pacienteEstado) {
+            @RequestParam(name = "estado",required = false) EntidadEstado pacienteEstado) {
 
         if (pacienteEstado!=null) {
 
@@ -124,6 +124,5 @@ public class PacienteController {
                 .object(null).build(),HttpStatus.NO_CONTENT);
 
     }
-
 
 }

@@ -1,15 +1,24 @@
 package com.salud.consultorio.model.mapper;
 
-import com.salud.consultorio.dto.recepcionista.RecepcionistaDTO;
+import com.salud.consultorio.dto.recepcionista.RecepcionistaActualizarDTO;
+import com.salud.consultorio.dto.recepcionista.RecepcionistaCrearDTO;
+import com.salud.consultorio.dto.recepcionista.RecepcionistaRespuestaDTO;
 import com.salud.consultorio.model.entity.Recepcionista;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface IRecepnionistaMapper {
 
     @Mapping(target = "id",ignore = true)
     @Mapping(target = "citas",ignore = true)
-    Recepcionista recepcionistaDtoToRecepcionista(RecepcionistaDTO recepcionistaDTO);
+    @Mapping(target = "persona",ignore = true)
+    Recepcionista recepcionistaDtoToRecepcionista(RecepcionistaCrearDTO recepcionistaCrearDTO);
+
+    RecepcionistaRespuestaDTO toDto(Recepcionista recepcionista);
+
+    @Mapping(target = "persona",ignore = true)
+    void updateFromDto(RecepcionistaActualizarDTO dto,@MappingTarget Recepcionista recepcionista);
 
 }

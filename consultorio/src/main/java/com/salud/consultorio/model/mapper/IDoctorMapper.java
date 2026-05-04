@@ -24,4 +24,5 @@ public interface IDoctorMapper {
     @Mapping(target = "especialidad",ignore = true)
     @Mapping(target = "persona",ignore = true)
     void updateFromDto(DoctorActualizarDTO actualizarDTO, @MappingTarget Doctor doctor);
+
 }

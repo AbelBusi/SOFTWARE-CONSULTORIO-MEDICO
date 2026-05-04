@@ -1,8 +1,9 @@
 package com.salud.consultorio.model.enums;
 
-public enum PacienteEstado {
+public enum EntidadEstado {
 
     ACTIVO,
     INACTIVO
+
 
 }
