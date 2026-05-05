@@ -1,8 +1,7 @@
 package com.salud.consultorio.service;
 
 
-import com.salud.consultorio.dto.especialidad.EspecialidadDTO;
-import com.salud.consultorio.dto.especialidad.NombreEspecialidadesDTO;
+import com.salud.consultorio.dto.especialidad.*;
 import com.salud.consultorio.model.entity.Especialidad;
 
 import java.util.List;
@@ -12,16 +11,24 @@ public interface IEspecialidadServicio{
 
     List<NombreEspecialidadesDTO> listaNombres();
 
-    List<Especialidad> listarTodos();
+    List<EspecialidadLeerDTO> listarTodos();
+
+    List<EspecialidadLeerDTO> listarActivos();
+
+    List<EspecialidadLeerDTO> listarInactivo();
+
+    EspecialidadLeerDTO leerPorId(Integer id);
 
     Optional<Especialidad> obtenerPorId(Integer id);
 
-    Especialidad crear(EspecialidadDTO dto);
+    EspecialidadRespuestaDTO crear(EspecialidadCrearDTO dto);
 
-    Especialidad actualizar(EspecialidadDTO dto, Integer id);
+    EspecialidadRespuestaDTO actualizar(EspecialidadActualizarDTO dto, Integer id);
 
     void eliminarPorId(Integer id);
 
     boolean existeEspecialidad(Integer id);
+
+    boolean existeEspecialidadNombre(String nombre);
 
 }

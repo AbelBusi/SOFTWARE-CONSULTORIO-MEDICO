@@ -26,7 +26,7 @@ public interface IRecepcionistaRepositorio extends JpaRepository<Recepcionista,I
                     """, nativeQuery = true)
     List<NombreRecepcionistaDTO> listarRecepcionistasNombres();
 
-    boolean existsByCodigoEmpleado(String codigo);
+    boolean existsByCodigoEmpleado(String nombre);
 
     @Query("SELECT r FROM Recepcionista r JOIN FETCH r.persona WHERE r.id = :id")
     Optional<Recepcionista> findByIdConRecepcionista(@Param("id") Integer id);

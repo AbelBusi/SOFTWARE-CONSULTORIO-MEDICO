@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EspecialidadDTO {
-
-    private Integer id;
+public class EspecialidadCrearDTO {
 
     @NotBlank(message = "El nombre es obligatorio")
     @Size(max = 40, message = "El nombre no puede superar los 40 caracteres")

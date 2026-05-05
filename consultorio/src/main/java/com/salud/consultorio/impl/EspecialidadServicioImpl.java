@@ -1,12 +1,13 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.dto.especialidad.NombreEspecialidadesDTO;
+import com.salud.consultorio.dto.especialidad.*;
 import com.salud.consultorio.model.mapper.IEspecialidadMapper;
-import com.salud.consultorio.dto.especialidad.EspecialidadDTO;
 import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.repository.IEspecialidadRepositorio;
 import com.salud.consultorio.service.IEspecialidadServicio;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +23,30 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Especialidad> listarTodos() {
+    public List<EspecialidadLeerDTO> listarTodos() {
 
-        return especialidadRepositorio.findAll();
+        return especialidadRepositorio.leerEspecialidades();
 
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<EspecialidadLeerDTO> listarActivos() {
+        return especialidadRepositorio.leerEspecialidadesActivas();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<EspecialidadLeerDTO> listarInactivo() {
+        return especialidadRepositorio.leerEspecialidadesInactivas();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public EspecialidadLeerDTO leerPorId(Integer id) {
+        return especialidadRepositorio.leerEspecialidadPorId(id).orElseThrow(
+                ()-> new EntityNotFoundException("No existe la especialidad en la entidad")
+        );
     }
 
     @Transactional(readOnly = true)
@@ -38,33 +59,33 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
 
     @Transactional
     @Override
-    public Especialidad crear(EspecialidadDTO especialidadDTO) {
+    public EspecialidadRespuestaDTO crear(EspecialidadCrearDTO dto) {
 
-        Especialidad especialidad = especialidadMapper.especialidadDtoToEspecialidad(especialidadDTO);
+        if (existeEspecialidadNombre(dto.getNombre())){
 
-        return especialidadRepositorio.save(especialidad);
+            throw new DataIntegrityViolationException("No se puede tener dos especialidades con el mismo nombre");
+
+        }
+
+        Especialidad especialidad = especialidadMapper.especialidadDtoToEspecialidad(dto);
+
+        Especialidad guardado = especialidadRepositorio.save(especialidad);
+
+        return especialidadMapper.toDto(guardado);
     }
 
     @Transactional
     @Override
-    public Especialidad actualizar(EspecialidadDTO especialidadDTO, Integer id) {
+    public EspecialidadRespuestaDTO actualizar(EspecialidadActualizarDTO dto, Integer id) {
 
-        if (especialidadDTO.getId() == null) {
-            throw new RuntimeException("El ID no puede ser null para actualizar");
-        }
-        Optional<Especialidad> optional = especialidadRepositorio.findById(especialidadDTO.getId());
+        Especialidad especialidad = obtenerPorId(id).orElseThrow(
+                ()-> new EntityNotFoundException("No se encuentra la especialidad en la entidad")
+        );
 
-        if (optional.isPresent()) {
+        especialidadMapper.updateFromDto(dto, especialidad);
 
-            Especialidad especialidadExistente = optional.get();
+        return especialidadMapper.toDto(especialidad);
 
-            especialidadExistente.setNombre(especialidadDTO.getNombre());
-
-            return especialidadRepositorio.save(especialidadExistente);
-
-        } else {
-            throw new RuntimeException("Especialidad no encontrada con ID: " + especialidadDTO.getId());
-        }
     }
 
     @Transactional
@@ -72,10 +93,10 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
     public void eliminarPorId(Integer id) {
 
         if (!especialidadRepositorio.existsById(id)) {
-            throw new RuntimeException("Especialidad no encontrada con ID: " + id);
+            throw new RuntimeException("Especialidad no encontrada en la entidad ");
         }
 
-        especialidadRepositorio.deleteById(id);
+        especialidadRepositorio.EspecialidadCambiarEstado(0,id);
     }
 
     @Transactional(readOnly = true)
@@ -84,6 +105,13 @@ public class EspecialidadServicioImpl implements IEspecialidadServicio {
         return especialidadRepositorio.existsById(id);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existeEspecialidadNombre(String nombre) {
+        return especialidadRepositorio.existsByNombre(nombre);
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public List<NombreEspecialidadesDTO> listaNombres() {
         return especialidadRepositorio.listarEspecialidades();
