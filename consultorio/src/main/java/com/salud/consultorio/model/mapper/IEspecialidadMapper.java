@@ -1,5 +1,6 @@
 package com.salud.consultorio.model.mapper;
 
+import com.salud.consultorio.dto.citaMedica.EspecialidadRefCitaMedicaDTO;
 import com.salud.consultorio.dto.doctor.EspecialidadRefDoctorDTO;
 import com.salud.consultorio.dto.especialidad.EspecialidadActualizarDTO;
 import com.salud.consultorio.dto.especialidad.EspecialidadCrearDTO;
@@ -19,6 +20,9 @@ public interface IEspecialidadMapper {
     Especialidad especialidadDtoToEspecialidad (EspecialidadCrearDTO especialidadCrearDTO);
 
     Especialidad especialidadRefDtoToEspecialidad(EspecialidadRefDoctorDTO especialidadRefDoctorDTO);
+
+    Especialidad especialidadRefCitaDtoToEspecialidad(EspecialidadRefCitaMedicaDTO dto);
+
 
     EspecialidadRespuestaDTO toDto(Especialidad especialidad);
 

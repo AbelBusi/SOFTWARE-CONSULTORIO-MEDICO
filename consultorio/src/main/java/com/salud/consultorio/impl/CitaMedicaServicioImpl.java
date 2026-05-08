@@ -1,14 +1,10 @@
 package com.salud.consultorio.impl;
 
-import com.salud.consultorio.dto.citaMedica.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.CitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.LeerCitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.entity.*;
-import com.salud.consultorio.model.mapper.ICitaMedicaMapper;
-import com.salud.consultorio.model.mapper.IPacienteMapper;
-import com.salud.consultorio.model.mapper.IPersonaMapper;
+import com.salud.consultorio.model.mapper.*;
 import com.salud.consultorio.repository.*;
-import com.salud.consultorio.service.ICitaMedicaServicio;
+import com.salud.consultorio.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,14 +18,62 @@ import java.util.Optional;
 public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
     private final ICitaMedicaRepositorio citaMedicaRepositorio;
+    private final IDoctorServicio doctorServicio;
+    private final IEspecialidadServicio especialidadServicio;
+    private final IPacienteServicio pacienteServicio;
+    private final IRecepcionistaServicio recepcionistaServicio;
     private final ReferenciaServicio referenciaServicio;
+    private final IDoctorMapper doctorMapper;
+    private final IRecepnionistaMapper recepnionistaMapper;
+    private final IEspecialidadMapper especialidadMapper;
     private final ICitaMedicaMapper citaMedicaMapper;
     private final IPacienteMapper pacienteMapper;
     private final IPersonaMapper personaMapper;
 
+    @Transactional(readOnly = true)
     @Override
     public List<CitaMedica> listarTodos() {
         return citaMedicaRepositorio.findAll();
+    }
+
+    @Transactional
+    @Override
+    public CitaMedicaRespuestaDTO crearCita(CitaMedicaCrearDTO dto) {
+
+        if (!doctorServicio.existeDoctor(dto.getDoctor().getId())){
+            throw new EntityNotFoundException("El doctor no existe en la entidad");
+        }
+
+        if (!pacienteServicio.existePaciente(dto.getPaciente().getId())){
+            throw new EntityNotFoundException("El paciente no existe en la entidad");
+        }
+
+        if (!recepcionistaServicio.existeRecepcionista(dto.getRecepcionista().getId())){
+            throw new EntityNotFoundException("Recepcionista no existe en la entidad");
+        }
+
+        if (!especialidadServicio.existeEspecialidad(dto.getEspecialidad().getId())){
+            throw new EntityNotFoundException("La especialidad no existe en la entidad");
+        }
+
+        CitaMedica citaMedica=citaMedicaMapper.citaMedicaCrearDtoToCitaMedica(dto);
+
+        Especialidad especialidad = referenciaServicio.getRef(Especialidad.class,dto.getEspecialidad().getId());
+
+        Doctor doctor = referenciaServicio.getRef(Doctor.class,dto.getDoctor().getId());
+
+        Paciente paciente = referenciaServicio.getRef(Paciente.class,dto.getPaciente().getId());
+
+        Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class,dto.getRecepcionista().getId());
+
+        citaMedica.setDoctor(doctor);
+        citaMedica.setEspecialidad(especialidad);
+        citaMedica.setRecepcionista(recepcionista);
+        citaMedica.setPaciente(paciente);
+
+        CitaMedica guardado = citaMedicaRepositorio.save(citaMedica);
+
+        return citaMedicaMapper.toDto(guardado);
     }
 
     @Transactional
@@ -59,8 +103,6 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
         paciente.setPersona(persona);
 
-       /* persona.setPaciente(paciente);
-*/
         return citaMedicaRepositorio.save(citaMedica);
     }
 

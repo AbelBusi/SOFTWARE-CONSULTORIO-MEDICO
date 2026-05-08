@@ -1,8 +1,6 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.dto.citaMedica.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.CitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.LeerCitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.entity.CitaMedica;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.ICitaMedicaServicio;
@@ -22,13 +20,13 @@ public class CitaMedicaController {
     private final ICitaMedicaServicio citaMedicaServicio;
 
     @PostMapping
-    public ResponseEntity<MensajeResponse> crearCitaMedicaNuevoPaciente(@Valid @RequestBody CitaMedicaDTO citaMedicaDTO){
+    public ResponseEntity<MensajeResponse> crear(@Valid @RequestBody CitaMedicaCrearDTO dto){
 
-        CitaMedica citaMedica =citaMedicaServicio.crear(citaMedicaDTO);
+        CitaMedicaRespuestaDTO citaMedica =citaMedicaServicio.crearCita(dto);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Cita Medica agregada con exito")
-                .object(citaMedicaDTO).build(), HttpStatus.CREATED);
+                .object(citaMedica).build(), HttpStatus.CREATED);
 
     }
 

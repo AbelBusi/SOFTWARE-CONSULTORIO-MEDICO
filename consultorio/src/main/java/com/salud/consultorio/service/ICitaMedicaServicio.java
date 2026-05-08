@@ -1,8 +1,6 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.dto.citaMedica.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.CitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.LeerCitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.entity.CitaMedica;
 
 import java.util.List;
@@ -17,6 +15,8 @@ public interface ICitaMedicaServicio{
     CitaMedica actualizarCita(ActualizarCitaMedicaDTO actualizarCitaMedicaDTO, Integer id);
 
     List<CitaMedica> listarTodos();
+
+    CitaMedicaRespuestaDTO crearCita(CitaMedicaCrearDTO dto);
 
     Optional<CitaMedica> obtenerPorId(Integer id);
 
