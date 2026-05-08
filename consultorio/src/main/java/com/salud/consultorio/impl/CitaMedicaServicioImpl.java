@@ -76,7 +76,7 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         return citaMedicaMapper.toDto(guardado);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public Optional<CitaMedica> obtenerPorId(Integer integer) {
         return citaMedicaRepositorio.findById(integer);
@@ -106,63 +106,69 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         return citaMedicaRepositorio.save(citaMedica);
     }
 
-    @Override
-    public CitaMedica actualizar(CitaMedicaDTO citaMedicaDTO, Integer integer) {
-        return null;
-    }
-
     @Transactional
     @Override
-    public CitaMedica actualizarCita(ActualizarCitaMedicaDTO actualizarCitaMedicaDTO, Integer id) {
+    public CitaMedicaActualizarRespuestaDTO actualizar(CitaMedicaActualizarDTO citaMedicaActualizarDTO, Integer id) {
 
         CitaMedica citaMedica = obtenerPorId(id).orElseThrow(() ->
                 new EntityNotFoundException("Cita Medica no existe"));
 
-        citaMedicaMapper.actualizarCitaDtoToActualizarCita(actualizarCitaMedicaDTO,citaMedica);
+        citaMedicaMapper.updateFromDto(citaMedicaActualizarDTO,citaMedica);
 
-        Doctor doctor = referenciaServicio.getRef(Doctor.class,actualizarCitaMedicaDTO.getDoctor().getId());
+        Doctor doctor = referenciaServicio.getRef(Doctor.class, citaMedicaActualizarDTO.getDoctor().getId());
 
-        Especialidad especialidad = referenciaServicio.getRef(Especialidad.class, actualizarCitaMedicaDTO.getEspecialidad().getId());
+        Especialidad especialidad = referenciaServicio.getRef(Especialidad.class, citaMedicaActualizarDTO.getEspecialidad().getId());
 
-        Paciente paciente = referenciaServicio.getRef(Paciente.class, actualizarCitaMedicaDTO.getPaciente().getId());
+        Paciente paciente = referenciaServicio.getRef(Paciente.class, citaMedicaActualizarDTO.getPaciente().getId());
 
-        Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class, actualizarCitaMedicaDTO.getRecepcionista().getId());
+        Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class, citaMedicaActualizarDTO.getRecepcionista().getId());
 
         citaMedica.setDoctor(doctor);
         citaMedica.setEspecialidad(especialidad);
         citaMedica.setPaciente(paciente);
         citaMedica.setRecepcionista(recepcionista);
 
-        return citaMedicaRepositorio.save(citaMedica);
+        CitaMedica guardado = citaMedicaRepositorio.save(citaMedica);
 
-    }
-
-    @Override
-    public void eliminarPorId(Integer integer) {
-
-        CitaMedica citaMedica = obtenerPorId(integer).orElseThrow(
-                () -> new EntityNotFoundException("No existe la cita medica")
-        );
-
-        citaMedica.setEstado(0);
-
-        citaMedicaRepositorio.save(citaMedica);
+        return citaMedicaMapper.tDto(guardado);
 
     }
 
     @Transactional
     @Override
-    public CitaMedicaDTO mostrarCitaMedicaPorId(CitaMedica citaMedica) {
+    public void eliminarPorId(Integer id) {
 
-        CitaMedica cita = obtenerPorId(citaMedica.getId()).orElseThrow(()-> new EntityNotFoundException("No existe en la entidad"));
+        CitaMedica citaMedica = obtenerPorId(id).orElseThrow(
+                () -> new EntityNotFoundException("No existe la cita medica")
+        );
 
-        CitaMedicaDTO citaMedicaDTO =citaMedicaMapper.citaMedicaToCitaMedicaDto(cita);
+        citaMedicaRepositorio.CitaCambiarEstado(0,citaMedica.getId());
 
-        return  citaMedicaDTO;
     }
 
+    @Transactional(readOnly = true)
     @Override
-    public List<LeerCitaMedicaDTO> leerCitasMedicas() {
+    public CitaMedicaLeerDTO mostrarCitaMedicaPorId(Integer id) {
+        return citaMedicaRepositorio.traerCitaMedicaId(id).orElseThrow(
+                () -> new EntityNotFoundException("La cita medica no existe en la entidad")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CitaMedicaLeerDTO> leerCitasMedicas() {
         return citaMedicaRepositorio.leerCitasMedicas();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CitaMedicaLeerDTO> leerCitasMedicasActivas() {
+        return citaMedicaRepositorio.leerCitasMedicasActivas();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CitaMedicaLeerDTO> leerCitasMedicasInactivas() {
+        return citaMedicaRepositorio.leerCitasMedicasInactivas();
     }
 }

@@ -119,7 +119,7 @@ class CitaMedicaServicioImplTest {
     // =========================
     @Test
     void actualizarCita_ok() {
-        var dto = mock(ActualizarCitaMedicaDTO.class);
+        var dto = mock(CitaMedicaActualizarDTO.class);
 
         when(citaRepo.findById(1)).thenReturn(Optional.of(cita));
 
@@ -157,7 +157,7 @@ class CitaMedicaServicioImplTest {
     // =========================
     @Test
     void actualizarCita_notFound() {
-        var dto = mock(ActualizarCitaMedicaDTO.class);
+        var dto = mock(CitaMedicaActualizarDTO.class);
 
         when(citaRepo.findById(1)).thenReturn(Optional.empty());
 

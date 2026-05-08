@@ -1,9 +1,6 @@
 package com.salud.consultorio.model.mapper;
 
-import com.salud.consultorio.dto.citaMedica.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.CitaMedicaCrearDTO;
-import com.salud.consultorio.dto.citaMedica.CitaMedicaDTO;
-import com.salud.consultorio.dto.citaMedica.CitaMedicaRespuestaDTO;
+import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.entity.CitaMedica;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -27,11 +24,13 @@ public interface ICitaMedicaMapper {
 
     CitaMedicaRespuestaDTO toDto(CitaMedica entidad);
 
+    CitaMedicaActualizarRespuestaDTO tDto(CitaMedica citaMedica);
+
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "paciente", ignore = true)
     @Mapping(target = "doctor", ignore = true)
     @Mapping(target = "recepcionista", ignore = true)
     @Mapping(target = "especialidad", ignore = true)
-    void actualizarCitaDtoToActualizarCita(ActualizarCitaMedicaDTO citaMedica, @MappingTarget CitaMedica entity);
+    void updateFromDto(CitaMedicaActualizarDTO citaMedica, @MappingTarget CitaMedica entity);
 
 }

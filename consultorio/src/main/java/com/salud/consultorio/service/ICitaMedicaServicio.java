@@ -8,11 +8,15 @@ import java.util.Optional;
 
 public interface ICitaMedicaServicio{
 
-    CitaMedicaDTO mostrarCitaMedicaPorId(CitaMedica citaMedica);
+    CitaMedicaLeerDTO mostrarCitaMedicaPorId(Integer id);
 
-    List<LeerCitaMedicaDTO> leerCitasMedicas();
+    List<CitaMedicaLeerDTO> leerCitasMedicas();
 
-    CitaMedica actualizarCita(ActualizarCitaMedicaDTO actualizarCitaMedicaDTO, Integer id);
+    List<CitaMedicaLeerDTO> leerCitasMedicasActivas();
+
+    List<CitaMedicaLeerDTO> leerCitasMedicasInactivas();
+
+    CitaMedicaActualizarRespuestaDTO actualizar(CitaMedicaActualizarDTO citaMedicaActualizarDTO, Integer id);
 
     List<CitaMedica> listarTodos();
 
@@ -21,8 +25,6 @@ public interface ICitaMedicaServicio{
     Optional<CitaMedica> obtenerPorId(Integer id);
 
     CitaMedica crear(CitaMedicaDTO dto);
-
-    CitaMedica actualizar(CitaMedicaDTO dto, Integer id);
 
     void eliminarPorId(Integer id);
 }
