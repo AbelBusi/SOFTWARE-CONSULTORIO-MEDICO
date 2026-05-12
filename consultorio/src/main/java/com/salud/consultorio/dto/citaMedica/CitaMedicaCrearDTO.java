@@ -17,6 +17,7 @@ import java.time.LocalTime;
 @Setter
 public class CitaMedicaCrearDTO {
 
+
     @Valid
     @NotNull(message = "El recepcionista es obligatorio")
     private RecepcionistaRefCitaMedicaDTO recepcionista;
