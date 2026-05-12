@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,5 +127,18 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
     @Modifying
     @Query("UPDATE CitaMedica c SET c.estado =:estado WHERE c.id=:id" )
     void CitaCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
+
+    @Query("""
+        SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
+        FROM CitaMedica c
+        WHERE c.fecha = :fechaCita
+        AND c.horaInicio < :nuevaHoraSalida
+        AND c.horaSalida > :nuevaHoraEntrada
+    """)
+    boolean cruceHorasCitas(
+            @Param("fechaCita") LocalDate fecha,
+            @Param("nuevaHoraSalida") LocalTime horaSalida,
+            @Param("nuevaHoraEntrada") LocalTime horaEntrada
+    );
 
 }

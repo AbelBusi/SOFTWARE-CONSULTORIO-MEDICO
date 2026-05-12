@@ -7,9 +7,12 @@ import com.salud.consultorio.repository.*;
 import com.salud.consultorio.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,9 +26,6 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     private final IPacienteServicio pacienteServicio;
     private final IRecepcionistaServicio recepcionistaServicio;
     private final ReferenciaServicio referenciaServicio;
-    private final IDoctorMapper doctorMapper;
-    private final IRecepnionistaMapper recepnionistaMapper;
-    private final IEspecialidadMapper especialidadMapper;
     private final ICitaMedicaMapper citaMedicaMapper;
     private final IPacienteMapper pacienteMapper;
     private final IPersonaMapper personaMapper;
@@ -56,6 +56,10 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
             throw new EntityNotFoundException("La especialidad no existe en la entidad");
         }
 
+        if (cruceHorarios(dto.getFecha(),dto.getHoraSalida(),dto.getHoraInicio())){
+            throw new DataIntegrityViolationException("Existe cruce de horario en la cita");
+        }
+
         CitaMedica citaMedica=citaMedicaMapper.citaMedicaCrearDtoToCitaMedica(dto);
 
         Especialidad especialidad = referenciaServicio.getRef(Especialidad.class,dto.getEspecialidad().getId());
@@ -80,6 +84,12 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     @Override
     public Optional<CitaMedica> obtenerPorId(Integer integer) {
         return citaMedicaRepositorio.findById(integer);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean cruceHorarios(LocalDate fecha, LocalTime horaSalida, LocalTime horaEntrada) {
+        return citaMedicaRepositorio.cruceHorasCitas(fecha,horaSalida,horaEntrada);
     }
 
     @Transactional
