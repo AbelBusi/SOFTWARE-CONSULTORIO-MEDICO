@@ -12,8 +12,6 @@ import lombok.*;
 @Builder(toBuilder = true)
 public class UsuarioCrearDTO {
 
-    private Integer id;
-
     @NotNull(message = "La persona es obligatoria")
     @Valid
     private PersonaRefDTO persona;

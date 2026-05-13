@@ -8,7 +8,6 @@ import com.salud.consultorio.model.entity.Usuario;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.model.mapper.IRolMapper;
 import com.salud.consultorio.model.mapper.IUsuarioMapper;
-import com.salud.consultorio.repository.IRolRepositorio;
 import com.salud.consultorio.repository.IUsuarioRepositorio;
 import com.salud.consultorio.service.IPersonaServicio;
 import com.salud.consultorio.service.IRolServicio;
@@ -43,12 +42,16 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     @Override
     public UsuarioRespuestaDTO crear(UsuarioCrearDTO dto) {
 
-        if (!rolServicio.existeRolId(dto.getId())){
+        if (!rolServicio.existeRolId(dto.getRol().getId())){
             throw new EntityNotFoundException("No existe el rol en la entidad");
         }
 
         if (existeUsuario(dto.getUsuario())){
             throw new DataIntegrityViolationException("No se puede ingresar el usuario");
+        }
+
+        if (existeUsuarioPersona(dto.getPersona().getId())){
+            throw new DataIntegrityViolationException("La persona ya esta registrada");
         }
 
         Usuario usuario = usuarioMapper.toEntity(dto);
@@ -71,4 +74,12 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     public boolean existeUsuario(String usuario) {
         return usuarioRepositorio.existsByUsuario(usuario);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existeUsuarioPersona(Integer id) {
+        return usuarioRepositorio.existeUsuarioPersona(id);
+    }
+
+
 }

@@ -16,11 +16,11 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_persona",nullable = false)
     private Persona persona;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_rol",nullable = false)
     private Rol rol;
 
