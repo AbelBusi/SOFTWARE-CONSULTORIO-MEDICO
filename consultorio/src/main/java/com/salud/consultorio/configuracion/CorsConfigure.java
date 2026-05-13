@@ -2,12 +2,13 @@ package com.salud.consultorio.configuracion;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.format.FormatterRegistry;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfig {
+@EnableWebSecurity
+public class CorsConfigure {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
@@ -28,6 +29,5 @@ public class WebConfig {
             }
         };
     }
-
 
 }
