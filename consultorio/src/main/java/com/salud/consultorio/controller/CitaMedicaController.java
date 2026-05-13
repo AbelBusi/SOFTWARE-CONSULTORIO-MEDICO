@@ -1,8 +1,6 @@
 package com.salud.consultorio.controller;
 
 import com.salud.consultorio.dto.citaMedica.*;
-import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
-import com.salud.consultorio.model.entity.CitaMedica;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.ICitaMedicaServicio;

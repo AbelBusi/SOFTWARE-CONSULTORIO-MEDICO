@@ -67,6 +67,7 @@ public class DoctorController {
             }
 
         }
+
         List<DoctorEspecialidadLeerDTO> doctores =doctorServicio.todosDoctoresEspecialidad();
 
         return new ResponseEntity<>(MensajeResponse.builder()
@@ -109,6 +110,16 @@ public class DoctorController {
                 .mensaje("Doctor eliminado con exito")
                 .object(null).build(),HttpStatus.NO_CONTENT);
 
+    }
+
+    @GetMapping("/especialidad/{id}")
+    public ResponseEntity<MensajeResponse> especialidadId(@PathVariable Integer id){
+
+        List<DoctorEspecialidadPorIdDT> doctores = doctorServicio.listaDoctoresEspecialidadSeleccionada(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("LISTA DE DOCTORES POR ESPECIALIDAD SELECCIONADA")
+                .object(doctores).build(),HttpStatus.OK);
     }
 
 }

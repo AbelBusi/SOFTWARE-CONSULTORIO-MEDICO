@@ -137,6 +137,12 @@ public class DoctorServicioImpl implements IDoctorServicio {
 
     @Transactional(readOnly = true)
     @Override
+    public List<DoctorEspecialidadPorIdDT> listaDoctoresEspecialidadSeleccionada(Integer id) {
+        return doctorRepositorio.listaDoctoresEspecialidadSeleccionada(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<NombreDoctoresDTO> listaNombreDoctoresDtos() {
         return doctorRepositorio.listarDoctoresResumen();
     }

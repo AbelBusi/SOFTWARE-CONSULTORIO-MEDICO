@@ -1,6 +1,7 @@
 package com.salud.consultorio.repository;
 
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT;
 import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.dto.paciente.PacienteActivoLeerDTO;
 import com.salud.consultorio.model.entity.Doctor;
@@ -100,5 +101,17 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
     @Modifying
     @Query("UPDATE Doctor d SET d.estado =:estado WHERE d.id=:id" )
     void DoctorCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
+
+    @Query("""
+   SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT(
+      d.id,
+      CONCAT(p.nombre, ' ', p.apellidos) AS nombre
+   )
+   FROM Doctor d
+   JOIN d.persona p
+   WHERE d.especialidad.id=:id
+   AND d.estado=1
+    """)
+    List<DoctorEspecialidadPorIdDT> listaDoctoresEspecialidadSeleccionada(@Param("id") Integer id);
 
 }

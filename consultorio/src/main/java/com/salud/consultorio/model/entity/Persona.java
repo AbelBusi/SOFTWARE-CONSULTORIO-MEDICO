@@ -21,11 +21,11 @@ public class Persona {
     @Column(name = "dni", length = 8, nullable = false, unique = true)
     private String dni;
 
-    @Column(name = "nombre", length = 70, nullable = false)
-    private String nombre;
-
     @Column(name = "apellidos", length = 100, nullable = false)
     private String apellidos;
+
+    @Column(name = "nombre", length = 70, nullable = false)
+    private String nombre;
 
     @Column(name = "fecha_nacimiento", nullable = false)
     private LocalDate fechaNacimiento;
