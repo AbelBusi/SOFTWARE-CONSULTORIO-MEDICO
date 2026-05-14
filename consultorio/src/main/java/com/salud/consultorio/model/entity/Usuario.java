@@ -3,6 +3,8 @@ package com.salud.consultorio.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -32,5 +34,8 @@ public class Usuario {
 
     @Column(name = "estado",nullable = false)
     private Integer estado;
+
+    @OneToMany(mappedBy = "usuario",fetch = FetchType.LAZY)
+    private List<Token> token;
 
 }

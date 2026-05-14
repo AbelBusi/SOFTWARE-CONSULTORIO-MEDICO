@@ -21,6 +21,8 @@ public class SecurityFilterConfig {
                         .requestMatchers("/api/v1/usuarios/**").permitAll()
                         .requestMatchers("/api/v1/roles/**").permitAll()
                         .requestMatchers("/api/v1/pacientes/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
+                        .anyRequest().authenticated()
                 ).formLogin(Customizer.withDefaults());
 
         return http.build();

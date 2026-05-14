@@ -1,4 +1,4 @@
-package com.salud.consultorio.dto.usuario;
+package com.salud.consultorio.auth.dto;
 import com.salud.consultorio.dto.persona.PersonaRefDTO;
 import com.salud.consultorio.dto.rol.RolRefDTO;
 import jakarta.validation.Valid;
