@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
 @Repository
 public interface IUsuarioRepositorio extends JpaRepository<Usuario, Integer> {
@@ -25,5 +26,7 @@ public interface IUsuarioRepositorio extends JpaRepository<Usuario, Integer> {
     boolean existeUsuarioPersona(
             @Param("id") Integer id
     );
+
+    Optional<Usuario> findByUsuario(String usuario);
 
 }

@@ -1,4 +1,4 @@
-package com.salud.consultorio.configuracion;
+package com.salud.consultorio.configuration;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Bean;

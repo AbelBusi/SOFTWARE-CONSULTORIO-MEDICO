@@ -1,5 +1,6 @@
 package com.salud.consultorio.auth.impl;
 
+import com.salud.consultorio.auth.dto.InicioSolicitud;
 import com.salud.consultorio.auth.dto.TokenResponse;
 import com.salud.consultorio.auth.dto.UsuarioCrearDTO;
 import com.salud.consultorio.auth.service.IAuthServicio;
@@ -18,9 +19,14 @@ import com.salud.consultorio.service.IUsuarioServicio;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +41,7 @@ public class IAuthServicioImpl implements IAuthServicio {
     private final IPersonaMapper personaMapper;
     private final IRolMapper rolMapper;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     @Override
@@ -71,6 +78,65 @@ public class IAuthServicioImpl implements IAuthServicio {
         return new TokenResponse(jwtToken,refreshToken);
     }
 
+    @Transactional
+    @Override
+    public TokenResponse ingresar(InicioSolicitud request) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        request.usuario(),
+                        request.claveAcceso()
+                )
+        );
+
+        Usuario guardado = usuarioRepositorio.findByUsuario(request.usuario())
+                .orElseThrow(()-> new UsernameNotFoundException("No existe el usuario"));
+
+        String jwtToken = jwtServicio.generarToken(guardado);
+
+        String refreshToken = jwtServicio.generarTokenRefrescado(guardado);
+
+        revokeAllUserToken(guardado);
+
+        saveUserToken(guardado,jwtToken);
+
+        return new TokenResponse(jwtToken,refreshToken);
+
+    }
+
+    @Override
+    public TokenResponse refrescarToken(final String authHeder) {
+
+        if (authHeder == null || !authHeder.startsWith("Bearer ")){
+            throw new IllegalArgumentException("Token Bearer Invalido1");
+        }
+
+        final String refreshToken = authHeder.substring(7);
+        final String user = jwtServicio.extraerUsuario(refreshToken);
+
+        if (user== null){
+            throw new IllegalArgumentException("Token Bearer Invalido2");
+        }
+
+        final Usuario usuario = usuarioRepositorio.findByUsuario(user).orElseThrow(
+                ()-> new UsernameNotFoundException(user)
+        );
+
+        if(!jwtServicio.tokenValido(refreshToken,usuario)){
+
+            throw new IllegalArgumentException("Token Bearer Invalido3");
+
+        }
+
+        final String accesoToken = jwtServicio.generarToken(usuario);
+
+        revokeAllUserToken(usuario);
+        saveUserToken(usuario,accesoToken);
+
+        return new TokenResponse(accesoToken,refreshToken);
+
+    }
+
+
     private void saveUserToken(Usuario usuario, String jwtToken){
 
         Token token = Token.builder()
@@ -83,6 +149,19 @@ public class IAuthServicioImpl implements IAuthServicio {
 
         tokenRepositorio.save(token);
 
+    }
+
+    private void revokeAllUserToken(final Usuario usuario){
+        final List<Token> validUserTokens = tokenRepositorio
+                .findAllByUsuarioIdAndExpiredFalseAndRevokedFalse(usuario.getId());
+
+        if (!validUserTokens.isEmpty()){
+            for (final Token token:validUserTokens){
+                token.setExpired(true);
+                token.setRevoked(true);
+            }
+            tokenRepositorio.saveAll(validUserTokens);
+        }
     }
 
 }

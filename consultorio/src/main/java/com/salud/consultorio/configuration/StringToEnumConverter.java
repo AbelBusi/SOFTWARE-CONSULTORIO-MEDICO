@@ -1,4 +1,4 @@
-package com.salud.consultorio.configuracion;
+package com.salud.consultorio.configuration;
 
 import com.salud.consultorio.model.enums.EntidadEstado;
 import org.springframework.core.convert.converter.Converter;
