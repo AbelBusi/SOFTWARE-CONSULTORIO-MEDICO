@@ -1,8 +1,8 @@
 import { PacienteInterface } from '../interface/paciente.interface';
 
-export interface MensajeResponse {
+export interface MensajeResponse<T=any> {
   mensaje: string;
-  object: PacienteInterface[];
+  object: T;
 }
 
 export interface MensajeResponseSingle {

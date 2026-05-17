@@ -2,7 +2,7 @@ import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angul
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
-import { PacienteInterface } from '../../interface/paciente.interface';
+import { PacienteInterface, PacienteDetalleLeerDTO } from '../../interface/paciente.interface';
 import { DetallePacienteModalComponent } from '../../components/detalle-paciente-modal/detalle-paciente-modal.component';
 
 @Component({
@@ -18,7 +18,8 @@ export class ListaPacientesComponent implements OnInit {
   search = signal<string>('');
   sortField = signal<keyof PacienteInterface>('paciente');
   sortAsc = signal<boolean>(true);
-  selectedPaciente = signal<PacienteInterface | null>(null);
+
+  selectedPaciente = signal<PacienteDetalleLeerDTO | null>(null);
   cargando = signal<boolean>(false);
 
   pacientesReal = signal<PacienteInterface[]>([]);
@@ -76,12 +77,29 @@ export class ListaPacientesComponent implements OnInit {
   }
 
   selectPaciente(paciente: PacienteInterface): void {
-    this.selectedPaciente.set(paciente);
+    this.pacienteService.traerPacientePorId(paciente.id).subscribe({
+      next: (pacienteDetalle) => {
+        this.selectedPaciente.set(pacienteDetalle);
+      },
+      error: (err) => {
+        console.error('Error al obtener los detalles del paciente:', err);
+      },
+    });
   }
 
-  onPacienteUpdated(pacienteActualizado: PacienteInterface): void {
+  onPacienteUpdated(pacienteActualizado: PacienteDetalleLeerDTO): void {
     this.pacientesReal.update((lista) =>
-      lista.map((p) => (p.id === pacienteActualizado.id ? pacienteActualizado : p)),
+      lista.map((p) =>
+        p.id === pacienteActualizado.id
+          ? {
+              ...p,
+              paciente: `${pacienteActualizado.persona.nombre} ${pacienteActualizado.persona.apellidos}`,
+              dni: pacienteActualizado.persona.dni,
+              entidadAseguradora: pacienteActualizado.entidadAseguradora,
+              estado: pacienteActualizado.estado,
+            }
+          : p,
+      ),
     );
 
     if (this.selectedPaciente()?.id === pacienteActualizado.id) {

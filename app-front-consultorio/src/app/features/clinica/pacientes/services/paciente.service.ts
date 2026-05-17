@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
-import { PacienteInterface } from '../interface/paciente.interface';
+import { PacienteInterface, PacienteDetalleLeerDTO } from '../interface/paciente.interface';
 import { MensajeResponse } from '../models/paciente.model';
 
 @Injectable({
@@ -21,7 +21,13 @@ export class PacienteService {
     }
 
     return this.http
-      .get<MensajeResponse>(this.baseUrl, { params })
+      .get<MensajeResponse<PacienteInterface[]>>(this.baseUrl, { params })
       .pipe(map((response) => response.object || []));
+  }
+
+  traerPacientePorId(id: number): Observable<PacienteDetalleLeerDTO> {
+    return this.http
+      .get<MensajeResponse<PacienteDetalleLeerDTO>>(`${this.baseUrl}/${id}`)
+      .pipe(map((response) => response.object));
   }
 }

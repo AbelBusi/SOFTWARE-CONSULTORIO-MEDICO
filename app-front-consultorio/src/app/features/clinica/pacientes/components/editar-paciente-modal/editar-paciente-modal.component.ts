@@ -1,7 +1,7 @@
 import { Component, computed, input, OnInit, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PacienteInterface } from '../../interface/paciente.interface';
+import { type PacienteDetalleLeerDTO } from '../../interface/paciente.interface'; // Usa el DTO detallado
 
 @Component({
   selector: 'app-editar-paciente-modal',
@@ -10,11 +10,11 @@ import { PacienteInterface } from '../../interface/paciente.interface';
   templateUrl: './editar-paciente-modal.component.html',
 })
 export class EditarPacienteModalComponent implements OnInit {
-  paciente = input.required<PacienteInterface>();
+  paciente = input.required<PacienteDetalleLeerDTO>(); // Tipo corregido
   close = output<void>();
-  save = output<PacienteInterface>();
+  save = output<PacienteDetalleLeerDTO>(); // Tipo corregido
 
-  form = signal<PacienteInterface>({} as PacienteInterface);
+  form = signal<PacienteDetalleLeerDTO>({} as PacienteDetalleLeerDTO); // Tipo corregido
   saved = signal<boolean>(false);
 
   seguros = ['SIS', 'EsSalud', 'Rimac', 'Pacífico', 'Mapfre', 'Particular'];
@@ -27,8 +27,8 @@ export class EditarPacienteModalComponent implements OnInit {
 
   iniciales = computed(() => {
     const f = this.form();
-    if (!f || !f.paciente) return '';
-    return f.paciente[0].toUpperCase();
+    if (!f || !f.persona || !f.persona.nombre || !f.persona.apellidos) return '';
+    return `${f.persona.nombre[0]}${f.persona.apellidos[0]}`.toUpperCase();
   });
 
   handleSubmit(): void {
