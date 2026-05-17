@@ -13,15 +13,35 @@ import {
     Cog6ToothIcon,
     ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import Citas from "../components/citas/Citas.tsx";
-import CrearCita from "../components/citas/CrearCita.tsx";
-import Pacientes from "../components/pacientes/Pacientes.tsx";
-import CrearPaciente from "../components/pacientes/CrearPaciente.tsx";
-import Doctores from "../components/doctores/Doctores.tsx";
-import CrearDoctor from "../components/doctores/CrearDoctor.tsx";
-import Especialistas from "../components/especialidades/Especialidades.tsx";
-interface SubNavItem { id: string; label: string; icon: React.ForwardRefExoticComponent<any>; }
-interface NavItem { id: string; label: string; icon: React.ForwardRefExoticComponent<any>; sub?: SubNavItem[]; }
+
+import type { ComponentType, ComponentProps } from "react";
+
+type IconoSVG = ComponentType<ComponentProps<"svg">>;
+
+import Citas from "../citas/Citas.tsx";
+import CrearCita from "../citas/comoponents/CrearCita.tsx";
+import Pacientes from "../pacientes/Pacientes.tsx";
+import CrearPaciente from "../pacientes/CrearPaciente.tsx";
+import Doctores from "../doctores/Doctores.tsx";
+import CrearDoctor from "../doctores/components/CrearDoctor.tsx";
+import Especialistas from "../especialidades/Especialidades.tsx";
+
+interface SubNavItem {
+    id: string;
+    label: string;
+    icon: IconoSVG;
+}
+
+interface NavItem {
+    id: string;
+    label: string;
+    icon: IconoSVG;
+    sub?: SubNavItem[];
+}
+// Definimos la prop para recibir la acción de deslogueo
+interface DashboardProps {
+    onLogout: () => void;
+}
 
 const navItems: NavItem[] = [
     {
@@ -61,7 +81,7 @@ const navItems: NavItem[] = [
     },
 ];
 
-export default function Dashboard() {
+export default function Dashboard({ onLogout }: DashboardProps) {
     const [open, setOpen] = useState(true);
     const [selected, setSelected] = useState<string>("Citas");
     const [subSelected, setSubSelected] = useState<string>("VerCitas");
@@ -71,10 +91,30 @@ export default function Dashboard() {
         setSelected(item.id);
         if (item.sub) {
             setExpandedItem(expandedItem === item.id ? null : item.id);
-            // Al hacer click en el padre, selecciona el primer hijo por defecto
             setSubSelected(item.sub[0].id);
         } else {
             setExpandedItem(null);
+        }
+    };
+
+    const handleLogout = async () => {
+        const token = localStorage.getItem("access_token");
+
+        try {
+            // Se ejecuta la llamada al endpoint que configuraste en tu SecurityFilterConfig
+            await fetch("http://localhost:8088/auth/logout", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+        } catch (error) {
+            console.error("Error al invalidar token en el servidor", error);
+        } finally {
+            // Remueve las credenciales locales sin importar si la red falló
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            onLogout();
         }
     };
 
@@ -83,9 +123,7 @@ export default function Dashboard() {
 
     return (
         <div className="flex min-h-screen bg-gray-50 font-sans">
-            {/* SIDEBAR */}
             <aside className={`${open ? "w-60" : "w-16"} bg-white border-r border-gray-200 flex flex-col transition-all duration-200 shrink-0`}>
-
                 <div className={`flex items-center ${open ? "justify-between px-5" : "justify-center"} h-16 border-b border-gray-200 mb-4`}>
                     {open && (
                         <span className="text-green-700 font-semibold text-base tracking-tight leading-none">
@@ -100,7 +138,6 @@ export default function Dashboard() {
                     </button>
                 </div>
 
-                {/* Perfil */}
                 <div className="px-3 mb-4">
                     <div className={`flex flex-col items-center py-4 rounded-xl ${open ? "bg-gray-50 border border-gray-100" : "bg-transparent"}`}>
                         <div className="relative">
@@ -132,7 +169,7 @@ export default function Dashboard() {
                                         ${isActive ? "text-green-700 bg-green-50" : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"}
                                         ${!open && "justify-center px-0"}
                                     `}
-                                >
+                                    align-items="center">
                                     <Icon className={`h-5 w-5 shrink-0 ${isActive ? "text-green-700" : "text-gray-400 group-hover:text-gray-600"}`} />
                                     {open && <span className="flex-1 text-left font-medium">{item.label}</span>}
                                     {open && item.sub && (isExpanded
@@ -165,14 +202,16 @@ export default function Dashboard() {
                         <Cog6ToothIcon className="h-5 w-5" />
                         {open && "Configuración"}
                     </button>
-                    <button className={`flex items-center gap-3 px-3 py-2 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors ${!open && "justify-center px-0"}`}>
+                    <button
+                        onClick={handleLogout}
+                        className={`flex items-center gap-3 px-3 py-2 text-sm text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-md transition-colors ${!open && "justify-center px-0"}`}
+                    >
                         <ArrowRightStartOnRectangleIcon className="h-5 w-5" />
                         {open && "Cerrar sesión"}
                     </button>
                 </div>
             </aside>
 
-            {/* MAIN */}
             <div className="flex-1 flex flex-col min-w-0">
                 <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shrink-0">
                     <div>
@@ -188,12 +227,12 @@ export default function Dashboard() {
                 </header>
 
                 <main className="flex-1 p-6 overflow-auto">
-                    {selected === "Citas"      && subSelected === "VerCitas"      && <Citas />}
-                    {selected === "Citas"      && subSelected === "CrearCita"     && <CrearCita />}
-                    {selected === "Pacientes"  && subSelected === "VerPacientes"  && <Pacientes />}
-                    {selected === "Pacientes"  && subSelected === "CrearPaciente" && <CrearPaciente />}
-                    {selected === "Doctores"   && subSelected === "VerDoctores"   && <Doctores />}
-                    {selected === "Doctores"   && subSelected === "CrearDoctor"   && <CrearDoctor />}
+                    {selected === "Citas"          && subSelected === "VerCitas"          && <Citas />}
+                    {selected === "Citas"          && subSelected === "CrearCita"         && <CrearCita />}
+                    {selected === "Pacientes"      && subSelected === "VerPacientes"      && <Pacientes />}
+                    {selected === "Pacientes"      && subSelected === "CrearPaciente"     && <CrearPaciente />}
+                    {selected === "Doctores"       && subSelected === "VerDoctores"       && <Doctores />}
+                    {selected === "Doctores"       && subSelected === "CrearDoctor"       && <CrearDoctor />}
                     {selected === "Especialidades" && subSelected === "VerEspecialidades"  && <Especialistas />}
                 </main>
             </div>

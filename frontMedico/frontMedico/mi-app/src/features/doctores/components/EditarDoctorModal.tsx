@@ -12,7 +12,7 @@ import {
     PencilSquareIcon,
     CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
-import { type Doctor } from "./Doctores";
+import { type Doctor } from "../Doctores";
 
 interface Props {
     doctor: Doctor | null;

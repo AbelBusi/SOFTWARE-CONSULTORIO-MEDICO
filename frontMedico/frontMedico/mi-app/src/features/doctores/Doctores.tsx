@@ -7,7 +7,7 @@ import {
     CheckBadgeIcon,
     StarIcon,
 } from "@heroicons/react/24/outline";
-import DetalleDoctorModal from "./DetalleDoctorModal";
+import DetalleDoctorModal from "./components/DetalleDoctorModal";
 
 export interface Doctor {
     id: number;

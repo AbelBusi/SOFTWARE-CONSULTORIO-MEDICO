@@ -11,9 +11,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 // Importación de los Modales
-import VerDetalleEspecialidadModal from "./VerDetalleEspecialidadModal";
-import CrearEspecialidadModal from "./CrearEspecialidadModal";
-import EditarEspecialidadModal from "./EditarEspecialidadModal";
+import VerDetalleEspecialidadModal from "./components/VerDetalleEspecialidadModal";
+import CrearEspecialidadModal from "./components/CrearEspecialidadModal";
+import EditarEspecialidadModal from "./components/EditarEspecialidadModal";
 
 export interface Especialidad {
     id: number;

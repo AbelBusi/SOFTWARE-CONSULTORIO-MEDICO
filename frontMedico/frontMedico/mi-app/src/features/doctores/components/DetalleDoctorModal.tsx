@@ -11,7 +11,7 @@ import {
     PencilSquareIcon,
 } from "@heroicons/react/24/outline";
 import EditarDoctorModal from "./EditarDoctorModal";
-import { type Doctor } from "./Doctores";
+import { type Doctor } from "../Doctores";
 
 interface Props {
     doctor: Doctor | null;
