@@ -1,0 +1,165 @@
+<div class="space-y-6">
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    @for(item of stats(); track item.title) {
+      <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center gap-4 hover:shadow-md transition-all">
+        <div class="p-3 rounded-lg" [ngClass]="item.bg">
+          <span class="material-icons block text-2xl" [ngClass]="item.color">
+            {{ item.icon }}
+          </span>
+        </div>
+        <div>
+          <p class="text-sm font-medium text-gray-500">{{ item.title }}</p>
+          <p class="text-2xl font-bold text-gray-900">{{ item.value }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="flex items-center justify-between gap-4 flex-wrap">
+    <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 w-full md:w-80 shadow-sm focus-within:ring-2 focus-within:ring-green-500/20 transition-all">
+      <span class="material-icons text-gray-400 text-lg shrink-0">search</span>
+      <input
+        type="text"
+        class="bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none w-full"
+        placeholder="Buscar por nombre o DNI..."
+        [ngModel]="search()"
+        (ngModelChange)="search.set($event)"
+      />
+    </div>
+
+    <div class="hidden sm:flex items-center gap-2 text-sm text-gray-400">
+      <span class="font-medium text-gray-600">{{ filteredPacientes().length }}</span>
+      pacientes encontrados
+    </div>
+  </div>
+
+  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b border-gray-200">
+        <tr>
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 group"
+            (click)="handleSort('apellido')"
+          >
+            <div class="flex items-center gap-1">
+              Paciente
+              <span
+                class="material-icons text-sm transition-colors"
+                [ngClass]="sortField() === 'apellido' ? 'text-green-600' : 'text-gray-300 group-hover:text-gray-400'"
+              >
+                unfold_more
+              </span>
+            </div>
+          </th>
+
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 group"
+            (click)="handleSort('dni')"
+          >
+            <div class="flex items-center gap-1">
+              DNI
+              <span
+                class="material-icons text-sm transition-colors"
+                [ngClass]="sortField() === 'dni' ? 'text-green-600' : 'text-gray-300 group-hover:text-gray-400'"
+              >
+                unfold_more
+              </span>
+            </div>
+          </th>
+
+          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Contacto</th>
+
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 group"
+            (click)="handleSort('seguro')"
+          >
+            <div class="flex items-center gap-1">
+              Seguro
+              <span
+                class="material-icons text-sm transition-colors"
+                [ngClass]="sortField() === 'seguro' ? 'text-green-600' : 'text-gray-300 group-hover:text-gray-400'"
+              >
+                unfold_more
+              </span>
+            </div>
+          </th>
+
+          <th
+            class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 group"
+            (click)="handleSort('ultimaCita')"
+          >
+            <div class="flex items-center gap-1">
+              Última cita
+              <span
+                class="material-icons text-sm transition-colors"
+                [ngClass]="sortField() === 'ultimaCita' ? 'text-green-600' : 'text-gray-300 group-hover:text-gray-400'"
+              >
+                unfold_more
+              </span>
+            </div>
+          </th>
+
+          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
+        </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-100">
+          @for(p of filteredPacientes(); track p.id) {
+            <tr
+              (click)="selectPaciente(p)"
+              class="hover:bg-green-50/50 cursor-pointer transition-colors group"
+            >
+              <td class="px-4 py-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-9 h-9 rounded-full bg-green-100 border border-green-200 flex items-center justify-center shrink-0">
+                    <span class="text-green-700 text-xs font-bold">
+                      {{ p.nombre[0] }}{{ p.apellido[0] }}
+                    </span>
+                  </div>
+                  <div>
+                    <p class="font-bold text-gray-900 group-hover:text-green-700 transition-colors leading-none">
+                      {{ p.apellido }}, {{ p.nombre }}
+                    </p>
+                    <p class="text-[11px] text-gray-400 mt-1">{{ p.edad }} años · {{ p.sexo }}</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-4 font-mono text-xs text-gray-500">{{ p.dni }}</td>
+              <td class="px-4 py-4">
+                <p class="text-gray-700 font-medium">{{ p.telefono }}</p>
+                <p class="text-xs text-gray-400 truncate max-w-[160px]">{{ p.email }}</p>
+              </td>
+              <td class="px-4 py-4 text-gray-600">{{ p.seguro }}</td>
+              <td class="px-4 py-4 text-gray-500">{{ p.ultimaCita }}</td>
+              <td class="px-4 py-4">
+                <span
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold border"
+                  [ngClass]="p.estado === 'activo' ? 'bg-green-50 text-green-700 border-green-200' : 'bg-gray-50 text-gray-500 border-gray-200'"
+                >
+                  <span class="w-1.5 h-1.5 rounded-full" [ngClass]="p.estado === 'activo' ? 'bg-green-500' : 'bg-gray-400'"></span>
+                  {{ p.estado === 'activo' ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colSpan="6" class="px-4 py-12 text-center text-gray-400 text-sm">
+                No se encontraron pacientes con ese criterio.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  @if(selectedPaciente()) {
+    <app-detalle-paciente-modal
+      [paciente]="selectedPaciente()!"
+      (close)="selectedPaciente.set(null)"
+      (updatePaciente)="onPacienteUpdated($event)"
+    />
+  }
+</div>

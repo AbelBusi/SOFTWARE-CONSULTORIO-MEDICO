@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { type Doctor } from '../../doctor.interface';
+import { type Doctor } from '../../interface/doctor.interface';
 import { EditarDoctorModalComponent } from '../editar-doctor-modal/editar-doctor-modal.component';
 
 @Component({

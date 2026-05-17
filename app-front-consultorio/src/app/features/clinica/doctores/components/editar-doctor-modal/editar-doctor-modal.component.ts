@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { type Doctor } from '../../doctor.interface';
+import { type Doctor } from '../../interface/doctor.interface';
 
 @Component({
   selector: 'app-editar-doctor-modal',

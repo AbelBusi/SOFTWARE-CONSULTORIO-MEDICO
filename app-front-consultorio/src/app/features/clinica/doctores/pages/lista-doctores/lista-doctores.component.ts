@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DetalleDoctorModalComponent } from '../../components/detalle-doctor-modal/detalle-doctor-modal.component';
 
 // 1. Importa la interfaz global para evitar duplicados incompatibles
-import { type Doctor } from '../../doctor.interface';
+import { type Doctor } from '../../interface/doctor.interface';
 
 @Component({
   selector: 'app-lista-doctores',

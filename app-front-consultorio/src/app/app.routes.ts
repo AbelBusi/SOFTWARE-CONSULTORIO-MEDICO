@@ -31,8 +31,8 @@ export const routes: Routes = [
       {
         path: 'pacientes',
         loadComponent: () =>
-          import('./shared/components/empty-page/empty-page.component').then(
-            (m) => m.EmptyPageComponent,
+          import('./features/clinica/pacientes/pages/lista-pacientes/lista-pacientes.component').then(
+            (m) => m.ListaPacientesComponent,
           ),
       },
 
