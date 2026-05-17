@@ -1,17 +1,26 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../features/auth/services/auth.service';
+import { ToastService } from '../services/toast.service'; // Subes un nivel a core y entras a services
 import { catchError, switchMap, throwError } from 'rxjs';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
+  const toastService = inject(ToastService);
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      if (error.status === 0) {
+        toastService.error('El servidor médico no responde. Verifica tu conexión.');
+      }
+
+      if (error.status >= 500) {
+        toastService.warning('Inconveniente en el servidor. Intente en unos minutos.');
+      }
+
       if (error.status === 401 && !req.url.includes('/auth/login')) {
         return authService.refrescarToken().pipe(
           switchMap((nuevosTokens) => {
-            // Clonamos la petición original fallida pero con el nuevo token de acceso
             const nuevaReq = req.clone({
               setHeaders: {
                 Authorization: `Bearer ${nuevosTokens.access_token}`,

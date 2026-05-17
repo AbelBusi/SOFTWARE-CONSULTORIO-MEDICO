@@ -17,7 +17,7 @@
           <p class="text-green-200 text-xs font-medium uppercase tracking-widest">Editando</p>
         </div>
         <h2 class="text-white text-base font-semibold leading-tight truncate">
-          {{ form().nombre }} {{ form().apellido }}
+          {{ form().nombre }} {{ form().apellidos }}
         </h2>
       </div>
       <button
@@ -54,9 +54,9 @@
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <span class="material-icons text-sm text-gray-400">person</span>
-                Apellido
+                Apellidos
               </label>
-              <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().apellido" name="apellido" required />
+              <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().apellidos" name="apellidos" required />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3">
@@ -79,9 +79,9 @@
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <span class="material-icons text-sm text-gray-400">wc</span>
-                Sexo
+                Género
               </label>
-              <select class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition appearance-none" [(ngModel)]="form().sexo" name="sexo">
+              <select class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition appearance-none" [(ngModel)]="form().genero" name="genero">
                 <option>Masculino</option>
                 <option>Femenino</option>
                 <option>Otro</option>
@@ -93,8 +93,8 @@
                 Estado
               </label>
               <select class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition appearance-none" [(ngModel)]="form().estado" name="estado">
-                <option value="activo">Activo</option>
-                <option value="inactivo">Inactivo</option>
+                <option [ngValue]="1">Activo</option>
+                <option [ngValue]="0">Inactivo</option>
               </select>
             </div>
           </div>
@@ -102,7 +102,7 @@
 
         <div class="space-y-3">
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest pb-1 border-b border-gray-100">
-            Contacto
+            Contacto e Identidad
           </p>
           <div class="grid grid-cols-2 gap-3">
             <div class="space-y-1.5">
@@ -115,60 +115,30 @@
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <span class="material-icons text-sm text-gray-400">mail</span>
-                Email
+                Correo electrónico
               </label>
-              <input type="email" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().email" name="email" />
+              <input type="email" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().correo" name="correo" />
             </div>
           </div>
-          <div class="space-y-1.5">
-            <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <span class="material-icons text-sm text-gray-400">location_on</span>
-              Dirección
-            </label>
-            <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().direccion" name="direccion" />
-          </div>
-        </div>
-
-        <div class="space-y-3">
-          <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest pb-1 border-b border-gray-100">
-            Datos clínicos
-          </p>
           <div class="grid grid-cols-2 gap-3">
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <span class="material-icons text-sm text-gray-400">assignment</span>
-                Seguro
+                <span class="material-icons text-sm text-gray-400">public</span>
+                Nacionalidad
               </label>
-              <select class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition appearance-none" [(ngModel)]="form().seguro" name="seguro">
+              <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().nacionalidad" name="nacionalidad" />
+            </div>
+            <div class="space-y-1.5">
+              <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <span class="material-icons text-sm text-gray-400">assignment</span>
+                Seguro Médico
+              </label>
+              <select class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition appearance-none" [(ngModel)]="form().entidadAseguradora" name="entidadAseguradora">
                 @for (s of seguros; track s) {
                   <option [value]="s">{{ s }}</option>
                 }
               </select>
             </div>
-            <div class="space-y-1.5">
-              <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <span class="material-icons text-sm text-gray-400">favorite</span>
-                Grupo sanguíneo
-              </label>
-              <select class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition appearance-none" [(ngModel)]="form().grupoSanguineo" name="grupoSanguineo">
-                @for (g of gruposSanguineos; track g) {
-                  <option [value]="g">{{ g }}</option>
-                }
-              </select>
-            </div>
-          </div>
-          <div class="space-y-1.5">
-            <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <span class="material-icons text-sm text-gray-400">vaccines</span>
-              Alergias (separar con coma)
-            </label>
-            <input
-              class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition"
-              [ngModel]="alergiasTexto()"
-              (ngModelChange)="onAlergiasChange($event)"
-              name="alergias"
-              placeholder="Penicilina, Aspirina..."
-            />
           </div>
         </div>
       </div>

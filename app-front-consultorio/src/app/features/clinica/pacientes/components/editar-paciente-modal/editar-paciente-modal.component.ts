@@ -14,40 +14,23 @@ export class EditarPacienteModalComponent implements OnInit {
   close = output<void>();
   save = output<Paciente>();
 
-  // Clonamos el objeto paciente dentro de un Signal modificable para el formulario
   form = signal<Paciente>({} as Paciente);
   saved = signal<boolean>(false);
 
+  // Lista de aseguradoras adaptada
   seguros = ['SIS', 'EsSalud', 'Rimac', 'Pacífico', 'Mapfre', 'Particular'];
-  gruposSanguineos = ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'];
 
   ngOnInit(): void {
-    // Inicialización limpia al montar el componente
     this.form.set({
       ...this.paciente(),
-      alergias: [...this.paciente().alergias],
     });
   }
 
   iniciales = computed(() => {
     const f = this.form();
-    if (!f.nombre || !f.apellido) return '';
-    return `${f.nombre[0]}${f.apellido[0]}`.toUpperCase();
+    if (!f.nombre || !f.apellidos) return '';
+    return `${f.nombre[0] ?? ''}${f.apellidos[0] ?? ''}`.toUpperCase();
   });
-
-  // Transformador bidireccional para mapear el string separado por comas al arreglo
-  alergiasTexto = computed(() => {
-    return this.form().alergias ? this.form().alergias.join(', ') : '';
-  });
-
-  onAlergiasChange(value: string): void {
-    const list = value
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean);
-
-    this.form.update((f) => ({ ...f, alergias: list }));
-  }
 
   handleSubmit(): void {
     this.save.emit(this.form());
