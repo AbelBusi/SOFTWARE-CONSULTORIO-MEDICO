@@ -17,7 +17,7 @@
           <p class="text-green-200 text-xs font-medium uppercase tracking-widest">Editando</p>
         </div>
         <h2 class="text-white text-base font-semibold leading-tight truncate">
-          {{ form().nombre }} {{ form().apellidos }}
+          {{ form().paciente }}
         </h2>
       </div>
       <button
@@ -43,20 +43,13 @@
           <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest pb-1 border-b border-gray-100">
             Datos personales
           </p>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-1 gap-3">
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <span class="material-icons text-sm text-gray-400">person</span>
-                Nombre
+                Paciente
               </label>
-              <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().nombre" name="nombre" required />
-            </div>
-            <div class="space-y-1.5">
-              <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <span class="material-icons text-sm text-gray-400">person</span>
-                Apellidos
-              </label>
-              <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().apellidos" name="apellidos" required />
+              <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().paciente" name="paciente" required />
             </div>
           </div>
           <div class="grid grid-cols-2 gap-3">
@@ -69,15 +62,6 @@
             </div>
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <span class="material-icons text-sm text-gray-400">calendar_month</span>
-                Fecha de nacimiento
-              </label>
-              <input type="date" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().fechaNacimiento" name="fechaNacimiento" required />
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="space-y-1.5">
-              <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <span class="material-icons text-sm text-gray-400">wc</span>
                 Género
               </label>
@@ -87,6 +71,8 @@
                 <option>Otro</option>
               </select>
             </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                 <span class="material-icons text-sm text-gray-400">gpp_good</span>
@@ -111,22 +97,6 @@
                 Teléfono
               </label>
               <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().telefono" name="telefono" />
-            </div>
-            <div class="space-y-1.5">
-              <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <span class="material-icons text-sm text-gray-400">mail</span>
-                Correo electrónico
-              </label>
-              <input type="email" class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().correo" name="correo" />
-            </div>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div class="space-y-1.5">
-              <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                <span class="material-icons text-sm text-gray-400">public</span>
-                Nacionalidad
-              </label>
-              <input class="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition" [(ngModel)]="form().nacionalidad" name="nacionalidad" />
             </div>
             <div class="space-y-1.5">
               <label class="flex items-center gap-1.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">

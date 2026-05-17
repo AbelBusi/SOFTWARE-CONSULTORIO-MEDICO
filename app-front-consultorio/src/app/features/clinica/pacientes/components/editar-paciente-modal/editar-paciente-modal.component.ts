@@ -1,7 +1,7 @@
 import { Component, computed, input, OnInit, output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { type Paciente } from '../../interface/paciente.interface';
+import { PacienteInterface } from '../../interface/paciente.interface';
 
 @Component({
   selector: 'app-editar-paciente-modal',
@@ -10,14 +10,13 @@ import { type Paciente } from '../../interface/paciente.interface';
   templateUrl: './editar-paciente-modal.component.html',
 })
 export class EditarPacienteModalComponent implements OnInit {
-  paciente = input.required<Paciente>();
+  paciente = input.required<PacienteInterface>();
   close = output<void>();
-  save = output<Paciente>();
+  save = output<PacienteInterface>();
 
-  form = signal<Paciente>({} as Paciente);
+  form = signal<PacienteInterface>({} as PacienteInterface);
   saved = signal<boolean>(false);
 
-  // Lista de aseguradoras adaptada
   seguros = ['SIS', 'EsSalud', 'Rimac', 'Pacífico', 'Mapfre', 'Particular'];
 
   ngOnInit(): void {
@@ -28,8 +27,8 @@ export class EditarPacienteModalComponent implements OnInit {
 
   iniciales = computed(() => {
     const f = this.form();
-    if (!f.nombre || !f.apellidos) return '';
-    return `${f.nombre[0] ?? ''}${f.apellidos[0] ?? ''}`.toUpperCase();
+    if (!f || !f.paciente) return '';
+    return f.paciente[0].toUpperCase();
   });
 
   handleSubmit(): void {

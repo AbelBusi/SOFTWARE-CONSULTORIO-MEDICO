@@ -1,19 +1,9 @@
-export interface MensajeResponse<T> {
-  mensaje: string;
-  object: T;
-}
-
-export interface Paciente {
+export interface PacienteInterface {
   id: number;
   dni: string;
-  nombre: string;
-  apellidos: string;
-  fechaNacimiento: string;
+  paciente: string;
   genero: string;
   telefono: string;
-  nacionalidad: string;
-  correo: string;
   entidadAseguradora: string;
-  codigoAseguradora: string;
   estado: number;
 }

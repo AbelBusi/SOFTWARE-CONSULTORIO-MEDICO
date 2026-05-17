@@ -2,7 +2,7 @@ import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angul
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
-import { Paciente } from '../../interface/paciente.interface';
+import { PacienteInterface } from '../../interface/paciente.interface';
 import { DetallePacienteModalComponent } from '../../components/detalle-paciente-modal/detalle-paciente-modal.component';
 
 @Component({
@@ -16,12 +16,12 @@ export class ListaPacientesComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   search = signal<string>('');
-  sortField = signal<keyof Paciente>('apellidos');
+  sortField = signal<keyof PacienteInterface>('paciente');
   sortAsc = signal<boolean>(true);
-  selectedPaciente = signal<Paciente | null>(null);
+  selectedPaciente = signal<PacienteInterface | null>(null);
   cargando = signal<boolean>(false);
 
-  pacientesReal = signal<Paciente[]>([]);
+  pacientesReal = signal<PacienteInterface[]>([]);
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -31,9 +31,9 @@ export class ListaPacientesComponent implements OnInit {
 
   cargarPacientes(): void {
     this.cargando.set(true);
-    this.pacienteService.listarPacientesActivos().subscribe({
-      next: (res) => {
-        this.pacientesReal.set(res.object || []);
+    this.pacienteService.listarPacientes('ACTIVO').subscribe({
+      next: (pacientes) => {
+        this.pacientesReal.set(pacientes);
         this.cargando.set(false);
       },
       error: () => {
@@ -58,7 +58,7 @@ export class ListaPacientesComponent implements OnInit {
     const ascendente = this.sortAsc();
 
     return this.pacientesReal()
-      .filter((p) => `${p.nombre} ${p.apellidos} ${p.dni}`.toLowerCase().includes(texto))
+      .filter((p) => `${p.paciente} ${p.dni}`.toLowerCase().includes(texto))
       .sort((a, b) => {
         const av = String(a[campo] ?? '').toLowerCase();
         const bv = String(b[campo] ?? '').toLowerCase();
@@ -66,7 +66,7 @@ export class ListaPacientesComponent implements OnInit {
       });
   });
 
-  handleSort(field: keyof Paciente): void {
+  handleSort(field: keyof PacienteInterface): void {
     if (this.sortField() === field) {
       this.sortAsc.update((v) => !v);
     } else {
@@ -75,11 +75,11 @@ export class ListaPacientesComponent implements OnInit {
     }
   }
 
-  selectPaciente(paciente: Paciente): void {
+  selectPaciente(paciente: PacienteInterface): void {
     this.selectedPaciente.set(paciente);
   }
 
-  onPacienteUpdated(pacienteActualizado: Paciente): void {
+  onPacienteUpdated(pacienteActualizado: PacienteInterface): void {
     this.pacientesReal.update((lista) =>
       lista.map((p) => (p.id === pacienteActualizado.id ? pacienteActualizado : p)),
     );
