@@ -39,7 +39,7 @@ public class PacienteController {
 
             if (pacienteEstado.equals(pacienteEstado.ACTIVO)) {
 
-                List<PacienteActivoLeerDTO> pacientes = pacienteServicio.listarPacientesActivos();
+                List<PacienteLeerDTO> pacientes = pacienteServicio.listarPacientesActivos();
                 return new ResponseEntity<>(MensajeResponse.builder()
                         .mensaje("LISTA DE PACIENTES ACTIVOS")
                         .object(pacientes).build(), HttpStatus.OK);
@@ -47,7 +47,7 @@ public class PacienteController {
 
             if (pacienteEstado.equals(pacienteEstado.INACTIVO)) {
 
-                List<PacienteActivoLeerDTO> pacientes = pacienteServicio.listarPacientesInativos();
+                List<PacienteLeerDTO> pacientes = pacienteServicio.listarPacientesInativos();
                 return new ResponseEntity<>(MensajeResponse.builder()
                         .mensaje("LISTA DE PACIENTES INACTIVOS")
                         .object(pacientes).build(), HttpStatus.OK);

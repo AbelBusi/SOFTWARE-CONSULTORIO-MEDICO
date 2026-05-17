@@ -26,8 +26,8 @@ public interface IPacienteServicio{
 
     void eliminarPorId(Integer id);
 
-    List<PacienteActivoLeerDTO> listarPacientesActivos();
+    List<PacienteLeerDTO> listarPacientesActivos();
 
-    List<PacienteActivoLeerDTO> listarPacientesInativos();
+    List<PacienteLeerDTO> listarPacientesInativos();
 
 }

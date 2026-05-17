@@ -75,36 +75,46 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     void PacienteCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
 
     @Query("""
-    SELECT new com.salud.consultorio.dto.paciente.PacienteActivoLeerDTO(
+    SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
         p.id,
         pe.dni,
         pe.nombre,
         pe.apellidos,
+        pe.fechaNacimiento,
         pe.genero,
+        pe.telefono,
+        pe.nacionalidad,
+        pe.correo,
         p.entidadAseguradora,
+        p.codigoAseguradora,
         p.estado
     )
     FROM Paciente p
     JOIN p.persona pe
     WHERE p.estado=1
     """)
-    List<PacienteActivoLeerDTO> leerPacientesActivos();
+    List<PacienteLeerDTO> leerPacientesActivos();
 
     @Query("""
-    SELECT new com.salud.consultorio.dto.paciente.PacienteActivoLeerDTO(
+    SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
         p.id,
         pe.dni,
         pe.nombre,
         pe.apellidos,
+        pe.fechaNacimiento,
         pe.genero,
+        pe.telefono,
+        pe.nacionalidad,
+        pe.correo,
         p.entidadAseguradora,
+        p.codigoAseguradora,
         p.estado
     )
     FROM Paciente p
     JOIN p.persona pe
     WHERE p.estado=0
     """)
-    List<PacienteActivoLeerDTO> leerPacientesInactivos();
+    List<PacienteLeerDTO> leerPacientesInactivos();
 
 
 }

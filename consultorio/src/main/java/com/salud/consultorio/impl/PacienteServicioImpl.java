@@ -91,12 +91,12 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     @Transactional(readOnly = true)
     @Override
-    public List<PacienteActivoLeerDTO> listarPacientesActivos() {
+    public List<PacienteLeerDTO> listarPacientesActivos() {
         return pacienteRepositorio.leerPacientesActivos();
     }
 
     @Override
-    public List<PacienteActivoLeerDTO> listarPacientesInativos() {
+    public List<PacienteLeerDTO> listarPacientesInativos() {
         return pacienteRepositorio.leerPacientesInactivos();
     }
 
