@@ -39,13 +39,21 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     List<PacienteLeerDTO> leerPacientes();
 
     @Query("""
-    SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
+SELECT new com.salud.consultorio.dto.paciente.PacienteDetalleLeerDTO(
         p.id,
-        CONCAT(pe.nombre, ' ', pe.apellidos),
-        pe.dni,
-        pe.genero,
-        pe.telefono,
+        new com.salud.consultorio.dto.persona.PersonaLeerDTO(
+            pe.id, 
+            pe.dni, 
+            pe.nombre, 
+            pe.apellidos, 
+            pe.fechaNacimiento, 
+            pe.genero, 
+            pe.telefono, 
+            pe.nacionalidad, 
+            pe.correo
+        ),
         p.entidadAseguradora,
+        p.codigoAseguradora,
         p.estado
     )
     FROM Paciente p
@@ -53,6 +61,7 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
     WHERE p.id = :id
     """)
     Optional<PacienteDetalleLeerDTO> traerPacientePorId(@Param("id") Integer id);
+
 
     @Query("SELECT p FROM Paciente p JOIN FETCH p.persona WHERE p.id= :id")
     Optional<Paciente> findAlTPacientes(@Param("id") Integer id);
