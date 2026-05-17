@@ -30,10 +30,22 @@ export const routes: Routes = [
 
       {
         path: 'pacientes',
-        loadComponent: () =>
-          import('./features/clinica/pacientes/pages/lista-pacientes/lista-pacientes.component').then(
-            (m) => m.ListaPacientesComponent,
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/clinica/pacientes/pages/lista-pacientes/lista-pacientes.component').then(
+                (m) => m.ListaPacientesComponent,
+              ),
+          },
+          {
+            path: 'nuevo',
+            loadComponent: () =>
+              import('./features/clinica/pacientes/pages/crear-paciente/crear-paciente.component').then(
+                (m) => m.CrearPacienteComponent,
+              ),
+          },
+        ],
       },
 
       {
