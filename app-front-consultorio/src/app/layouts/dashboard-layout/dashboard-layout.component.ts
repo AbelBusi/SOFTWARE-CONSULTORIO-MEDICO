@@ -22,7 +22,6 @@ interface NavItem {
 })
 export class DashboardLayoutComponent {
   open = true;
-
   expandedItem: string | null = 'Citas';
 
   navItems: NavItem[] = [
@@ -36,11 +35,10 @@ export class DashboardLayoutComponent {
         },
         {
           label: 'Nueva cita',
-          route: '/dashboard/citas/nueva',
+          route: '/dashboard/citas/nuevo',
         },
       ],
     },
-
     {
       label: 'Pacientes',
       icon: 'groups',
@@ -55,7 +53,6 @@ export class DashboardLayoutComponent {
         },
       ],
     },
-
     {
       label: 'Doctores',
       icon: 'person',
@@ -70,7 +67,6 @@ export class DashboardLayoutComponent {
         },
       ],
     },
-
     {
       label: 'Especialidades',
       icon: 'sell',
@@ -85,16 +81,21 @@ export class DashboardLayoutComponent {
 
   toggleSidebar() {
     this.open = !this.open;
+    if (!this.open) {
+      this.expandedItem = null;
+    }
   }
 
   toggleMenu(label: string) {
+    if (!this.open) {
+      this.open = true;
+    }
     this.expandedItem = this.expandedItem === label ? null : label;
   }
 
   logout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-
     window.location.href = '/login';
   }
 }

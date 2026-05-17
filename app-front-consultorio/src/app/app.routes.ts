@@ -22,10 +22,22 @@ export const routes: Routes = [
 
       {
         path: 'citas',
-        loadComponent: () =>
-          import('./shared/components/empty-page/empty-page.component').then(
-            (m) => m.EmptyPageComponent,
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/clinica/citas/pages/lista-citas/citas.component').then(
+                (m) => m.CitasComponent, // Asegúrate de que el class exportado en ese archivo se llame CitasComponent
+              ),
+          },
+          {
+            path: 'nuevo',
+            loadComponent: () =>
+              import('./features/clinica/citas/pages/crear-cita/crear-cita.component').then(
+                (m) => m.CrearCitaComponent,
+              ),
+          },
+        ],
       },
 
       {
