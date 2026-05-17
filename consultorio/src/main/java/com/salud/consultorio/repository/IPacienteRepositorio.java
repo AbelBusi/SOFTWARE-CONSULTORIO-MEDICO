@@ -76,8 +76,8 @@ SELECT new com.salud.consultorio.dto.paciente.PacienteDetalleLeerDTO(
     @Query("""
     SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
         p.id,
-        CONCAT(pe.nombre, ' ', pe.apellidos),
         pe.dni,
+        CONCAT(pe.nombre, ' ', pe.apellidos),
         pe.genero,
         pe.telefono,
         p.entidadAseguradora,
@@ -91,8 +91,8 @@ SELECT new com.salud.consultorio.dto.paciente.PacienteDetalleLeerDTO(
     @Query("""
     SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
         p.id,
-        CONCAT(pe.nombre, ' ', pe.apellidos),
         pe.dni,
+        CONCAT(pe.nombre, ' ', pe.apellidos),
         pe.genero,
         pe.telefono,
         p.entidadAseguradora,
@@ -107,8 +107,8 @@ SELECT new com.salud.consultorio.dto.paciente.PacienteDetalleLeerDTO(
     @Query("""
     SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
         p.id,
-        CONCAT(pe.nombre, ' ', pe.apellidos),
         pe.dni,
+        CONCAT(pe.nombre, ' ', pe.apellidos),
         pe.genero,
         pe.telefono,
         p.entidadAseguradora,

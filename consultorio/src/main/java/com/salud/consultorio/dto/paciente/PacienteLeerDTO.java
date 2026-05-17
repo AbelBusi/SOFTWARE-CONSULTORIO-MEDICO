@@ -17,10 +17,10 @@ public class PacienteLeerDTO {
     private String entidadAseguradora;
     private Integer estado;
 
-    public PacienteLeerDTO(Integer id, String dni, String nombres, String genero, String telefono, String entidadAseguradora, Integer estado) {
+    public PacienteLeerDTO(Integer id, String dni, String paciente, String genero, String telefono, String entidadAseguradora, Integer estado) {
         this.id = id;
         this.dni = dni;
-        this.paciente = nombres;
+        this.paciente = paciente;
         this.genero = genero;
         this.telefono = telefono;
         this.entidadAseguradora = entidadAseguradora;
