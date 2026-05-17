@@ -1,38 +1,24 @@
 import { Component, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { DetalleDoctorModalComponent } from '../../components/detalle-doctor-modal/detalle-doctor-modal.component';
 
-export interface Doctor {
-  id: number;
-  nombre: string;
-  apellido: string;
-  especialidad: string;
-  cmp: string;
-  telefono: string;
-  email: string;
-  turno: 'Mañana' | 'Tarde' | 'Noche' | 'Completo';
-  estado: 'activo' | 'inactivo';
-  rating: number;
-  pacientesAtendidos: number;
-  diasAtencion: string[];
-}
+// 1. Importa la interfaz global para evitar duplicados incompatibles
+import { type Doctor } from '../../doctor.interface';
 
 @Component({
   selector: 'app-lista-doctores',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, DetalleDoctorModalComponent],
   templateUrl: './lista-doctores.component.html',
 })
 export class ListaDoctoresComponent {
-  // Estado inicial con Signals
   search = signal<string>('');
   filtroEspecialidad = signal<string>('');
   sortField = signal<keyof Doctor>('apellido');
   sortAsc = signal<boolean>(true);
   selectedDoctor = signal<Doctor | null>(null);
 
-  // Mock de datos idéntico a tu React
   MOCK_DOCTORES = signal<Doctor[]>([
     {
       id: 1,
@@ -120,7 +106,6 @@ export class ListaDoctoresComponent {
     },
   ]);
 
-  // Diccionario de colores para los turnos
   turnoColors: Record<string, string> = {
     Mañana: 'bg-amber-50 text-amber-700 border-amber-200',
     Tarde: 'bg-blue-50 text-blue-700 border-blue-200',
@@ -128,13 +113,11 @@ export class ListaDoctoresComponent {
     Completo: 'bg-green-50 text-green-700 border-green-200',
   };
 
-  // Extraer las especialidades únicas de forma reactiva
   especialidades = computed(() => {
     const lista = this.MOCK_DOCTORES().map((d) => d.especialidad);
     return [...new Set(lista)].sort();
   });
 
-  // Estadísticas computadas en tiempo real
   stats = computed(() => [
     {
       title: 'Total Doctores',
@@ -159,7 +142,6 @@ export class ListaDoctoresComponent {
     },
   ]);
 
-  // Filtrado y ordenamiento reactivo fusionado con computed
   filteredDoctores = computed(() => {
     const texto = this.search().toLowerCase();
     const esp = this.filtroEspecialidad();
@@ -192,5 +174,15 @@ export class ListaDoctoresComponent {
 
   selectDoctor(doctor: Doctor): void {
     this.selectedDoctor.set(doctor);
+  }
+
+  onDoctorUpdated(doctorActualizado: Doctor): void {
+    this.MOCK_DOCTORES.update((lista) =>
+      lista.map((d) => (d.id === doctorActualizado.id ? doctorActualizado : d)),
+    );
+
+    if (this.selectedDoctor()?.id === doctorActualizado.id) {
+      this.selectedDoctor.set(doctorActualizado);
+    }
   }
 }

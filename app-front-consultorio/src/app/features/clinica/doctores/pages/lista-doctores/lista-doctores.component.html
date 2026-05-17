@@ -191,5 +191,10 @@
   </div>
 
   @if(selectedDoctor()) {
+    <app-detalle-doctor-modal
+      [doctor]="selectedDoctor()"
+      (close)="selectedDoctor.set(null)"
+      (updateDoctor)="onDoctorUpdated($event)"
+    />
   }
 </div>
