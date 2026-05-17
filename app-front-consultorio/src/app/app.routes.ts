@@ -1,14 +1,18 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { publicGuard } from './core/guards/public.guard';
 
 export const routes: Routes = [
   {
     path: 'login',
+    canActivate: [publicGuard], // Impide que usuarios logueados entren aquí
     loadComponent: () =>
       import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
   },
 
   {
     path: 'dashboard',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./layouts/dashboard-layout/dashboard-layout.component').then(
         (m) => m.DashboardLayoutComponent,
@@ -19,7 +23,6 @@ export const routes: Routes = [
         redirectTo: 'citas',
         pathMatch: 'full',
       },
-
       {
         path: 'citas',
         children: [
@@ -27,7 +30,7 @@ export const routes: Routes = [
             path: '',
             loadComponent: () =>
               import('./features/clinica/citas/pages/lista-citas/citas.component').then(
-                (m) => m.CitasComponent, // Asegúrate de que el class exportado en ese archivo se llame CitasComponent
+                (m) => m.CitasComponent,
               ),
           },
           {
@@ -39,7 +42,6 @@ export const routes: Routes = [
           },
         ],
       },
-
       {
         path: 'pacientes',
         children: [
@@ -59,7 +61,6 @@ export const routes: Routes = [
           },
         ],
       },
-
       {
         path: 'doctores',
         children: [
@@ -79,7 +80,6 @@ export const routes: Routes = [
           },
         ],
       },
-
       {
         path: 'especialidades',
         loadComponent: () =>

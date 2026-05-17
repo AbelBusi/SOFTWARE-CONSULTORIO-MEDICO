@@ -1,6 +1,8 @@
 import { Component, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -12,8 +14,8 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   onLogin = output<void>();
 
-  // Inyectamos el Router de Angular usando la sintaxis moderna de inject()
   private router = inject(Router);
+  private authService = inject(AuthService); // Inyectamos el servicio de autenticación
 
   showPass = signal<boolean>(false);
   usuario = signal<string>('');
@@ -34,6 +36,7 @@ export class LoginComponent {
 
   handleSubmit(event: Event): void {
     event.preventDefault();
+
     if (!this.usuario() || !this.claveAcceso()) {
       this.error.set('Por favor, ingresa tus credenciales.');
       return;
@@ -43,18 +46,29 @@ export class LoginComponent {
     this.error.set(null);
     this.serverError.set(null);
 
-    console.log('Datos listos para enviar a Java:', {
+    const credenciales = {
       usuario: this.usuario(),
       claveAcceso: this.claveAcceso(),
+    };
+
+    this.authService.login(credenciales).subscribe({
+      next: (response) => {
+        this.cargando.set(false);
+        this.onLogin.emit();
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.cargando.set(false);
+
+        if (err.status === 401 || err.status === 403) {
+          this.serverError.set('Usuario o contraseña incorrectos.');
+        } else if (err.status === 0) {
+          this.serverError.set('No hay conexión con el servidor del backend.');
+        } else {
+          this.serverError.set('Ocurrió un error inesperado en el sistema.');
+        }
+      },
     });
-
-    setTimeout(() => {
-      this.cargando.set(false);
-
-      this.onLogin.emit();
-
-      this.router.navigate(['/dashboard']);
-    }, 1200);
   }
 
   closeServerError(): void {

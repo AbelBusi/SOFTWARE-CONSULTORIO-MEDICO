@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 interface SubNavItem {
   label: string;
@@ -21,6 +22,9 @@ interface NavItem {
   templateUrl: './dashboard-layout.component.html',
 })
 export class DashboardLayoutComponent {
+  private http = inject(HttpClient);
+  private router = inject(Router);
+
   open = true;
   expandedItem: string | null = 'Citas';
 
@@ -94,8 +98,36 @@ export class DashboardLayoutComponent {
   }
 
   logout() {
+    const token = localStorage.getItem('access_token');
+
+    if (!token) {
+      this.limpiarSesionLocal();
+      return;
+    }
+
+    this.http
+      .post(
+        '/auth/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      )
+      .subscribe({
+        next: () => {
+          this.limpiarSesionLocal();
+        },
+        error: () => {
+          this.limpiarSesionLocal();
+        },
+      });
+  }
+
+  private limpiarSesionLocal() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
-    window.location.href = '/login';
+    this.router.navigate(['/login']);
   }
 }
