@@ -9,12 +9,10 @@ export const routes: Routes = [
 
   {
     path: 'dashboard',
-
     loadComponent: () =>
       import('./layouts/dashboard-layout/dashboard-layout.component').then(
         (m) => m.DashboardLayoutComponent,
       ),
-
     children: [
       {
         path: '',
@@ -22,7 +20,6 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
 
-      // TEMPORAL
       {
         path: 'citas',
         loadComponent: () =>
@@ -41,10 +38,22 @@ export const routes: Routes = [
 
       {
         path: 'doctores',
-        loadComponent: () =>
-          import('./shared/components/empty-page/empty-page.component').then(
-            (m) => m.EmptyPageComponent,
-          ),
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/clinica/doctores/pages/lista-doctores/lista-doctores.component').then(
+                (m) => m.ListaDoctoresComponent,
+              ),
+          },
+          {
+            path: 'nuevo',
+            loadComponent: () =>
+              import('./features/clinica/doctores/pages/crear-doctor/crear-doctor.component').then(
+                (m) => m.CrearDoctorComponent,
+              ),
+          },
+        ],
       },
 
       {
