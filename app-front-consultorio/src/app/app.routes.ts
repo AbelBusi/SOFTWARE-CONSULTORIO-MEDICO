@@ -71,8 +71,8 @@ export const routes: Routes = [
       {
         path: 'especialidades',
         loadComponent: () =>
-          import('./shared/components/empty-page/empty-page.component').then(
-            (m) => m.EmptyPageComponent,
+          import('./features/clinica/especialidad/pages/lista-especialidad/lista-especialidad.component').then(
+            (m) => m.ListaEspecialidadComponent,
           ),
       },
     ],
