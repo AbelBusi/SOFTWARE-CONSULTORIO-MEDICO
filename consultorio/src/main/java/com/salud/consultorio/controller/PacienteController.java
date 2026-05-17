@@ -73,7 +73,7 @@ public class PacienteController {
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerPacientePorID(@PathVariable Integer id){
 
-        PacienteLeerDTO dto = pacienteServicio.traerPacientePorId(id);
+        PacienteDetalleLeerDTO dto = pacienteServicio.traerPacientePorId(id);
         if (dto==null){
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("El paciente no existe")

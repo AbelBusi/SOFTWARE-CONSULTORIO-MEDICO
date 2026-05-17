@@ -12,7 +12,7 @@ public interface IPacienteServicio{
 
     List<NombrePacientesDTO> listarPacientesDtoList();
 
-    PacienteLeerDTO traerPacientePorId(Integer id);
+    PacienteDetalleLeerDTO traerPacientePorId(Integer id);
 
     List<PacienteLeerDTO> listarPacientes();
 

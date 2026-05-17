@@ -92,12 +92,12 @@ public class PacienteServicioImpl implements IPacienteServicio {
     @Transactional(readOnly = true)
     @Override
     public List<PacienteLeerDTO> listarPacientesActivos() {
-        return pacienteRepositorio.leerPacientesActivos();
+        return pacienteRepositorio.leerPacientesAllActivos();
     }
 
     @Override
     public List<PacienteLeerDTO> listarPacientesInativos() {
-        return pacienteRepositorio.leerPacientesInactivos();
+        return pacienteRepositorio.leerPacientesAllInactivos();
     }
 
     @Transactional(readOnly = true)
@@ -108,13 +108,13 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     @Transactional(readOnly = true)
     @Override
-    public PacienteLeerDTO traerPacientePorId(Integer id) {
+    public PacienteDetalleLeerDTO traerPacientePorId(Integer id) {
         return pacienteRepositorio.traerPacientePorId(id).orElseThrow(()-> new EntityNotFoundException("No existe el paciente"));
     }
 
     @Transactional(readOnly = true)
     @Override
     public List<PacienteLeerDTO> listarPacientes() {
-        return pacienteRepositorio.leerPacientes();
+        return pacienteRepositorio.leerPacientesAll();
     }
 }
