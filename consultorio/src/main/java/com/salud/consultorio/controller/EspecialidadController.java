@@ -1,10 +1,6 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.dto.doctor.DoctorActualizarDTO;
-import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
-import com.salud.consultorio.dto.doctor.DoctorRespuestaDTO;
 import com.salud.consultorio.dto.especialidad.*;
-import com.salud.consultorio.model.entity.Especialidad;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IEspecialidadServicio;
@@ -19,7 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/especialidades")
 @RequiredArgsConstructor
-public class EspcialidadController {
+public class EspecialidadController {
 
     private final IEspecialidadServicio especialidadServicio;
 
@@ -62,6 +58,7 @@ public class EspcialidadController {
                 .object(especialidades).build(),HttpStatus.OK);
 
     }
+
 
     @GetMapping("/resumen")
     public ResponseEntity<MensajeResponse> listaNombres() {
