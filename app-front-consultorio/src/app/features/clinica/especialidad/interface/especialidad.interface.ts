@@ -1,0 +1,22 @@
+export interface Especialidad {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  estado: number;
+}
+
+export interface EspecialidadCrearDTO {
+  nombre: string;
+  descripcion: string;
+  estado: number;
+}
+
+export interface MensajeResponse {
+  mensaje: string;
+  object: Especialidad[];
+}
+
+export interface MensajeResponseSingle {
+  mensaje: string;
+  object: Especialidad;
+}
