@@ -1,19 +1,33 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.model.dto.*;
+import com.salud.consultorio.dto.paciente.*;
+import com.salud.consultorio.dto.paciente.NombrePacientesDTO;
 import com.salud.consultorio.model.entity.Paciente;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface IPacienteServicio extends IBasicoServicio<Paciente, PacienteCrearDTO,Integer>{
+public interface IPacienteServicio{
 
 
     List<NombrePacientesDTO> listarPacientesDtoList();
 
-    LeerPacienteDTO traerPaciente(Integer id);
+    PacienteDetalleLeerDTO traerPacientePorId(Integer id);
 
-    List<LeerPacienteDTO> listarPacientes();
+    List<PacienteLeerDTO> listarPacientes();
 
     PacienteRespuestaDTO actualizarRespuesta(PacienteActualizarDTO actualizarDTO, Integer id);
+
+    Optional<Paciente> obtenerPorId(Integer id);
+
+    Boolean existePaciente(Integer id);
+
+    PacienteRespuestaDTO crear(PacienteCrearDTO dto);
+
+    void eliminarPorId(Integer id);
+
+    List<PacienteLeerDTO> listarPacientesActivos();
+
+    List<PacienteLeerDTO> listarPacientesInativos();
 
 }

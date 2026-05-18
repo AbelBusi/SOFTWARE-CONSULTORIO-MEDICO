@@ -1,8 +1,11 @@
 package com.salud.consultorio.servicios;
 
+import com.salud.consultorio.dto.citaMedica.*;
+import com.salud.consultorio.dto.persona.PersonaCrearDTO;
+import com.salud.consultorio.dto.recepcionista.RecepcionistaRefCitaMedicaDTO;
 import com.salud.consultorio.impl.CitaMedicaServicioImpl;
 import com.salud.consultorio.impl.ReferenciaServicio;
-import com.salud.consultorio.model.dto.*;
+import com.salud.consultorio.dto.paciente.PacienteCrearDTO;
 import com.salud.consultorio.model.entity.*;
 import com.salud.consultorio.model.mapper.ICitaMedicaMapper;
 import com.salud.consultorio.model.mapper.IPacienteMapper;
@@ -116,7 +119,7 @@ class CitaMedicaServicioImplTest {
     // =========================
     @Test
     void actualizarCita_ok() {
-        var dto = mock(ActualizarCitaMedicaDTO.class);
+        var dto = mock(CitaMedicaActualizarDTO.class);
 
         when(citaRepo.findById(1)).thenReturn(Optional.of(cita));
 
@@ -154,7 +157,7 @@ class CitaMedicaServicioImplTest {
     // =========================
     @Test
     void actualizarCita_notFound() {
-        var dto = mock(ActualizarCitaMedicaDTO.class);
+        var dto = mock(CitaMedicaActualizarDTO.class);
 
         when(citaRepo.findById(1)).thenReturn(Optional.empty());
 

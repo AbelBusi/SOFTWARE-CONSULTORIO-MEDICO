@@ -1,9 +1,7 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.model.dto.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.model.dto.CitaMedicaDTO;
-import com.salud.consultorio.model.dto.LeerCitaMedicaDTO;
-import com.salud.consultorio.model.entity.CitaMedica;
+import com.salud.consultorio.dto.citaMedica.*;
+import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.ICitaMedicaServicio;
 import jakarta.validation.Valid;
@@ -22,30 +20,20 @@ public class CitaMedicaController {
     private final ICitaMedicaServicio citaMedicaServicio;
 
     @PostMapping
-    public ResponseEntity<MensajeResponse> crearCitaMedicaNuevoPaciente(@Valid @RequestBody CitaMedicaDTO citaMedicaDTO){
+    public ResponseEntity<MensajeResponse> crear(@Valid @RequestBody CitaMedicaCrearDTO dto){
 
-        CitaMedica citaMedica =citaMedicaServicio.crear(citaMedicaDTO);
+        CitaMedicaRespuestaDTO citaMedica =citaMedicaServicio.crearCita(dto);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Cita Medica agregada con exito")
-                .object(citaMedicaDTO).build(), HttpStatus.CREATED);
+                .object(citaMedica).build(), HttpStatus.CREATED);
 
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerCitaMedica(@PathVariable Integer id){
 
-        CitaMedica citaMedica = citaMedicaServicio.obtenerPorId(id).get();
-
-        if (citaMedica==null){
-
-            return new ResponseEntity<>(MensajeResponse.builder()
-                    .mensaje("El registro que intenta buscar, no existe")
-                    .object(null).build(), HttpStatus.NOT_FOUND);
-
-        }
-
-        CitaMedicaDTO dto= citaMedicaServicio.mostrarCitaMedicaPorId(citaMedica);
+        CitaMedicaLeerDTO dto= citaMedicaServicio.mostrarCitaMedicaPorId(id);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Cita Medica encontrada")
@@ -54,39 +42,43 @@ public class CitaMedicaController {
     }
 
     @GetMapping
-    public ResponseEntity<MensajeResponse> leerCitasMedicas(){
+    public ResponseEntity<MensajeResponse> leerCitas(
+            @RequestParam(required = false,name = "estado") EntidadEstado estado){
 
-        List<LeerCitaMedicaDTO> leerCitas = citaMedicaServicio.leerCitasMedicas();
+        if (estado!=null){
 
-        if (leerCitas==null){
+            if (estado.equals(estado.ACTIVO)){
+                List<CitaMedicaLeerDTO> doctores =citaMedicaServicio.leerCitasMedicasActivas();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE CITAS MEDICAS POR ESTADO ACTIVO")
+                        .object(doctores).build(),HttpStatus.OK);
+            }
 
-            return new ResponseEntity<>(MensajeResponse.builder()
-                    .mensaje("No existen citas todavia")
-                    .object(null).build(),HttpStatus.NOT_FOUND);
+            if (estado.equals(estado.INACTIVO)){
+                List<CitaMedicaLeerDTO> doctores =citaMedicaServicio.leerCitasMedicasInactivas();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE CITAS MEDICAS POR ESTADO INACTIVO")
+                        .object(doctores).build(),HttpStatus.OK);
+            }
 
         }
+        List<CitaMedicaLeerDTO> doctores =citaMedicaServicio.leerCitasMedicas();
+
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE CITAS MEDICAS")
-                .object(leerCitas).build(), HttpStatus.OK);
-
+                .object(doctores).build(),HttpStatus.OK);
 
     }
 
+
     @PutMapping("/{id}")
-    public ResponseEntity<MensajeResponse> actualizarCitaMedica(@PathVariable Integer id, @Valid @RequestBody ActualizarCitaMedicaDTO actualizarCitaMedicaDTO){
+    public ResponseEntity<MensajeResponse> actualizarCitaMedica(@PathVariable Integer id, @Valid @RequestBody CitaMedicaActualizarDTO citaMedicaActualizarDTO){
 
-        if (!citaMedicaServicio.obtenerPorId(id).isPresent()){
-
-            return new ResponseEntity<>(MensajeResponse.builder()
-                    .mensaje("La cita que desea actualizar no se encuentra en la entidad.")
-                    .object(null).build(), HttpStatus.NOT_FOUND);
-        }
-
-        CitaMedica citaMedica = citaMedicaServicio.actualizarCita(actualizarCitaMedicaDTO,id);
+        CitaMedicaActualizarRespuestaDTO citaMedica = citaMedicaServicio.actualizar(citaMedicaActualizarDTO,id);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Cita Medica actualizada con exito")
-                .object(actualizarCitaMedicaDTO).build(), HttpStatus.CREATED);
+                .object(citaMedica).build(), HttpStatus.CREATED);
 
     }
 

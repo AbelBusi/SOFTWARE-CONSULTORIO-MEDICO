@@ -1,9 +1,11 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.model.dto.EspecialidadDTO;
-import com.salud.consultorio.model.dto.NombreDoctoresDTO;
-import com.salud.consultorio.model.dto.NombreEspecialidadesDTO;
+import com.salud.consultorio.dto.doctor.DoctorActualizarDTO;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
+import com.salud.consultorio.dto.doctor.DoctorRespuestaDTO;
+import com.salud.consultorio.dto.especialidad.*;
 import com.salud.consultorio.model.entity.Especialidad;
+import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IEspecialidadServicio;
 import jakarta.validation.Valid;
@@ -22,13 +24,42 @@ public class EspcialidadController {
     private final IEspecialidadServicio especialidadServicio;
 
     @PostMapping
-    public ResponseEntity<?> crearEspecialidad(@Valid @RequestBody EspecialidadDTO especialidadDTO){
+    public ResponseEntity<MensajeResponse> crearEspecialidad(@Valid @RequestBody EspecialidadCrearDTO especialidadCrearDTO){
 
-        Especialidad especialidad =especialidadServicio.crear(especialidadDTO);
+        EspecialidadRespuestaDTO especialidad =especialidadServicio.crear(especialidadCrearDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Especialidad agregada con exito")
-                .object(especialidadDTO).build(), HttpStatus.CREATED);
+                .object(especialidad).build(), HttpStatus.CREATED);
+
+    }
+
+    @GetMapping
+    public ResponseEntity<MensajeResponse> leerEspecialidades(
+            @RequestParam(required = false,name = "estado") EntidadEstado estado){
+
+        if (estado!=null){
+
+            if (estado.equals(estado.ACTIVO)){
+                List<EspecialidadLeerDTO> especialidades =especialidadServicio.listarActivos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE ESPECIALIDADES POR ESTADO ACTIVO")
+                        .object(especialidades).build(),HttpStatus.OK);
+            }
+
+            if (estado.equals(estado.INACTIVO)){
+                    List<EspecialidadLeerDTO> especialidades =especialidadServicio.listarInactivo();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE ESPECIALIDADES POR ESTADO INACTIVO")
+                        .object(especialidades).build(),HttpStatus.OK);
+            }
+
+        }
+        List<EspecialidadLeerDTO> especialidades =especialidadServicio.listarTodos();
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("LISTA DE ESPECIALIDADES")
+                .object(especialidades).build(),HttpStatus.OK);
 
     }
 
@@ -46,6 +77,42 @@ public class EspcialidadController {
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE ESPECIALIDADES")
                 .object(leerNombreEspecialidadesDTOS).build(), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MensajeResponse> leerEspecialidadPorId(@PathVariable Integer id){
+
+        EspecialidadLeerDTO leer = especialidadServicio.leerPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Informacion del especialidad solicitado")
+                .object(leer).build(),HttpStatus.OK);
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MensajeResponse> actualizarEspecialidad(
+            @PathVariable Integer id,
+            @Valid @RequestBody EspecialidadActualizarDTO dto){
+
+        EspecialidadRespuestaDTO respuesta = especialidadServicio.actualizar(dto,id);
+
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Especialidad actualizada con exito")
+                .object(respuesta).build(), HttpStatus.CREATED);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensajeResponse> eliminarEspecialidadPorId(@PathVariable Integer id){
+
+        especialidadServicio.eliminarPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Especialidad eliminada con exito")
+                .object(null).build(),HttpStatus.NO_CONTENT);
+
     }
 
 }

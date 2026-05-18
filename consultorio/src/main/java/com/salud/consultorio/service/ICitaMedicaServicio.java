@@ -1,19 +1,34 @@
 package com.salud.consultorio.service;
 
-import com.salud.consultorio.model.dto.ActualizarCitaMedicaDTO;
-import com.salud.consultorio.model.dto.CitaMedicaDTO;
-import com.salud.consultorio.model.dto.LeerCitaMedicaDTO;
+import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.entity.CitaMedica;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
-public interface ICitaMedicaServicio extends IBasicoServicio<CitaMedica, CitaMedicaDTO, Integer>{
+public interface ICitaMedicaServicio{
 
-    CitaMedicaDTO mostrarCitaMedicaPorId(CitaMedica citaMedica);
+    CitaMedicaLeerDTO mostrarCitaMedicaPorId(Integer id);
 
-    List<LeerCitaMedicaDTO> leerCitasMedicas();
+    List<CitaMedicaLeerDTO> leerCitasMedicas();
 
-    CitaMedica actualizarCita(ActualizarCitaMedicaDTO actualizarCitaMedicaDTO, Integer id);
+    List<CitaMedicaLeerDTO> leerCitasMedicasActivas();
 
+    List<CitaMedicaLeerDTO> leerCitasMedicasInactivas();
 
+    CitaMedicaActualizarRespuestaDTO actualizar(CitaMedicaActualizarDTO citaMedicaActualizarDTO, Integer id);
+
+    List<CitaMedica> listarTodos();
+
+    CitaMedicaRespuestaDTO crearCita(CitaMedicaCrearDTO dto);
+
+    Optional<CitaMedica> obtenerPorId(Integer id);
+
+    boolean cruceHorarios(LocalDate fecha, LocalTime horaSalida, LocalTime horaEntrada);
+
+    CitaMedica crear(CitaMedicaDTO dto);
+
+    void eliminarPorId(Integer id);
 }

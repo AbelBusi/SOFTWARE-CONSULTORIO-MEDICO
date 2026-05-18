@@ -1,12 +1,17 @@
 package com.salud.consultorio.repository;
 
-import com.salud.consultorio.model.dto.NombreDoctoresDTO;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT;
+import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
@@ -20,5 +25,91 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
     INNER JOIN persona pe ON d.id_persona = pe.id
 """, nativeQuery = true)
     List<NombreDoctoresDTO> listarDoctoresResumen();
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO(
+        d.id,
+        d.cpm,
+        p.nombre,
+        p.apellidos,
+        e.nombre,
+        p.genero,
+        d.estado    
+    )
+    FROM Doctor d
+    JOIN d.persona p
+    JOIN d.especialidad e
+    """)
+    List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidades();
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO(
+        d.id,
+        d.cpm,
+        p.nombre,
+        p.apellidos,
+        e.nombre,
+        p.genero,
+        d.estado    
+    )
+    FROM Doctor d
+    JOIN d.persona p
+    JOIN d.especialidad e
+    WHERE d.id=:id
+    """)
+    Optional<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidadesPorId(@Param("id")Integer id);
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO(
+        d.id,
+        d.cpm,
+        p.nombre,
+        p.apellidos,
+        e.nombre,
+        p.genero,
+        d.estado    
+    )
+    FROM Doctor d
+    JOIN d.persona p
+    JOIN d.especialidad e
+    WHERE d.estado=1
+    """)
+    List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidadesActivos();
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO(
+        d.id,
+        d.cpm,
+        p.nombre,
+        p.apellidos,
+        e.nombre,
+        p.genero,
+        d.estado    
+    )
+    FROM Doctor d
+    JOIN d.persona p
+    JOIN d.especialidad e
+    WHERE d.estado=0
+    """)
+    List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidadesInactivos();
+
+    @Query("SELECT d FROM Doctor d  JOIN FETCH d.persona JOIN FETCH d.especialidad WHERE d.id = :id")
+    Optional<Doctor> findByIdConPersona(@Param("id") Integer id);
+
+    @Modifying
+    @Query("UPDATE Doctor d SET d.estado =:estado WHERE d.id=:id" )
+    void DoctorCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
+
+    @Query("""
+   SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT(
+      d.id,
+      CONCAT(p.nombre, ' ', p.apellidos) AS nombre
+   )
+   FROM Doctor d
+   JOIN d.persona p
+   WHERE d.especialidad.id=:id
+   AND d.estado=1
+    """)
+    List<DoctorEspecialidadPorIdDT> listaDoctoresEspecialidadSeleccionada(@Param("id") Integer id);
 
 }

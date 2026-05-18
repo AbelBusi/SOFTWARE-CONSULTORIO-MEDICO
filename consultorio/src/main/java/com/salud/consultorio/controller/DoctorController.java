@@ -1,9 +1,7 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.model.dto.DoctorDTO;
-import com.salud.consultorio.model.dto.NombreDoctoresDTO;
-import com.salud.consultorio.model.dto.NombrePacientesDTO;
-import com.salud.consultorio.model.entity.Doctor;
+import com.salud.consultorio.dto.doctor.*;
+import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IDoctorServicio;
 import jakarta.validation.Valid;
@@ -22,13 +20,13 @@ public class DoctorController {
     private final IDoctorServicio doctorServicio;
 
     @PostMapping
-    public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorDTO doctorDTO){
+    public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorCrearDTO doctorCrearDTO){
 
-        Doctor doctor =doctorServicio.crear(doctorDTO);
+        DoctorRespuestaDTO doctor =doctorServicio.crear(doctorCrearDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Doctor agregado con exito")
-                .object(doctorDTO).build(), HttpStatus.CREATED);
+                .object(doctorCrearDTO).build(), HttpStatus.CREATED);
 
     }
 
@@ -46,6 +44,82 @@ public class DoctorController {
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE DOCTORES")
                 .object(leerNombreDoctoresDTOS).build(), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<MensajeResponse> leerDoctores(
+            @RequestParam(required = false,name = "estado") EntidadEstado estado){
+
+        if (estado!=null){
+
+            if (estado.equals(estado.ACTIVO)){
+                List<DoctorEspecialidadLeerDTO> doctores =doctorServicio.todosDoctoresEspecialidadActivos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE DOCTORES POR ESTADO ACTIVO")
+                        .object(doctores).build(),HttpStatus.OK);
+            }
+
+            if (estado.equals(estado.INACTIVO)){
+                List<DoctorEspecialidadLeerDTO> doctores =doctorServicio.todosDoctoresEspecialidadInactivos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE DOCTORES POR ESTADO INACTIVO")
+                        .object(doctores).build(),HttpStatus.OK);
+            }
+
+        }
+
+        List<DoctorEspecialidadLeerDTO> doctores =doctorServicio.todosDoctoresEspecialidad();
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("LISTA DE DOCTORES")
+                .object(doctores).build(),HttpStatus.OK);
+
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<MensajeResponse> leerDoctorPorId(@PathVariable Integer id){
+
+        DoctorEspecialidadLeerDTO leer = doctorServicio.leerPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Informacion del doctor solicitado")
+                .object(leer).build(),HttpStatus.OK);
+
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<MensajeResponse> actualizarDoctor(
+            @PathVariable Integer id,
+            @Valid @RequestBody DoctorActualizarDTO dto){
+
+        DoctorRespuestaDTO respuesta = doctorServicio.actualizar(dto,id);
+
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Doctor actualizado con exito")
+                .object(respuesta).build(), HttpStatus.CREATED);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensajeResponse> eliminarDoctorPorId(@PathVariable Integer id){
+
+        doctorServicio.eliminarPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Doctor eliminado con exito")
+                .object(null).build(),HttpStatus.NO_CONTENT);
+
+    }
+
+    @GetMapping("/especialidad/{id}")
+    public ResponseEntity<MensajeResponse> especialidadId(@PathVariable Integer id){
+
+        List<DoctorEspecialidadPorIdDT> doctores = doctorServicio.listaDoctoresEspecialidadSeleccionada(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("LISTA DE DOCTORES POR ESPECIALIDAD SELECCIONADA")
+                .object(doctores).build(),HttpStatus.OK);
     }
 
 }

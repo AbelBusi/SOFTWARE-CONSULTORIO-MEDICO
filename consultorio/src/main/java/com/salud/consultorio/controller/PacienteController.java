@@ -1,7 +1,8 @@
 package com.salud.consultorio.controller;
 
-import com.salud.consultorio.model.dto.*;
-import com.salud.consultorio.model.entity.Paciente;
+import com.salud.consultorio.dto.paciente.*;
+import com.salud.consultorio.dto.paciente.NombrePacientesDTO;
+import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPacienteServicio;
 import jakarta.validation.Valid;
@@ -22,25 +23,48 @@ public class PacienteController {
     @PostMapping
     public ResponseEntity<MensajeResponse> crearPaciente(@Valid @RequestBody PacienteCrearDTO pacienteCrearDTO){
 
-        Paciente paciente = pacienteServicio.crear(pacienteCrearDTO);
+        PacienteRespuestaDTO paciente = pacienteServicio.crear(pacienteCrearDTO);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Paciente agregado con exito")
-                .object(pacienteCrearDTO).build(), HttpStatus.CREATED);
+                .object(paciente).build(), HttpStatus.CREATED);
 
     }
 
     @GetMapping
-    public ResponseEntity<MensajeResponse> listarPacientes() {
-        List<LeerPacienteDTO> leerPacientes = pacienteServicio.listarPacientes();
+    public ResponseEntity<MensajeResponse> listarPacientes(
+            @RequestParam(name = "estado",required = false) EntidadEstado pacienteEstado) {
+
+        if (pacienteEstado!=null) {
+
+            if (pacienteEstado.equals(pacienteEstado.ACTIVO)) {
+
+                List<PacienteLeerDTO> pacientes = pacienteServicio.listarPacientesActivos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE PACIENTES ACTIVOS")
+                        .object(pacientes).build(), HttpStatus.OK);
+            }
+
+            if (pacienteEstado.equals(pacienteEstado.INACTIVO)) {
+
+                List<PacienteLeerDTO> pacientes = pacienteServicio.listarPacientesInativos();
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE PACIENTES INACTIVOS")
+                        .object(pacientes).build(), HttpStatus.OK);
+            }
+
+        }
+
+        List<PacienteLeerDTO> leerPacientes = pacienteServicio.listarPacientes();
 
         if (leerPacientes == null) {
 
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("No existen pacientes todavia")
-                    .object(null).build(), HttpStatus.NOT_FOUND);
+                    .object(null).build(), HttpStatus.NO_CONTENT);
 
         }
+
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE PACIENTES")
                 .object(leerPacientes).build(), HttpStatus.OK);
@@ -49,7 +73,7 @@ public class PacienteController {
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerPacientePorID(@PathVariable Integer id){
 
-        LeerPacienteDTO dto = pacienteServicio.traerPaciente(id);
+        PacienteDetalleLeerDTO dto = pacienteServicio.traerPacientePorId(id);
         if (dto==null){
             return new ResponseEntity<>(MensajeResponse.builder()
                     .mensaje("El paciente no existe")
@@ -78,20 +102,26 @@ public class PacienteController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MensajeResponse> actualizarCitaMedica(@PathVariable Integer id, @Valid @RequestBody PacienteActualizarDTO actualizarDTO){
-
-        if (!pacienteServicio.obtenerPorId(id).isPresent()){
-
-            return new ResponseEntity<>(MensajeResponse.builder()
-                    .mensaje("El paciente que desea actualizar no se encuentra en la entidad.")
-                    .object(null).build(), HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<MensajeResponse> actualizarCitaMedica(
+            @PathVariable Integer id,
+            @Valid @RequestBody PacienteActualizarDTO actualizarDTO){
 
         PacienteRespuestaDTO paciente = pacienteServicio.actualizarRespuesta(actualizarDTO,id);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Cita Medica actualizada con exito")
                 .object(paciente).build(), HttpStatus.CREATED);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<MensajeResponse> eliminarPaciente(@PathVariable Integer id){
+
+        pacienteServicio.eliminarPorId(id);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Paciente eliminado con exito")
+                .object(null).build(),HttpStatus.NO_CONTENT);
 
     }
 

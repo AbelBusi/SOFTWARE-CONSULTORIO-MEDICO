@@ -1,0 +1,36 @@
+package com.salud.consultorio.impl;
+
+import com.salud.consultorio.dto.usuario.UsuarioRespuestaDTO;
+import com.salud.consultorio.repository.IUsuarioRepositorio;
+import com.salud.consultorio.service.IUsuarioServicio;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class UsuarioServicioImpl implements IUsuarioServicio {
+
+    private final IUsuarioRepositorio usuarioRepositorio;
+
+    @Override
+    public List<UsuarioRespuestaDTO> leerTodos() {
+        return List.of();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existeUsuario(String usuario) {
+        return usuarioRepositorio.existsByUsuario(usuario);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existeUsuarioPersona(Integer id) {
+        return usuarioRepositorio.existeUsuarioPersona(id);
+    }
+
+
+}
