@@ -1,7 +1,9 @@
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith } from 'rxjs/operators';
 
 interface SubNavItem {
   label: string;
@@ -10,10 +12,20 @@ interface SubNavItem {
 
 interface NavItem {
   label: string;
-  route?: string;
   icon: string;
   sub?: SubNavItem[];
 }
+
+const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
+  '/dashboard/inicio': { title: 'Inicio', subtitle: 'Resumen del consultorio' },
+  '/dashboard/citas': { title: 'Citas médicas', subtitle: 'Agenda y consultas programadas' },
+  '/dashboard/citas/nuevo': { title: 'Nueva cita', subtitle: 'Registrar cita médica' },
+  '/dashboard/pacientes': { title: 'Pacientes', subtitle: 'Historial y datos de pacientes' },
+  '/dashboard/pacientes/nuevo': { title: 'Nuevo paciente', subtitle: 'Registro de paciente' },
+  '/dashboard/doctores': { title: 'Doctores', subtitle: 'Equipo médico del consultorio' },
+  '/dashboard/doctores/nuevo': { title: 'Nuevo doctor', subtitle: 'Alta de especialista' },
+  '/dashboard/especialidades': { title: 'Especialidades', subtitle: 'Áreas médicas disponibles' },
+};
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -26,103 +38,78 @@ export class DashboardLayoutComponent {
   private router = inject(Router);
 
   open = true;
-  expandedItem: string | null = 'Citas';
+  expandedItem: string | null = 'Inicio';
+
+  private currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects),
+      startWith(this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  pageInfo = computed(() => {
+    const url = this.currentUrl();
+    return PAGE_TITLES[url] ?? { title: 'Panel administrativo', subtitle: 'Gestión del consultorio' };
+  });
 
   navItems: NavItem[] = [
+    {
+      label: 'Inicio',
+      icon: 'dashboard',
+      sub: [{ label: 'Resumen', route: '/dashboard/inicio' }],
+    },
     {
       label: 'Citas',
       icon: 'calendar_today',
       sub: [
-        {
-          label: 'Ver citas',
-          route: '/dashboard/citas',
-        },
-        {
-          label: 'Nueva cita',
-          route: '/dashboard/citas/nuevo',
-        },
+        { label: 'Ver citas', route: '/dashboard/citas' },
+        { label: 'Nueva cita', route: '/dashboard/citas/nuevo' },
       ],
     },
     {
       label: 'Pacientes',
       icon: 'groups',
       sub: [
-        {
-          label: 'Ver pacientes',
-          route: '/dashboard/pacientes',
-        },
-        {
-          label: 'Nuevo paciente',
-          route: '/dashboard/pacientes/nuevo',
-        },
+        { label: 'Ver pacientes', route: '/dashboard/pacientes' },
+        { label: 'Nuevo paciente', route: '/dashboard/pacientes/nuevo' },
       ],
     },
     {
       label: 'Doctores',
-      icon: 'person',
+      icon: 'medical_services',
       sub: [
-        {
-          label: 'Ver doctores',
-          route: '/dashboard/doctores',
-        },
-        {
-          label: 'Agregar doctor',
-          route: '/dashboard/doctores/nuevo',
-        },
+        { label: 'Ver doctores', route: '/dashboard/doctores' },
+        { label: 'Agregar doctor', route: '/dashboard/doctores/nuevo' },
       ],
     },
     {
       label: 'Especialidades',
-      icon: 'sell',
-      sub: [
-        {
-          label: 'Ver especialidades',
-          route: '/dashboard/especialidades',
-        },
-      ],
+      icon: 'local_hospital',
+      sub: [{ label: 'Ver especialidades', route: '/dashboard/especialidades' }],
     },
   ];
 
   toggleSidebar() {
     this.open = !this.open;
-    if (!this.open) {
-      this.expandedItem = null;
-    }
+    if (!this.open) this.expandedItem = null;
   }
 
   toggleMenu(label: string) {
-    if (!this.open) {
-      this.open = true;
-    }
+    if (!this.open) this.open = true;
     this.expandedItem = this.expandedItem === label ? null : label;
   }
 
   logout() {
     const token = localStorage.getItem('access_token');
-
     if (!token) {
       this.limpiarSesionLocal();
       return;
     }
-
     this.http
-      .post(
-        '/auth/logout',
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      )
-      .subscribe({
-        next: () => {
-          this.limpiarSesionLocal();
-        },
-        error: () => {
-          this.limpiarSesionLocal();
-        },
-      });
+      .post('/auth/logout', {}, { headers: { Authorization: `Bearer ${token}` } })
+      .subscribe({ next: () => this.limpiarSesionLocal(), error: () => this.limpiarSesionLocal() });
   }
 
   private limpiarSesionLocal() {

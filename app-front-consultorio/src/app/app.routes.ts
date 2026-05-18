@@ -20,8 +20,15 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'citas',
+        redirectTo: 'inicio',
         pathMatch: 'full',
+      },
+      {
+        path: 'inicio',
+        loadComponent: () =>
+          import('./features/dashboard/pages/inicio/inicio.component').then(
+            (m) => m.InicioComponent,
+          ),
       },
       {
         path: 'citas',

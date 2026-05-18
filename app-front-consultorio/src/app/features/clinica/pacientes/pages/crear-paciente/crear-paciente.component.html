@@ -1,4 +1,4 @@
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 relative">
+<div class="grid grid-cols-1 gap-6 relative">
   <div *ngIf="alert"
        [ngClass]="{
          'bg-green-50 border-green-200 text-green-800': alert.type === 'success',
@@ -129,19 +129,4 @@
     </form>
   </div>
 
-  <div class="space-y-6">
-    <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
-      <h4 class="text-sm font-bold text-gray-800 flex items-center gap-2 mb-4">
-        <svg class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-        Tutorial de Registro
-      </h4>
-      <div class="aspect-video bg-gray-900 rounded-lg flex items-center justify-center relative overflow-hidden group cursor-pointer">
-        <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center z-10 transition-transform group-hover:scale-110">
-          <div class="w-0 h-0 border-t-[6px] border-t-transparent border-l-[10px] border-l-white border-b-[6px] border-b-transparent ml-1"></div>
-        </div>
-        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-      </div>
-      <p class="text-[11px] text-gray-400 mt-3 italic text-center">Aprenda a validar datos con RENIEC correctamente.</p>
-    </div>
-  </div>
 </div>

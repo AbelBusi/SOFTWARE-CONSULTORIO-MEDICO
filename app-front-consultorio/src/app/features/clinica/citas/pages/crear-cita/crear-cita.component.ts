@@ -1,7 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
+import { CatalogoService, ResumenItem } from '../../../../../core/services/catalogo.service';
+import { CitaService } from '../../services/cita.service';
 
 @Component({
   selector: 'app-crear-cita',
@@ -10,37 +13,17 @@ import Swal from 'sweetalert2';
   templateUrl: './crear-cita.component.html',
 })
 export class CrearCitaComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private catalogoService = inject(CatalogoService);
+  private citaService = inject(CitaService);
+  private router = inject(Router);
+
   citaForm!: FormGroup;
-  especialidades: any[] = [];
-  doctores: any[] = [];
-  recepcionistas: any[] = [];
+  pacientes: ResumenItem[] = [];
+  doctores: ResumenItem[] = [];
+  especialidades: ResumenItem[] = [];
+  recepcionistas: ResumenItem[] = [];
   loading = false;
-
-  paises = [
-    'Argentina',
-    'Bolivia',
-    'Brasil',
-    'Chile',
-    'Colombia',
-    'Costa Rica',
-    'Cuba',
-    'Ecuador',
-    'El Salvador',
-    'España',
-    'Estados Unidos',
-    'Guatemala',
-    'Honduras',
-    'México',
-    'Nicaragua',
-    'Panamá',
-    'Paraguay',
-    'Perú',
-    'República Dominicana',
-    'Uruguay',
-    'Venezuela',
-  ];
-
-  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.initForm();
@@ -53,54 +36,27 @@ export class CrearCitaComponent implements OnInit {
       fecha: ['', [Validators.required]],
       horaInicio: ['', [Validators.required]],
       horaSalida: ['', [Validators.required]],
-      costo: [0, [Validators.required, Validators.min(0)]],
+      costo: [0, [Validators.required, Validators.min(1)]],
       estado: [1],
-      recepcionista: this.fb.group({
-        id: [0, [Validators.required, Validators.min(1)]],
-      }),
-      doctor: this.fb.group({
-        id: [0, [Validators.required, Validators.min(1)]],
-      }),
-      especialidad: this.fb.group({
-        id: [0, [Validators.required, Validators.min(1)]],
-      }),
-      paciente: this.fb.group({
-        entidadAseguradora: [''],
-        codigoAseguradora: [''],
-        estado: [1],
-        persona: this.fb.group({
-          dni: ['', [Validators.required, Validators.maxLength(8), Validators.minLength(8)]],
-          nombre: ['', [Validators.required]],
-          apellidos: ['', [Validators.required]],
-          fechaNacimiento: [''],
-          genero: [''],
-          telefono: [''],
-          nacionalidad: [''],
-          correo: [''],
-          estado: [1],
-        }),
-      }),
+      recepcionistaId: [0, [Validators.required, Validators.min(1)]],
+      doctorId: [0, [Validators.required, Validators.min(1)]],
+      especialidadId: [0, [Validators.required, Validators.min(1)]],
+      pacienteId: [0, [Validators.required, Validators.min(1)]],
     });
   }
 
   private loadCatalogos(): void {
-    Promise.all([
-      fetch('http://localhost:8088/api/v1/especialidades/resumen'),
-      fetch('http://localhost:8088/api/v1/doctores/resumen'),
-      fetch('http://localhost:8088/api/v1/recepcionistas/resumen'),
-    ])
-      .then(async ([resEsp, resDoc, resRec]) => {
-        const dEsp = await resEsp.json();
-        const dDoc = await resDoc.json();
-        const dRec = await resRec.json();
-
-        this.especialidades = dEsp.object || [];
-        this.doctores = dDoc.object || [];
-        this.recepcionistas = dRec.object || [];
-      })
-      .catch(() => {
+    this.catalogoService.cargarCatalogosCita().subscribe({
+      next: ({ pacientes, doctores, especialidades, recepcionistas }) => {
+        this.pacientes = pacientes;
+        this.doctores = doctores;
+        this.especialidades = especialidades;
+        this.recepcionistas = recepcionistas;
+      },
+      error: () => {
         Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudieron cargar los catálogos.' });
-      });
+      },
+    });
   }
 
   hasError(controlPath: string): boolean {
@@ -127,26 +83,35 @@ export class CrearCitaComponent implements OnInit {
     }
 
     this.loading = true;
-    const bodyData = this.citaForm.value;
+    const v = this.citaForm.value;
 
-    fetch('http://localhost:8088/api/v1/citas-medicas', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(bodyData),
-    })
-      .then((res) => {
-        if (res.ok) {
-          Swal.fire({ icon: 'success', title: '¡Cita Registrada!', confirmButtonColor: '#15803d' });
-          this.initForm();
-        } else {
-          Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo procesar la solicitud.' });
-        }
+    this.citaService
+      .crear({
+        motivo: v.motivo,
+        fecha: v.fecha,
+        horaInicio: v.horaInicio,
+        horaSalida: v.horaSalida,
+        costo: v.costo,
+        estado: v.estado,
+        recepcionista: { id: v.recepcionistaId },
+        doctor: { id: v.doctorId },
+        especialidad: { id: v.especialidadId },
+        paciente: { id: v.pacienteId },
       })
-      .catch(() => {
-        Swal.fire({ icon: 'error', title: 'Error de servidor' });
-      })
-      .finally(() => {
-        this.loading = false;
+      .subscribe({
+        next: () => {
+          Swal.fire({
+            icon: 'success',
+            title: 'Cita registrada',
+            confirmButtonColor: '#0f766e',
+          }).then(() => this.router.navigate(['/dashboard/citas']));
+        },
+        error: () => {
+          Swal.fire({ icon: 'error', title: 'Error', text: 'No se pudo registrar la cita.' });
+        },
+        complete: () => {
+          this.loading = false;
+        },
       });
   }
 }

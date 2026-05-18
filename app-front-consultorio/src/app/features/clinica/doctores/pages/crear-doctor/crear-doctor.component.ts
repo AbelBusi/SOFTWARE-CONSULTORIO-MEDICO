@@ -1,20 +1,9 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface FormData {
-  nombre: string;
-  apellido: string;
-  cmp: string;
-  especialidad: string;
-  telefono: string;
-  email: string;
-  turno: string;
-  diasAtencion: string[];
-  consultorio: string;
-  observaciones: string;
-  estado: string;
-}
+import { Router } from '@angular/router';
+import { DoctorService } from '../../services/doctor.service';
+import { CatalogoService, ResumenItem } from '../../../../../core/services/catalogo.service';
 
 @Component({
   selector: 'app-crear-doctor',
@@ -22,121 +11,78 @@ interface FormData {
   imports: [CommonModule, FormsModule],
   templateUrl: './crear-doctor.component.html',
 })
-export class CrearDoctorComponent {
-  form = signal<FormData>({
+export class CrearDoctorComponent implements OnInit {
+  private doctorService = inject(DoctorService);
+  private catalogoService = inject(CatalogoService);
+  private router = inject(Router);
+
+  especialidades = signal<ResumenItem[]>([]);
+  loading = signal(false);
+  alert = signal<{ type: 'success' | 'error'; msg: string } | null>(null);
+
+  form = {
+    cpm: '',
+    rne: '',
+    consejoRegional: 'CMP Lima',
+    foto: 'default.jpg',
+    dni: '',
     nombre: '',
-    apellido: '',
-    cmp: '',
-    especialidad: '',
+    apellidos: '',
+    fechaNacimiento: '',
+    genero: 'Masculino',
     telefono: '',
-    email: '',
-    turno: '',
-    diasAtencion: [],
-    consultorio: '',
-    observaciones: '',
-    estado: 'activo',
-  });
+    nacionalidad: 'Peruana',
+    correo: '',
+    especialidadId: 0,
+    estado: 1,
+  };
 
-  loading = signal<boolean>(false);
-  alert = signal<{ type: 'success' | 'error' | 'warning' | 'info'; msg: string } | null>(null);
-
-  especialidades = [
-    'Cardiología',
-    'Dermatología',
-    'Endocrinología',
-    'Gastroenterología',
-    'Ginecología',
-    'Medicina General',
-    'Neurología',
-    'Oftalmología',
-    'Pediatría',
-    'Psiquiatría',
-    'Traumatología',
-    'Urología',
-  ];
-
-  dias = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-
-  nombreCompleto = computed(() => {
-    const f = this.form();
-    return f.nombre || f.apellido ? `${f.nombre} ${f.apellido}`.trim() : '---';
-  });
-
-  inputCls =
-    'w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all';
-  selectCls = `${this.inputCls} appearance-none bg-no-repeat bg-[right_0.75rem_center] bg-[length:1em_1em]`;
-
-  showAlert(type: 'success' | 'error' | 'warning' | 'info', msg: string) {
-    this.alert.set({ type, msg });
-    if (type === 'success' || type === 'info') {
-      setTimeout(() => this.alert.set(null), 5000);
-    }
-  }
-
-  updateField(key: keyof FormData, value: any) {
-    this.form.update((f) => ({ ...f, [key]: value }));
-  }
-
-  toggleDia(dia: string) {
-    this.form.update((f) => {
-      const dias = f.diasAtencion.includes(dia)
-        ? f.diasAtencion.filter((d) => d !== dia)
-        : [...f.diasAtencion, dia];
-      return { ...f, diasAtencion: dias };
+  ngOnInit(): void {
+    this.catalogoService.especialidadesResumen().subscribe({
+      next: (data) => this.especialidades.set(data),
     });
   }
 
-  handleConsultarCMP() {
-    const cmpActual = this.form().cmp;
-    if (!cmpActual) {
-      this.showAlert('warning', 'Ingrese un número de CMP para consultar.');
-      return;
-    }
-    this.loading.set(true);
-    setTimeout(() => {
-      this.form.update((prev) => ({
-        ...prev,
-        nombre: 'RICARDO MARIO',
-        apellido: 'PALMA SORIANO',
-        especialidad: 'Medicina General',
-      }));
-      this.showAlert('success', 'Médico encontrado y validado.');
-      this.loading.set(false);
-    }, 1000);
+  showAlert(type: 'success' | 'error', msg: string) {
+    this.alert.set({ type, msg });
+    if (type === 'success') setTimeout(() => this.alert.set(null), 4000);
   }
 
   handleSubmit(e: Event) {
     e.preventDefault();
-    this.showAlert('success', 'Doctor registrado correctamente en el sistema.');
-    this.form.set({
-      nombre: '',
-      apellido: '',
-      cmp: '',
-      especialidad: '',
-      telefono: '',
-      email: '',
-      turno: '',
-      diasAtencion: [],
-      consultorio: '',
-      observaciones: '',
-      estado: 'activo',
-    });
-  }
+    if (!this.form.cpm || !this.form.nombre || !this.form.apellidos || !this.form.dni || !this.form.especialidadId) {
+      this.showAlert('error', 'Complete los campos obligatorios.');
+      return;
+    }
 
-  limpiarFormulario() {
-    this.form.set({
-      nombre: '',
-      apellido: '',
-      cmp: '',
-      especialidad: '',
-      telefono: '',
-      email: '',
-      turno: '',
-      diasAtencion: [],
-      consultorio: '',
-      observaciones: '',
-      estado: 'activo',
-    });
-    this.showAlert('info', 'Formulario restablecido.');
+    this.loading.set(true);
+    this.doctorService
+      .crear({
+        cpm: this.form.cpm,
+        rne: this.form.rne || undefined,
+        consejoRegional: this.form.consejoRegional,
+        foto: this.form.foto,
+        persona: {
+          dni: this.form.dni,
+          nombre: this.form.nombre,
+          apellidos: this.form.apellidos,
+          fechaNacimiento: this.form.fechaNacimiento,
+          genero: this.form.genero,
+          telefono: this.form.telefono,
+          nacionalidad: this.form.nacionalidad,
+          correo: this.form.correo,
+          estado: 1,
+        },
+        especialidad: { id: this.form.especialidadId },
+        estado: this.form.estado,
+      })
+      .subscribe({
+        next: () => {
+          this.showAlert('success', 'Doctor registrado correctamente.');
+          setTimeout(() => this.router.navigate(['/dashboard/doctores']), 1500);
+        },
+        error: () => this.showAlert('error', 'No se pudo registrar el doctor.'),
+        complete: () => this.loading.set(false),
+      });
   }
 }

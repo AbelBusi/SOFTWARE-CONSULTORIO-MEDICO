@@ -1,44 +1,42 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-export interface CitaMedica {
-  id: number;
-  nombrePaciente: string;
-  apellidosPaciente: string;
-  motivoConsulta: string;
-  especialidad: string;
-  diaConsulta: string;
-  horaInicio: string;
-  horaSalida: string;
-  nombreDoctor: string;
-  estado: number; // 0: Pendiente, 1: Completada
-}
+import { RouterLink } from '@angular/router';
+import { CitaService } from '../../services/cita.service';
+import { CitaMedica } from '../../models/cita.model';
 
 @Component({
   selector: 'app-citas',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './citas.component.html',
 })
 export class CitasComponent implements OnInit {
+  private citaService = inject(CitaService);
+
   citas: CitaMedica[] = [];
+  cargando = true;
   search = '';
   filterEstado: null | number = null;
   sortField: keyof CitaMedica = 'diaConsulta';
   sortAsc = true;
 
   ngOnInit(): void {
-    fetch('http://localhost:8088/api/v1/citas-medicas')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data && Array.isArray(data.object)) {
-          this.citas = data.object;
-        } else {
-          this.citas = [];
-        }
-      })
-      .catch((err) => console.error('Error cargando citas:', err));
+    this.cargarCitas();
+  }
+
+  cargarCitas(): void {
+    this.cargando = true;
+    this.citaService.listar().subscribe({
+      next: (data) => {
+        this.citas = data;
+        this.cargando = false;
+      },
+      error: () => {
+        this.citas = [];
+        this.cargando = false;
+      },
+    });
   }
 
   get totalCitas(): number {
@@ -46,7 +44,7 @@ export class CitasComponent implements OnInit {
   }
 
   get pendientesCount(): number {
-    return this.citas.filter((c) => c.estado === 0).length;
+    return this.citas.filter((c) => c.estado !== 1).length;
   }
 
   get completadasCount(): number {

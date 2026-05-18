@@ -36,18 +36,18 @@
             <div class="flex gap-4 p-2 bg-gray-50 rounded-lg">
               <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
                 <input
-                  type="checkbox"
-                  name="estadoActivo"
-                  [checked]="especialidadForm.estado === 'activo'"
-                  (change)="especialidadForm.estado = 'activo'"
+                  type="radio"
+                  name="estado"
+                  [checked]="especialidadForm.estado === 1"
+                  (change)="especialidadForm.estado = 1"
                   class="rounded text-green-600 focus:ring-green-500" /> Activo
               </label>
               <label class="flex items-center gap-2 text-sm cursor-pointer select-none">
                 <input
-                  type="checkbox"
-                  name="estadoInactivo"
-                  [checked]="especialidadForm.estado === 'inactivo'"
-                  (change)="especialidadForm.estado = 'inactivo'"
+                  type="radio"
+                  name="estado"
+                  [checked]="especialidadForm.estado === 0"
+                  (change)="especialidadForm.estado = 0"
                   class="rounded text-green-600 focus:ring-green-500" /> Inactivo
               </label>
             </div>

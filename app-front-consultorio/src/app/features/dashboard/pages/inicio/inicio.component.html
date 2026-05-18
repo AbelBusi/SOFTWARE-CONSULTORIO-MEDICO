@@ -1,0 +1,95 @@
+<div class="animate-fade-in space-y-8">
+  <div class="page-header">
+    <h2>Bienvenido al consultorio</h2>
+    <p>Panel de control · Resumen general del sistema de salud</p>
+  </div>
+
+  @if (cargando()) {
+    <div class="flex justify-center py-20">
+      <div class="h-10 w-10 rounded-full border-2 border-teal-600 border-t-transparent animate-spin"></div>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+      <div class="stat-card">
+        <div class="w-12 h-12 rounded-xl bg-teal-50 flex items-center justify-center">
+          <span class="material-icons text-teal-700">groups</span>
+        </div>
+        <div>
+          <p class="text-sm text-slate-500">Pacientes</p>
+          <p class="text-2xl font-bold text-slate-900">{{ totalPacientes() }}</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="w-12 h-12 rounded-xl bg-sky-50 flex items-center justify-center">
+          <span class="material-icons text-sky-700">medical_services</span>
+        </div>
+        <div>
+          <p class="text-sm text-slate-500">Doctores</p>
+          <p class="text-2xl font-bold text-slate-900">{{ totalDoctores() }}</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+          <span class="material-icons text-amber-700">event</span>
+        </div>
+        <div>
+          <p class="text-sm text-slate-500">Citas totales</p>
+          <p class="text-2xl font-bold text-slate-900">{{ totalCitas() }}</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+          <span class="material-icons text-emerald-700">today</span>
+        </div>
+        <div>
+          <p class="text-sm text-slate-500">Citas hoy</p>
+          <p class="text-2xl font-bold text-slate-900">{{ citasHoy() }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2 card p-6">
+        <h3 class="font-display text-lg font-bold text-slate-800 mb-1">Accesos rápidos</h3>
+        <p class="text-sm text-slate-500 mb-5">Operaciones frecuentes del consultorio</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          @for (item of accesosRapidos; track item.ruta) {
+            <a
+              [routerLink]="item.ruta"
+              class="flex items-center gap-4 p-4 rounded-xl border border-slate-100 hover:border-teal-200 hover:bg-teal-50/40 transition-all group"
+            >
+              <div class="w-11 h-11 rounded-xl text-white flex items-center justify-center shrink-0" [ngClass]="item.color">
+                <span class="material-icons text-xl">{{ item.icon }}</span>
+              </div>
+              <div>
+                <p class="font-semibold text-slate-800 group-hover:text-teal-800">{{ item.titulo }}</p>
+                <p class="text-xs text-slate-500">{{ item.desc }}</p>
+              </div>
+            </a>
+          }
+        </div>
+      </div>
+
+      <div class="card p-6 bg-gradient-to-br from-teal-800 to-teal-950 text-white border-0">
+        <div class="flex items-center gap-2 mb-4">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse-dot"></span>
+          <span class="text-xs font-medium text-teal-200 uppercase tracking-wider">Estado del sistema</span>
+        </div>
+        <h3 class="font-display text-xl font-bold mb-2">SaludConsultorio</h3>
+        <p class="text-sm text-teal-100/80 leading-relaxed mb-6">
+          Plataforma integral para la gestión de pacientes, especialistas y agenda médica de su consultorio.
+        </p>
+        <div class="space-y-3 pt-4 border-t border-white/10">
+          <div class="flex justify-between text-sm">
+            <span class="text-teal-200">Especialidades activas</span>
+            <span class="font-bold">{{ totalEspecialidades() }}</span>
+          </div>
+          <div class="flex justify-between text-sm">
+            <span class="text-teal-200">Módulos activos</span>
+            <span class="font-bold">4</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
