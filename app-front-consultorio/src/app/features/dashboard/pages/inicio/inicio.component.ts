@@ -43,7 +43,7 @@ export class InicioComponent implements OnInit {
       color: 'bg-sky-600',
     },
     {
-      titulo: 'Nuevo doctor',
+      titulo: 'Nuevo doctor xd',
       desc: 'Alta de especialista',
       icon: 'medical_services',
       ruta: '/dashboard/doctores/nuevo',

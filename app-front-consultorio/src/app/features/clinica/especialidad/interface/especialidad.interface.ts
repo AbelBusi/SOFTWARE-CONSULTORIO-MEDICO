@@ -20,3 +20,9 @@ export interface MensajeResponseSingle {
   mensaje: string;
   object: Especialidad;
 }
+
+export interface EspecialidadActualizar {
+  nombre: string;
+  descripcion: string;
+  estado: number;
+}

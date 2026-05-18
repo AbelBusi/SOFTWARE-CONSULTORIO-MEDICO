@@ -10,8 +10,9 @@ export interface ToastConfig {
 export interface ConfirmConfig {
   titulo: string;
   mensaje: string;
-  resolver: (value: boolean) => void; // Guarda la función que resuelve la promesa
+  resolver: (value: boolean) => void;
 }
+
 
 @Injectable({
   providedIn: 'root',

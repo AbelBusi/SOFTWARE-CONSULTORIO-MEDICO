@@ -7,6 +7,7 @@ import {
   EspecialidadCrearDTO,
   MensajeResponse,
   MensajeResponseSingle,
+  EspecialidadActualizar,
 } from '../interface/especialidad.interface';
 
 @Injectable({
@@ -24,6 +25,14 @@ export class EspecialidadService {
 
   crear(especialidad: EspecialidadCrearDTO): Observable<MensajeResponseSingle> {
     return this.http.post<MensajeResponseSingle>(this.baseUrl, especialidad);
+  }
+
+  actualizar(id: number, dto: EspecialidadActualizar): Observable<MensajeResponseSingle> {
+    return this.http.put<MensajeResponseSingle>(`${this.baseUrl}/${id}`, dto);
+  }
+
+  eliminarPorId(id: number): Observable<MensajeResponse> {
+    return this.http.delete<MensajeResponse>(`${this.baseUrl}/${id}`);
   }
 
 }

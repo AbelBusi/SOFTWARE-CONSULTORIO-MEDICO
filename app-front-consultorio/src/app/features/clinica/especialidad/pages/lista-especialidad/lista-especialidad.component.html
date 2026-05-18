@@ -1,21 +1,25 @@
 <div class="space-y-6">
   <div class="grid grid-cols-1 gap-4">
-    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center gap-4">
-      <div class="p-3 rounded-lg bg-blue-50">
-        <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+    <div class="bg-white rounded border border-slate-200 p-5 flex items-center gap-4">
+      <div class="w-10 h-10 rounded bg-teal-600 flex items-center justify-center shrink-0">
+        <svg class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 10.5V20a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-9.5M3 10.5l9-7 9 7M12 12v6m-3-3h6" />
+        </svg>
       </div>
       <div>
-        <p class="text-sm font-medium text-gray-500">Total Especialidades Activas</p>
-        <p class="text-2xl font-bold text-gray-900">{{ totalEspecialidades }}</p>
+        <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Especialidades Activas</p>
+        <p class="text-2xl font-bold text-slate-900 mt-0.5">{{ totalEspecialidades }}</p>
       </div>
     </div>
   </div>
 
   <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
-    <div class="flex items-center gap-2 bg-white border border-gray-200 rounded-lg px-3 py-2 w-full md:w-80 shadow-sm focus-within:ring-2 focus-within:ring-green-500/20 transition-all">
-      <svg class="h-4 w-4 text-gray-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+    <div class="flex items-center gap-2 bg-white border border-slate-200 rounded px-3 py-2 w-full md:w-80 focus-within:border-slate-400 transition-colors">
+      <svg class="h-4 w-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
       <input
-        class="bg-transparent text-sm text-gray-700 placeholder-gray-400 outline-none w-full"
+        class="bg-transparent text-sm text-slate-700 placeholder-slate-400 outline-none w-full"
         placeholder="Buscar especialidad..."
         name="search"
         [(ngModel)]="search"
@@ -23,94 +27,159 @@
     </div>
     <button
       (click)="isCrearOpen = true"
-      class="w-full sm:w-auto flex items-center justify-center gap-2 bg-green-700 hover:bg-green-800 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors shadow-sm shadow-green-200"
+      class="w-full sm:w-auto flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded text-sm font-semibold transition-colors"
     >
-      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" /></svg>
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+      </svg>
       Nueva Especialidad
     </button>
   </div>
 
-  <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+  <div class="bg-white rounded border border-slate-200 overflow-hidden">
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
-        <thead class="bg-gray-50 border-b border-gray-200">
+        <thead class="bg-slate-50 border-b border-slate-200">
         <tr>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 group" (click)="handleSort('nombre')">
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider cursor-pointer select-none hover:text-slate-900 group" (click)="handleSort('nombre')">
             <div class="flex items-center gap-1">
               Especialidad
-              <svg [ngClass]="{'text-green-600': sortField === 'nombre', 'text-gray-300 group-hover:text-gray-400': sortField !== 'nombre'}" class="h-3.5 w-3.5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
+              <svg [ngClass]="{'text-teal-600': sortField === 'nombre', 'text-slate-300 group-hover:text-slate-400': sortField !== 'nombre'}" class="h-3.5 w-3.5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
+              </svg>
             </div>
           </th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Descripción</th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
-          <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Descripción</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Estado</th>
+          <th class="px-4 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Acciones</th>
         </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100">
-        <tr
-          *ngFor="let e of filteredEspecialidades"
-          (click)="seleccionarEspecialidad(e)"
-          [ngClass]="{
-              'bg-green-50/80': especialidadSeleccionada?.id === e.id,
-              'hover:bg-green-50/40': especialidadSeleccionada?.id !== e.id
-            }"
-          class="transition-colors group cursor-pointer"
-        >
-          <td class="px-4 py-4 font-medium text-gray-900">
-            <div class="flex items-center gap-3">
-              <div class="w-9 h-9 rounded-lg bg-green-100 border border-green-200 flex items-center justify-center shrink-0">
-                <svg class="h-5 w-5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-              </div>
-              <span class="font-bold text-gray-900 leading-none">{{ e.nombre }}</span>
-            </div>
-          </td>
-          <td class="px-4 py-4 text-gray-500 max-w-xs truncate">
-            {{ e.descripcion }}
-          </td>
-          <td class="px-4 py-4">
-              <span [ngClass]="{
-                'bg-green-50 text-green-700 border-green-200': e.estado === 1,
-                'bg-gray-50 text-gray-500 border-gray-200': e.estado !== 1
-              }" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold border">
-                {{ e.estado === 1 ? 'Operativo' : 'Mantenimiento' }}
-              </span>
-          </td>
-          <td class="px-4 py-4 text-right">
-            <div class="flex justify-end gap-2">
-              <button
-                (click)="setEspecialidadVer(e); $event.stopPropagation()"
-                class="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-100 rounded-md transition-all"
-              >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-              </button>
-              <button
-                (click)="setEspecialidadEditar(e); $event.stopPropagation()"
-                class="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-100 rounded-md transition-all"
-              >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg>
-              </button>
-            </div>
-          </td>
-        </tr>
+        <tbody class="divide-y divide-slate-100">
+
+        <!-- Cambiado a la estructura @for moderna con track por ID -->
+          @for (e of filteredEspecialidades; track e.id) {
+            <tr
+              (click)="seleccionarEspecialidad(e)"
+              [ngClass]="{
+                'bg-slate-50': especialidadSeleccionada?.id === e.id,
+                'hover:bg-slate-50/60': especialidadSeleccionada?.id !== e.id
+              }"
+              class="transition-colors group cursor-pointer"
+            >
+              <td class="px-4 py-4 font-medium text-slate-900">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded bg-slate-100 flex items-center justify-center shrink-0">
+                    <svg class="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                    </svg>
+                  </div>
+                  <span class="font-bold text-slate-900 leading-none">{{ e.nombre }}</span>
+                </div>
+              </td>
+              <td class="px-4 py-4 text-slate-500 max-w-xs truncate">
+                {{ e.descripcion }}
+              </td>
+              <td class="px-4 py-4">
+                <span [ngClass]="{
+                  'bg-teal-50 text-teal-700 border-teal-200': e.estado === 1,
+                  'bg-slate-50 text-slate-500 border-slate-200': e.estado !== 1
+                }" class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border uppercase tracking-wider">
+                  {{ e.estado === 1 ? 'Activo' : 'Desactivado' }}
+                </span>
+              </td>
+              <td class="px-4 py-4 text-right">
+                <div class="flex justify-end gap-1">
+                  <button
+                    (click)="setEspecialidadVer(e); $event.stopPropagation()"
+                    class="p-1.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded transition-all"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="setEspecialidadEditar(e); $event.stopPropagation()"
+                    class="p-1.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded transition-all"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                    </svg>
+                  </button>
+                  <button
+                    (click)="eliminarEspecialidad(e.id); $event.stopPropagation()"
+                    [disabled]="cargando"
+                    class="p-1.5 rounded text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50"
+                    title="Eliminar especialidad"
+                  >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="px-4 py-8 text-center text-sm text-slate-400">
+                No se encontraron especialidades disponibles.
+              </td>
+            </tr>
+          }
+
         </tbody>
       </table>
+    </div>
+
+    <div class="bg-slate-50 border-t border-slate-200 px-4 py-3 flex items-center justify-between select-none">
+      <div class="text-xs font-medium text-slate-500">
+        Mostrando página <span class="font-bold text-slate-700">{{ paginaActual }}</span> de <span class="font-bold text-slate-700">{{ totalPaginas }}</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button
+          (click)="cambiarPagina(paginaActual - 1)"
+          [disabled]="paginaActual === 1"
+          class="p-1.5 border border-slate-200 rounded bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:hover:bg-white disabled:cursor-not-allowed transition-colors"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+
+        <button
+          (click)="cambiarPagina(paginaActual + 1)"
+          [disabled]="paginaActual === totalPaginas"
+          class="p-1.5 border border-slate-200 rounded bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-50 disabled:hover:bg-white disabled:cursor-not-allowed transition-colors"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<app-crear-especialidad-modal
-  [isOpen]="isCrearOpen"
-  (onClose)="isCrearOpen = false"
-></app-crear-especialidad-modal>
+@if (isCrearOpen) {
+  <app-crear-especialidad-modal
+    [isOpen]="isCrearOpen"
+    (onClose)="isCrearOpen = false"
+    (onEspecialidadCreada)="handleEspecialidadCreada()"
+  ></app-crear-especialidad-modal>
+}
 
-<app-editar-especialidad-modal
-  [especialidad]="especialidadEditar"
-  [isOpen]="!!especialidadEditar"
-  (onClose)="especialidadEditar = null"
-></app-editar-especialidad-modal>
+@if (especialidadEditar) {
+  <app-editar-especialidad-modal
+    [especialidad]="especialidadEditar"
+    [isOpen]="true"
+    (onClose)="especialidadEditar = null"
+    (onEspecialidadEditada)="handleEspecialidadEditada($event)"
+  ></app-editar-especialidad-modal>
+}
 
-<app-ver-detalle-especialidad-modal
-  *ngIf="especialidadVer"
-  [especialidad]="especialidadVer"
-  (close)="especialidadVer = null"
-></app-ver-detalle-especialidad-modal>
+@if (especialidadVer) {
+  <app-ver-detalle-especialidad-modal
+    [especialidad]="especialidadVer"
+    (close)="especialidadVer = null"
+  ></app-ver-detalle-especialidad-modal>
+}

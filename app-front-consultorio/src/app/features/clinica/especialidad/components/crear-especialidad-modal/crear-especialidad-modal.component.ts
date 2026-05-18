@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EspecialidadService } from '../../services/especialidad.service';
 import { EspecialidadCrearDTO } from '../../interface/especialidad.interface';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-crear-especialidad-modal',
@@ -18,14 +19,19 @@ export class CrearEspecialidadModalComponent {
   especialidadForm: EspecialidadCrearDTO = {
     nombre: '',
     descripcion: '',
-    estado: 1, // Por defecto 1 (Activo) según tu backend
+    estado: 1,
   };
 
-  constructor(private readonly especialidadService: EspecialidadService) {}
+  constructor(
+    private readonly especialidadService: EspecialidadService,
+    private readonly toastService: ToastService,
+    private readonly cdr: ChangeDetectorRef,
+  ) {}
 
   handleClose() {
     this.resetForm();
     this.onClose.emit();
+    this.cdr.detectChanges();
   }
 
   private resetForm() {
@@ -38,16 +44,22 @@ export class CrearEspecialidadModalComponent {
 
   onSubmit() {
     if (!this.especialidadForm.nombre.trim() || !this.especialidadForm.descripcion.trim()) {
+      this.toastService.warning('Por favor, complete todos los campos requeridos.');
       return;
     }
 
     this.especialidadService.crear(this.especialidadForm).subscribe({
-      next: () => {
+      next: (response) => {
+        // Ejecuta tu método .success() mapeando el mensaje del backend
+        this.toastService.success(response.mensaje);
         this.onEspecialidadCreada.emit();
         this.handleClose();
       },
-      error: (error) => {
-        console.error('Error al guardar la especialidad:', error);
+      error: (err) => {
+        console.error('Error al guardar la especialidad:', err);
+        // Si el backend mandó un error estructurado, extrae su .mensaje, si no, usa el fallback
+        const mensajeError = err.error?.mensaje || 'No se pudo registrar la especialidad.';
+        this.toastService.error(mensajeError);
       },
     });
   }
