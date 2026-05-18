@@ -20,10 +20,10 @@
         </div>
         <div>
           <h2 class="text-white text-lg font-semibold leading-tight">
-            {{ paciente().persona?.nombre }} {{ paciente().persona?.apellidos }}
+            {{ paciente().persona.nombre }} {{ paciente().persona.apellidos }}
           </h2>
           <p class="text-green-200 text-sm mt-0.5">
-            {{ paciente().persona?.genero }}
+            {{ paciente().persona.genero }}
           </p>
           <span
             class="inline-block mt-1.5 px-2 py-0.5 rounded-full text-xs font-medium"
@@ -68,14 +68,14 @@
             <span class="text-xs text-gray-400 block">Fecha de Nacimiento</span>
             <div class="flex items-center gap-1.5 text-sm text-gray-700 mt-0.5">
               <span class="material-icons text-gray-400 text-base">cake</span>
-              <span>{{ paciente().persona?.fechaNacimiento }}</span>
+              <span>{{ paciente().persona.fechaNacimiento }}</span>
             </div>
           </div>
           <div>
             <span class="text-xs text-gray-400 block">Nacionalidad</span>
             <div class="flex items-center gap-1.5 text-sm text-gray-700 mt-0.5">
               <span class="material-icons text-gray-400 text-base">public</span>
-              <span>{{ paciente().persona?.nacionalidad }}</span>
+              <span>{{ paciente().persona.nacionalidad }}</span>
             </div>
           </div>
         </div>

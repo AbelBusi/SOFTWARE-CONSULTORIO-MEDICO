@@ -3,7 +3,11 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
-import { PacienteInterface, PacienteDetalleLeerDTO } from '../interface/paciente.interface';
+import {
+  PacienteInterface,
+  PacienteDetalleLeerDTO,
+  PacienteCrearDTO,
+} from '../interface/paciente.interface';
 import { MensajeResponse } from '../models/paciente.model';
 
 @Injectable({
@@ -29,5 +33,23 @@ export class PacienteService {
     return this.http
       .get<MensajeResponse<PacienteDetalleLeerDTO>>(`${this.baseUrl}/${id}`)
       .pipe(map((response) => response.object));
+  }
+
+  actualizarPaciente(id: number, dto: any): Observable<PacienteDetalleLeerDTO> {
+    return this.http
+      .put<MensajeResponse<PacienteDetalleLeerDTO>>(`${this.baseUrl}/${id}`, dto)
+      .pipe(map((response) => response.object));
+  }
+
+  crearPaciente(dto: PacienteCrearDTO): Observable<PacienteCrearDTO> {
+    return this.http
+      .post<MensajeResponse<PacienteCrearDTO>>(this.baseUrl, dto)
+      .pipe(map((response) => response.object));
+  }
+
+  eliminarPaciente(id: number): Observable<any> {
+    return this.http
+      .delete<MensajeResponse<null>>(`${this.baseUrl}/${id}`)
+      .pipe(map((response) => response?.object || null));
   }
 }

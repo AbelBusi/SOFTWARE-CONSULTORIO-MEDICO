@@ -1,9 +1,18 @@
-import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnInit,
+  PLATFORM_ID,
+  signal,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
 import { PacienteInterface, PacienteDetalleLeerDTO } from '../../interface/paciente.interface';
 import { DetallePacienteModalComponent } from '../../components/detalle-paciente-modal/detalle-paciente-modal.component';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-lista-pacientes',
@@ -12,8 +21,10 @@ import { DetallePacienteModalComponent } from '../../components/detalle-paciente
   templateUrl: './lista-pacientes.component.html',
 })
 export class ListaPacientesComponent implements OnInit {
-  private pacienteService = inject(PacienteService);
-  private platformId = inject(PLATFORM_ID);
+  private readonly pacienteService = inject(PacienteService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly toastService = inject(ToastService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   search = signal<string>('');
   sortField = signal<keyof PacienteInterface>('paciente');
@@ -36,9 +47,11 @@ export class ListaPacientesComponent implements OnInit {
       next: (pacientes) => {
         this.pacientesReal.set(pacientes);
         this.cargando.set(false);
+        this.cdr.markForCheck();
       },
       error: () => {
         this.cargando.set(false);
+        this.cdr.markForCheck();
       },
     });
   }
@@ -80,9 +93,32 @@ export class ListaPacientesComponent implements OnInit {
     this.pacienteService.traerPacientePorId(paciente.id).subscribe({
       next: (pacienteDetalle) => {
         this.selectedPaciente.set(pacienteDetalle);
+        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error al obtener los detalles del paciente:', err);
+      },
+    });
+  }
+
+  async handleEliminar(paciente: PacienteInterface): Promise<void> {
+    const seguro = await this.toastService.confirmar(
+      '¿Eliminar paciente?',
+      `¿Estás seguro de que deseas eliminar al paciente ${paciente.paciente}? Esta acción no se puede deshacer.`,
+    );
+
+    if (!seguro) return;
+
+    this.pacienteService.eliminarPaciente(paciente.id).subscribe({
+      next: () => {
+        this.toastService.success('Paciente eliminado con éxito.');
+        this.pacientesReal.update((lista) => lista.filter((p) => p.id !== paciente.id));
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Error al eliminar paciente:', err);
+        this.toastService.error('No se pudo completar la eliminación del paciente.');
+        this.cdr.markForCheck();
       },
     });
   }
@@ -105,5 +141,6 @@ export class ListaPacientesComponent implements OnInit {
     if (this.selectedPaciente()?.id === pacienteActualizado.id) {
       this.selectedPaciente.set(pacienteActualizado);
     }
+    this.cdr.markForCheck();
   }
 }

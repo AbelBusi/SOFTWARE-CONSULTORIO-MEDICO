@@ -27,3 +27,41 @@ export interface PacienteDetalleLeerDTO {
   codigoAseguradora: string;
   estado: number;
 }
+
+export interface PersonaActualizarDTO {
+  dni: string;
+  nombre: string;
+  apellidos: string;
+  fechaNacimiento: string;
+  genero: string;
+  telefono: string;
+  nacionalidad: string;
+  correo: string;
+  estado: number;
+}
+
+export interface PacienteActualizarDTO {
+  entidadAseguradora: string;
+  codigoAseguradora: string;
+  estado: number;
+  persona: PersonaActualizarDTO;
+}
+
+export interface PersonaCrearDTO {
+  dni: string;
+  nombre: string;
+  apellidos: string;
+  fechaNacimiento: string;
+  genero: string;
+  telefono: string;
+  nacionalidad: string;
+  correo: string;
+  estado: number;
+}
+
+export interface PacienteCrearDTO {
+  entidadAseguradora: string;
+  codigoAseguradora: string;
+  estado: number;
+  persona: PersonaCrearDTO;
+}

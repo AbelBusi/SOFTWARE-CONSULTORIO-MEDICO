@@ -1,10 +1,15 @@
 import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../features/auth/services/auth.service';
-import { ToastService } from '../services/toast.service'; // Subes un nivel a core y entras a services
+import { ToastService } from '../services/toast.service';
 import { catchError, switchMap, throwError } from 'rxjs';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+
+  if (req.url.includes('miapi.cloud')) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
   const toastService = inject(ToastService);
 

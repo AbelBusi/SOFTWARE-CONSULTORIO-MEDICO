@@ -4,6 +4,11 @@ import { AuthService } from '../../features/auth/services/auth.service';
 import { environment } from '../../../environments/environment';
 
 export const apiInterceptor: HttpInterceptorFn = (req, next) => {
+
+  if (req.url.includes('miapi.cloud')) {
+    return next(req);
+  }
+
   const authService = inject(AuthService);
   const accessToken = authService.getAccessToken();
 

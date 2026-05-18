@@ -13,5 +13,6 @@ import { ToastService } from './core/services/toast.service';
 export class AppComponent {
   title = 'app-front-consultorio';
 
-  protected toastService = inject(ToastService);
+  // Cambiado a public para acceso total en app.html
+  public readonly toastService = inject(ToastService);
 }
