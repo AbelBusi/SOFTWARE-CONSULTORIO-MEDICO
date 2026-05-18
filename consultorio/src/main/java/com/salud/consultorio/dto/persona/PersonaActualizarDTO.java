@@ -47,4 +47,5 @@ public class PersonaActualizarDTO {
     private String correo;
 
     private Integer estado;
+
 }
