@@ -21,7 +21,7 @@
           </button>
         </div>
 
-        <form (ngSubmit)="onSubmit()" class="space-y-4">
+        <form #f="ngForm" (ngSubmit)="onSubmit()" class="space-y-4">
           <div>
             <label class="block text-xs font-bold text-gray-500 mb-1">NOMBRE</label>
             <input
@@ -39,32 +39,8 @@
               name="descripcion"
               [(ngModel)]="especialidadForm.descripcion"
               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-green-500/20 outline-none h-24 resize-none"
-              placeholder="Breve descripción del área..."></textarea>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-bold text-gray-500 mb-1">PISO / UBICACIÓN</label>
-              <select
-                name="piso"
-                [(ngModel)]="especialidadForm.piso"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none bg-white">
-                <option value="1er Piso">1er Piso</option>
-                <option value="2do Piso">2do Piso</option>
-                <option value="3er Piso">3er Piso</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-gray-500 mb-1">DEMANDA</label>
-              <select
-                name="demanda"
-                [(ngModel)]="especialidadForm.demanda"
-                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm outline-none bg-white">
-                <option value="Baja">Baja</option>
-                <option value="Media">Media</option>
-                <option value="Alta">Alta</option>
-              </select>
-            </div>
+              placeholder="Breve descripción del área..."
+              required></textarea>
           </div>
 
           <div class="flex gap-3 pt-4">

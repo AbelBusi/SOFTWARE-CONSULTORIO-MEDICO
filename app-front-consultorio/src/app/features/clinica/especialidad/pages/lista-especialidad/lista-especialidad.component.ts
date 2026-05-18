@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Especialidad } from '../../interface/especialidad.interface';
+import { EspecialidadService } from '../../services/especialidad.service';
 import { VerDetalleEspecialidadModalComponent } from '../../components/ver-detalle-especialidad-modal/ver-detalle-especialidad-modal.component';
 import { CrearEspecialidadModalComponent } from '../../components/crear-especialidad-modal/crear-especialidad-modal.component';
 import { EditarEspecialidadModalComponent } from '../../components/editar-especialidad-modal/editar-especialidad-modal.component';
@@ -18,7 +19,7 @@ import { EditarEspecialidadModalComponent } from '../../components/editar-especi
   ],
   templateUrl: './lista-especialidad.component.html',
 })
-export class ListaEspecialidadComponent {
+export class ListaEspecialidadComponent implements OnInit {
   search = '';
   sortField: keyof Especialidad = 'nombre';
   sortAsc = true;
@@ -28,73 +29,31 @@ export class ListaEspecialidadComponent {
   especialidadEditar: Especialidad | null = null;
   especialidadSeleccionada: Especialidad | null = null;
 
-  mockEspecialidades: Especialidad[] = [
-    {
-      id: 1,
-      nombre: 'Cardiología',
-      descripcion: 'Enfermedades del corazón y sistema circulatorio',
-      numDoctores: 5,
-      estado: 'activo',
-      demanda: 'Alta',
-      piso: '2do Piso',
-    },
-    {
-      id: 2,
-      nombre: 'Pediatría',
-      descripcion: 'Atención médica para niños y adolescentes',
-      numDoctores: 8,
-      estado: 'activo',
-      demanda: 'Alta',
-      piso: '1er Piso',
-    },
-    {
-      id: 3,
-      nombre: 'Dermatología',
-      descripcion: 'Cuidado de la piel, cabello y uñas',
-      numDoctores: 3,
-      estado: 'activo',
-      demanda: 'Media',
-      piso: '3er Piso',
-    },
-    {
-      id: 4,
-      nombre: 'Ginecología',
-      descripcion: 'Salud del sistema reproductor femenino',
-      numDoctores: 4,
-      estado: 'activo',
-      demanda: 'Media',
-      piso: '2do Piso',
-    },
-    {
-      id: 5,
-      nombre: 'Oftalmología',
-      descripcion: 'Tratamientos y cirugía ocular',
-      numDoctores: 2,
-      estado: 'inactivo',
-      demanda: 'Baja',
-      piso: '4to Piso',
-    },
-    {
-      id: 6,
-      nombre: 'Neurología',
-      descripcion: 'Trastornos del sistema nervioso',
-      numDoctores: 3,
-      estado: 'activo',
-      demanda: 'Alta',
-      piso: '3er Piso',
-    },
-  ];
+  especialidades: Especialidad[] = [];
+  cargando = false;
+
+  constructor(private readonly especialidadService: EspecialidadService) {}
+
+  ngOnInit(): void {
+    this.cargarEspecialidades();
+  }
+
+  cargarEspecialidades(): void {
+    this.cargando = true;
+    this.especialidadService.listarActivos().subscribe({
+      next: (response) => {
+        this.especialidades = response.object;
+        this.cargando = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar especialidades desde la API:', error);
+        this.cargando = false;
+      },
+    });
+  }
 
   get totalEspecialidades(): number {
-    return this.mockEspecialidades.length;
-  }
-
-  get totalEspecialistas(): number {
-    return this.mockEspecialidades.reduce((acc, curr) => acc + curr.numDoctores, 0);
-  }
-
-  get altaDemandaCount(): number {
-    return this.mockEspecialidades.filter((e) => e.demanda === 'Alta').length;
+    return this.especialidades.length;
   }
 
   handleSort(field: keyof Especialidad) {
@@ -107,11 +66,16 @@ export class ListaEspecialidadComponent {
   }
 
   get filteredEspecialidades(): Especialidad[] {
-    return this.mockEspecialidades
-      .filter((e) => `${e.nombre} ${e.piso}`.toLowerCase().includes(this.search.toLowerCase()))
+    return this.especialidades
+      .filter((e) => {
+        const term = this.search.toLowerCase();
+        const nombreMatch = e.nombre?.toLowerCase().includes(term) || false;
+        const descripcionMatch = e.descripcion?.toLowerCase().includes(term) || false;
+        return nombreMatch || descripcionMatch;
+      })
       .sort((a, b) => {
-        const av = String(a[this.sortField]).toLowerCase();
-        const bv = String(b[this.sortField]).toLowerCase();
+        const av = String(a[this.sortField] ?? '').toLowerCase();
+        const bv = String(b[this.sortField] ?? '').toLowerCase();
         return this.sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
       });
   }

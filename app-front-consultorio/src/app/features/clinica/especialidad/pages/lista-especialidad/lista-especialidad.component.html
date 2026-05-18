@@ -1,32 +1,12 @@
 <div class="space-y-6">
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="grid grid-cols-1 gap-4">
     <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center gap-4">
       <div class="p-3 rounded-lg bg-blue-50">
         <svg class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
       </div>
       <div>
-        <p class="text-sm font-medium text-gray-500">Total Especialidades</p>
+        <p class="text-sm font-medium text-gray-500">Total Especialidades Activas</p>
         <p class="text-2xl font-bold text-gray-900">{{ totalEspecialidades }}</p>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center gap-4">
-      <div class="p-3 rounded-lg bg-green-50">
-        <svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-      </div>
-      <div>
-        <p class="text-sm font-medium text-gray-500">Especialistas Activos</p>
-        <p class="text-2xl font-bold text-gray-900">{{ totalEspecialistas }}</p>
-      </div>
-    </div>
-
-    <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm flex items-center gap-4">
-      <div class="p-3 rounded-lg bg-amber-50">
-        <svg class="h-6 w-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-      </div>
-      <div>
-        <p class="text-sm font-medium text-gray-500">Alta Demanda</p>
-        <p class="text-2xl font-bold text-gray-900">{{ altaDemandaCount }}</p>
       </div>
     </div>
   </div>
@@ -61,19 +41,7 @@
               <svg [ngClass]="{'text-green-600': sortField === 'nombre', 'text-gray-300 group-hover:text-gray-400': sortField !== 'nombre'}" class="h-3.5 w-3.5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
             </div>
           </th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 group" (click)="handleSort('piso')">
-            <div class="flex items-center gap-1">
-              Ubicación
-              <svg [ngClass]="{'text-green-600': sortField === 'piso', 'text-gray-300 group-hover:text-gray-400': sortField !== 'piso'}" class="h-3.5 w-3.5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
-            </div>
-          </th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider cursor-pointer select-none hover:text-gray-700 group" (click)="handleSort('numDoctores')">
-            <div class="flex items-center gap-1">
-              Especialistas
-              <svg [ngClass]="{'text-green-600': sortField === 'numDoctores', 'text-gray-300 group-hover:text-gray-400': sortField !== 'numDoctores'}" class="h-3.5 w-3.5 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" /></svg>
-            </div>
-          </th>
-          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Demanda</th>
+          <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Descripción</th>
           <th class="px-4 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">Estado</th>
           <th class="px-4 py-3 text-right text-xs font-semibold text-gray-500 uppercase tracking-wider">Acciones</th>
         </tr>
@@ -88,37 +56,23 @@
             }"
           class="transition-colors group cursor-pointer"
         >
-          <td class="px-4 py-4">
+          <td class="px-4 py-4 font-medium text-gray-900">
             <div class="flex items-center gap-3">
               <div class="w-9 h-9 rounded-lg bg-green-100 border border-green-200 flex items-center justify-center shrink-0">
                 <svg class="h-5 w-5 text-green-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
               </div>
-              <div>
-                <p class="font-bold text-gray-900 leading-none">{{ e.nombre }}</p>
-                <p class="text-[11px] text-gray-400 mt-1 truncate max-w-[150px]">{{ e.descripcion }}</p>
-              </div>
+              <span class="font-bold text-gray-900 leading-none">{{ e.nombre }}</span>
             </div>
           </td>
-          <td class="px-4 py-4 text-gray-600 font-medium">{{ e.piso }}</td>
-          <td class="px-4 py-4">
-            <span class="font-bold text-gray-900">{{ e.numDoctores }}</span>
-            <span class="text-gray-400 text-[11px] ml-1">médicos</span>
+          <td class="px-4 py-4 text-gray-500 max-w-xs truncate">
+            {{ e.descripcion }}
           </td>
           <td class="px-4 py-4">
               <span [ngClass]="{
-                'text-red-600': e.demanda === 'Alta',
-                'text-amber-600': e.demanda === 'Media',
-                'text-blue-600': e.demanda === 'Baja'
-              }" class="text-xs font-semibold">
-                {{ e.demanda }}
-              </span>
-          </td>
-          <td class="px-4 py-4">
-              <span [ngClass]="{
-                'bg-green-50 text-green-700 border-green-200': e.estado === 'activo',
-                'bg-gray-50 text-gray-500 border-gray-200': e.estado === 'inactivo'
+                'bg-green-50 text-green-700 border-green-200': e.estado === 1,
+                'bg-gray-50 text-gray-500 border-gray-200': e.estado !== 1
               }" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold border">
-                {{ e.estado === 'activo' ? 'Operativo' : 'Mantenimiento' }}
+                {{ e.estado === 1 ? 'Operativo' : 'Mantenimiento' }}
               </span>
           </td>
           <td class="px-4 py-4 text-right">
