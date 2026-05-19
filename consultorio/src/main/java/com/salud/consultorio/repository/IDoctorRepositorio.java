@@ -1,7 +1,7 @@
 package com.salud.consultorio.repository;
 
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
-import com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDTO;
 import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -101,7 +101,7 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
     void DoctorCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
 
     @Query("""
-   SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT(
+   SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDTO(
       d.id,
       CONCAT(p.nombre, ' ', p.apellidos) AS nombre
    )
@@ -110,6 +110,6 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
    WHERE d.especialidad.id=:id
    AND d.estado=1
     """)
-    List<DoctorEspecialidadPorIdDT> listaDoctoresEspecialidadSeleccionada(@Param("id") Integer id);
+    List<DoctorEspecialidadPorIdDTO> listaDoctoresEspecialidadSeleccionada(@Param("id") Integer id);
 
 }

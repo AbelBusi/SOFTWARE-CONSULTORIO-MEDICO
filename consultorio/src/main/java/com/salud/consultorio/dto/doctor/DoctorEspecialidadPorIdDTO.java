@@ -27,4 +27,6 @@ public class DoctorEspecialidadPorIdDTO {
         this.id = id;
         this.nombres = nombres;
     }
+
+
 }

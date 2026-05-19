@@ -115,7 +115,7 @@ public class DoctorController {
     @GetMapping("/especialidad/{id}")
     public ResponseEntity<MensajeResponse> especialidadId(@PathVariable Integer id){
 
-        List<DoctorEspecialidadPorIdDT> doctores = doctorServicio.listaDoctoresEspecialidadSeleccionada(id);
+        List<DoctorEspecialidadPorIdDTO> doctores = doctorServicio.listaDoctoresEspecialidadSeleccionada(id);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE DOCTORES POR ESPECIALIDAD SELECCIONADA")

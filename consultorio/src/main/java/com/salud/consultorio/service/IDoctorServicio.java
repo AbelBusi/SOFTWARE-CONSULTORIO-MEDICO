@@ -30,6 +30,6 @@ public interface IDoctorServicio {
 
     List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidadInactivos();
 
-    List<DoctorEspecialidadPorIdDT> listaDoctoresEspecialidadSeleccionada(Integer id);
+    List<DoctorEspecialidadPorIdDTO> listaDoctoresEspecialidadSeleccionada(Integer id);
 
 }
