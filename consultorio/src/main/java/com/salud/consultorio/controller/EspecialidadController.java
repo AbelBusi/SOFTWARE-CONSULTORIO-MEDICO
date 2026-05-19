@@ -4,6 +4,10 @@ import com.salud.consultorio.dto.especialidad.*;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IEspecialidadServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,10 +19,19 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/especialidades")
 @RequiredArgsConstructor
+@Tag(
+        name = "Especialidades",
+        description = "Endpoints para la gestión de especialidades médicas"
+)
 public class EspecialidadController {
 
     private final IEspecialidadServicio especialidadServicio;
 
+    @Operation(summary = "Registrar una nueva especialidad")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Especialidad registrada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     @PostMapping
     public ResponseEntity<MensajeResponse> crearEspecialidad(@Valid @RequestBody EspecialidadCrearDTO especialidadCrearDTO){
 
@@ -30,6 +43,10 @@ public class EspecialidadController {
 
     }
 
+    @Operation(summary = "Listar especialidades")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de especialidades obtenida correctamente")
+    })
     @GetMapping
     public ResponseEntity<MensajeResponse> leerEspecialidades(
             @RequestParam(required = false,name = "estado") EntidadEstado estado){
@@ -59,7 +76,11 @@ public class EspecialidadController {
 
     }
 
-
+    @Operation(summary = "Listar nombres de especialidades")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de nombres obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "No existen especialidades")
+    })
     @GetMapping("/resumen")
     public ResponseEntity<MensajeResponse> listaNombres() {
         List<NombreEspecialidadesDTO> leerNombreEspecialidadesDTOS = especialidadServicio.listaNombres();
@@ -76,6 +97,11 @@ public class EspecialidadController {
                 .object(leerNombreEspecialidadesDTOS).build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener especialidad por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Especialidad encontrada"),
+            @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerEspecialidadPorId(@PathVariable Integer id){
 
@@ -87,6 +113,12 @@ public class EspecialidadController {
 
     }
 
+    @Operation(summary = "Actualizar especialidad")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Especialidad actualizada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<MensajeResponse> actualizarEspecialidad(
             @PathVariable Integer id,
@@ -94,13 +126,17 @@ public class EspecialidadController {
 
         EspecialidadRespuestaDTO respuesta = especialidadServicio.actualizar(dto,id);
 
-
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Especialidad actualizada con exito")
                 .object(respuesta).build(), HttpStatus.CREATED);
 
     }
 
+    @Operation(summary = "Eliminar especialidad")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Especialidad eliminada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<MensajeResponse> eliminarEspecialidadPorId(@PathVariable Integer id){
 

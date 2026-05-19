@@ -4,6 +4,10 @@ import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.ICitaMedicaServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,10 +19,19 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/citas-medicas")
 @RequiredArgsConstructor
+@Tag(
+        name = "Citas Médicas",
+        description = "Endpoints para la gestión de citas médicas"
+)
 public class CitaMedicaController {
 
     private final ICitaMedicaServicio citaMedicaServicio;
 
+    @Operation(summary = "Registrar una nueva cita médica")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cita médica registrada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     @PostMapping
     public ResponseEntity<MensajeResponse> crear(@Valid @RequestBody CitaMedicaCrearDTO dto){
 
@@ -30,6 +43,11 @@ public class CitaMedicaController {
 
     }
 
+    @Operation(summary = "Obtener cita médica por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cita médica encontrada"),
+            @ApiResponse(responseCode = "404", description = "Cita médica no encontrada")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerCitaMedica(@PathVariable Integer id){
 
@@ -41,6 +59,10 @@ public class CitaMedicaController {
 
     }
 
+    @Operation(summary = "Listar citas médicas")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de citas médicas obtenida correctamente")
+    })
     @GetMapping
     public ResponseEntity<MensajeResponse> leerCitas(
             @RequestParam(required = false,name = "estado") EntidadEstado estado){
@@ -70,7 +92,12 @@ public class CitaMedicaController {
 
     }
 
-
+    @Operation(summary = "Actualizar cita médica")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Cita médica actualizada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "404", description = "Cita médica no encontrada")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<MensajeResponse> actualizarCitaMedica(@PathVariable Integer id, @Valid @RequestBody CitaMedicaActualizarDTO citaMedicaActualizarDTO){
 
@@ -82,6 +109,11 @@ public class CitaMedicaController {
 
     }
 
+    @Operation(summary = "Eliminar cita médica")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Cita médica eliminada correctamente"),
+            @ApiResponse(responseCode = "404", description = "Cita médica no encontrada")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<MensajeResponse> eliminarCitaMedica(@PathVariable Integer id){
 
@@ -98,7 +130,5 @@ public class CitaMedicaController {
                 .mensaje("La cita medica se elimino con exito")
                 .object(null).build(),HttpStatus.NO_CONTENT);
     }
-
-
 
 }

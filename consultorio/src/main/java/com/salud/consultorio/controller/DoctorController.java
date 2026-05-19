@@ -4,6 +4,10 @@ import com.salud.consultorio.dto.doctor.*;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IDoctorServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,10 +19,19 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/doctores")
 @RequiredArgsConstructor
+@Tag(
+        name = "Doctores",
+        description = "Endpoints para la gestión de doctores"
+)
 public class DoctorController {
 
     private final IDoctorServicio doctorServicio;
 
+    @Operation(summary = "Registrar un nuevo doctor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Doctor registrado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     @PostMapping
     public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorCrearDTO doctorCrearDTO){
 
@@ -30,6 +43,11 @@ public class DoctorController {
 
     }
 
+    @Operation(summary = "Listar nombres de doctores")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de doctores obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "No existen doctores")
+    })
     @GetMapping("/resumen")
     public ResponseEntity<MensajeResponse> listaNombres() {
         List<NombreDoctoresDTO> leerNombreDoctoresDTOS = doctorServicio.listaNombreDoctoresDtos();
@@ -46,6 +64,10 @@ public class DoctorController {
                 .object(leerNombreDoctoresDTOS).build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Listar doctores")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de doctores obtenida correctamente")
+    })
     @GetMapping
     public ResponseEntity<MensajeResponse> leerDoctores(
             @RequestParam(required = false,name = "estado") EntidadEstado estado){
@@ -76,6 +98,11 @@ public class DoctorController {
 
     }
 
+    @Operation(summary = "Obtener doctor por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Doctor encontrado"),
+            @ApiResponse(responseCode = "404", description = "Doctor no encontrado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerDoctorPorId(@PathVariable Integer id){
 
@@ -87,6 +114,12 @@ public class DoctorController {
 
     }
 
+    @Operation(summary = "Actualizar doctor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Doctor actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "404", description = "Doctor no encontrado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<MensajeResponse> actualizarDoctor(
             @PathVariable Integer id,
@@ -94,13 +127,17 @@ public class DoctorController {
 
         DoctorRespuestaDTO respuesta = doctorServicio.actualizar(dto,id);
 
-
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Doctor actualizado con exito")
                 .object(respuesta).build(), HttpStatus.CREATED);
 
     }
 
+    @Operation(summary = "Eliminar doctor")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Doctor eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Doctor no encontrado")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<MensajeResponse> eliminarDoctorPorId(@PathVariable Integer id){
 
@@ -112,6 +149,11 @@ public class DoctorController {
 
     }
 
+    @Operation(summary = "Listar doctores por especialidad")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de doctores obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
+    })
     @GetMapping("/especialidad/{id}")
     public ResponseEntity<MensajeResponse> especialidadId(@PathVariable Integer id){
 

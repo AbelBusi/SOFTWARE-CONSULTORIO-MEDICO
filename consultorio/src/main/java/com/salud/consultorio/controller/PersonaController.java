@@ -1,10 +1,13 @@
 package com.salud.consultorio.controller;
 
-
 import com.salud.consultorio.dto.persona.PersonaCrearDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPersonaServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,10 +20,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("api/v1/personas")
 @RequiredArgsConstructor
+@Tag(
+        name = "Personas",
+        description = "Endpoints para la gestión de personas"
+)
 public class PersonaController {
 
     private final IPersonaServicio personaServicio;
 
+    @Operation(summary = "Registrar una nueva persona")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Persona registrada correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     @PostMapping
     public ResponseEntity<?> crearPersona(@Valid @RequestBody PersonaCrearDTO personaCrearDTO){
 

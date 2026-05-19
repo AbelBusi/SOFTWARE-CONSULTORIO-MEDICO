@@ -5,6 +5,10 @@ import com.salud.consultorio.dto.paciente.NombrePacientesDTO;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.IPacienteServicio;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,10 +20,19 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/pacientes")
 @RequiredArgsConstructor
+@Tag(
+        name = "Pacientes",
+        description = "Endpoints para la gestión de pacientes"
+)
 public class PacienteController {
 
     private final IPacienteServicio pacienteServicio;
 
+    @Operation(summary = "Registrar un nuevo paciente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Paciente registrado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     @PostMapping
     public ResponseEntity<MensajeResponse> crearPaciente(@Valid @RequestBody PacienteCrearDTO pacienteCrearDTO){
 
@@ -31,6 +44,11 @@ public class PacienteController {
 
     }
 
+    @Operation(summary = "Listar pacientes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de pacientes obtenida correctamente"),
+            @ApiResponse(responseCode = "204", description = "No existen pacientes")
+    })
     @GetMapping
     public ResponseEntity<MensajeResponse> listarPacientes(
             @RequestParam(name = "estado",required = false) EntidadEstado pacienteEstado) {
@@ -70,6 +88,11 @@ public class PacienteController {
                 .object(leerPacientes).build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Obtener paciente por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Paciente encontrado"),
+            @ApiResponse(responseCode = "404", description = "Paciente no encontrado")
+    })
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerPacientePorID(@PathVariable Integer id){
 
@@ -85,6 +108,11 @@ public class PacienteController {
 
     }
 
+    @Operation(summary = "Listar nombres de pacientes")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de nombres obtenida correctamente"),
+            @ApiResponse(responseCode = "404", description = "No existen pacientes")
+    })
     @GetMapping("/resumen")
     public ResponseEntity<MensajeResponse> listaNombres() {
         List<NombrePacientesDTO> leerNombrePacientesDTOS = pacienteServicio.listarPacientesDtoList();
@@ -101,6 +129,12 @@ public class PacienteController {
                 .object(leerNombrePacientesDTOS).build(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Actualizar paciente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Paciente actualizado correctamente"),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+            @ApiResponse(responseCode = "404", description = "Paciente no encontrado")
+    })
     @PutMapping("/{id}")
     public ResponseEntity<MensajeResponse> actualizarCitaMedica(
             @PathVariable Integer id,
@@ -114,6 +148,11 @@ public class PacienteController {
 
     }
 
+    @Operation(summary = "Eliminar paciente")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Paciente eliminado correctamente"),
+            @ApiResponse(responseCode = "404", description = "Paciente no encontrado")
+    })
     @DeleteMapping("/{id}")
     public ResponseEntity<MensajeResponse> eliminarPaciente(@PathVariable Integer id){
 
