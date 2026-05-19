@@ -65,3 +65,8 @@ export interface PacienteCrearDTO {
   estado: number;
   persona: PersonaCrearDTO;
 }
+
+export interface PacienteMensajeResponse {
+  mensaje: string;
+  object: PacienteDetalleLeerDTO;
+}

@@ -50,14 +50,12 @@ export class CrearEspecialidadModalComponent {
 
     this.especialidadService.crear(this.especialidadForm).subscribe({
       next: (response) => {
-        // Ejecuta tu método .success() mapeando el mensaje del backend
         this.toastService.success(response.mensaje);
         this.onEspecialidadCreada.emit();
         this.handleClose();
       },
       error: (err) => {
         console.error('Error al guardar la especialidad:', err);
-        // Si el backend mandó un error estructurado, extrae su .mensaje, si no, usa el fallback
         const mensajeError = err.error?.mensaje || 'No se pudo registrar la especialidad.';
         this.toastService.error(mensajeError);
       },

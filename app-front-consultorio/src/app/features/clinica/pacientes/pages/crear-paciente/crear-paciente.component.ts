@@ -1,15 +1,11 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PacienteService } from '../../services/paciente.service';
 import { ReniecService } from '../../services/reniec.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 import { PacienteCrearDTO } from '../../interface/paciente.interface';
-
-interface AlertData {
-  type: 'success' | 'error' | 'warning' | 'info';
-  msg: string;
-}
 
 @Component({
   selector: 'app-crear-paciente',
@@ -20,21 +16,15 @@ interface AlertData {
 export class CrearPacienteComponent {
   private readonly pacienteService = inject(PacienteService);
   private readonly reniecService = inject(ReniecService);
+  private readonly toastService = inject(ToastService);
   private readonly router = inject(Router);
-  private readonly cdr = inject(ChangeDetectorRef);
 
   loading = false;
-  alert: AlertData | null = null;
-  private alertTimeout: any;
-
+  isSaving = false; // Maneja la pantalla de carga global post-guardado
   form: PacienteCrearDTO = this.getInitialForm();
 
   seguros = ['SIS', 'ESSALUD', 'RIMAC', 'PACÍFICO', 'MAPFRE', 'PARTICULAR'];
   generos = ['MASCULINO', 'FEMENINO', 'OTRO'];
-
-  inputCls =
-    'w-full px-3 py-2.5 text-sm border border-gray-200 rounded-lg bg-white text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-500 transition-all';
-  selectCls = `${this.inputCls} appearance-none bg-no-repeat bg-[right_0.75rem_center] bg-[length:1em_1em]`;
 
   getInitialForm(): PacienteCrearDTO {
     return {
@@ -55,31 +45,19 @@ export class CrearPacienteComponent {
     };
   }
 
-  showAlert(type: 'success' | 'error' | 'warning' | 'info', msg: string) {
-    if (this.alertTimeout) {
-      clearTimeout(this.alertTimeout);
-    }
-    this.alert = { type, msg };
-    if (type === 'success' || type === 'info') {
-      this.alertTimeout = setTimeout(() => {
-        this.alert = null;
-        this.cdr.markForCheck();
-      }, 5000);
-    }
-    this.cdr.markForCheck();
-  }
-
-  closeAlert() {
-    this.alert = null;
-    if (this.alertTimeout) clearTimeout(this.alertTimeout);
-    this.cdr.markForCheck();
+  fechaMaxima(): string {
+    const hoy = new Date();
+    const anio = hoy.getFullYear();
+    const mes = String(hoy.getMonth() + 1).padStart(2, '0');
+    const dia = String(hoy.getDate()).padStart(2, '0');
+    return `${anio}-${mes}-${dia}`;
   }
 
   handleConsultarDNI() {
     const dniDestino = this.form.persona.dni;
 
     if (!dniDestino || dniDestino.length !== 8) {
-      this.showAlert('warning', 'El DNI debe tener exactamente 8 dígitos.');
+      this.toastService.warning('El DNI debe tener exactamente 8 dígitos.');
       return;
     }
 
@@ -95,48 +73,56 @@ export class CrearPacienteComponent {
             nombre: datosMapeados.nombre,
             apellidos: datosMapeados.apellidos,
           };
-          this.showAlert('success', 'Datos cargados desde RENIEC.');
+          this.toastService.success('Datos cargados desde RENIEC.');
         } else {
-          this.showAlert('error', 'No se encontraron registros para el DNI ingresado.');
+          this.toastService.error('No se encontraron registros para el DNI ingresado.');
         }
-
-        this.cdr.markForCheck();
       },
       error: (err) => {
         this.loading = false;
         console.error('Error al consultar DNI:', err);
-        this.showAlert('error', 'Error al conectar con el servicio de RENIEC.');
-
-        this.cdr.markForCheck();
+        const msgError = err.error?.mensaje || 'Error al conectar con el servicio de RENIEC.';
+        this.toastService.error(msgError);
       },
     });
   }
 
   handleSubmit() {
-    this.loading = true;
+    if (!this.form.persona.dni.trim() || !this.form.persona.nombre.trim() || !this.form.persona.apellidos.trim()) {
+      this.toastService.warning('Por favor, complete todos los campos obligatorios.');
+      return;
+    }
 
+    this.loading = true;
     this.form.estado = 1;
     this.form.persona.estado = 1;
 
     this.pacienteService.crearPaciente(this.form).subscribe({
-      next: () => {
+      next: (response: any) => {
         this.loading = false;
-        this.showAlert('success', 'Paciente registrado correctamente.');
-        this.form = this.getInitialForm();
+        this.isSaving = true;
+
+        const mensajeExito = response?.mensaje || 'Paciente registrado correctamente.';
+        this.toastService.success(mensajeExito);
+
 
         setTimeout(() => {
           this.router.navigate(['/pacientes']);
-        }, 1500);
-
-        this.cdr.markForCheck();
+        }, 1800);
       },
       error: (err) => {
         this.loading = false;
-        console.error(err);
-        this.showAlert('error', 'Hubo un problema al guardar el registro en el servidor.');
+        this.isSaving = false;
+        console.error('Error al guardar el paciente:', err);
 
-        this.cdr.markForCheck();
+        const mensajeError = err.error?.mensaje || 'Hubo un problema al guardar el registro en el servidor.';
+        this.toastService.error(mensajeError);
       },
     });
+  }
+
+  handleLimpiarFormulario() {
+    this.form = this.getInitialForm();
+    this.toastService.info('Formulario restablecido.');
   }
 }

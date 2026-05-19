@@ -1,3 +1,4 @@
+<!--
 <div
   class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-none"
   (click)="close.emit()"
@@ -72,30 +73,22 @@
 
             <div>
               <div class="flex justify-between items-center mb-1">
-                <div class="flex items-center gap-1.5">
-                  <span class="material-icons text-[14px] transition-colors select-none"
-                        [class.text-red-600]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
-                        [class.text-gray-400]="!(dni.invalid && (dni.dirty || dni.touched || editForm.submitted))">
-                    lock
-                  </span>
-                  <label class="text-xs font-semibold transition-colors"
-                         [class.text-red-600]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
-                         [class.text-gray-600]="!(dni.invalid && (dni.dirty || dni.touched || editForm.submitted))">
-                    DNI (8 dígitos) *
-                  </label>
-                </div>
+                <label class="text-xs font-semibold transition-colors"
+                       [class.text-red-600]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
+                       [class.text-gray-600]="!(dni.invalid && (dni.dirty || dni.touched || editForm.submitted))">DNI (8
+                  dígitos) *</label>
                 <span class="text-[10px] font-mono select-none transition-colors"
                       [class.text-red-600]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
                       [class.text-gray-400]="!(dni.invalid && (dni.dirty || dni.touched || editForm.submitted))">
                   {{ form().persona.dni.length || 0 }}/8
                 </span>
               </div>
-
               <input type="text" name="dni" [(ngModel)]="form().persona.dni" #dni="ngModel"
-                     required minlength="8" maxlength="8" pattern="\d{8}" placeholder="00000000" readonly
+                     required minlength="8" maxlength="8" pattern="\d{8}" placeholder="00000000"
                      [class.border-red-500]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
-                     class="w-full text-xs px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 font-bold tracking-wider font-mono cursor-not-allowed select-none focus:outline-none transition-colors" />
+                     class="w-full text-xs px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#0d6b68] font-mono text-gray-800 font-bold tracking-wider transition-colors" />
             </div>
+
             <div>
               <div class="flex justify-between items-center mb-1">
                 <label class="text-xs font-semibold transition-colors"
@@ -272,3 +265,4 @@
     </form>
   </div>
 </div>
+-->

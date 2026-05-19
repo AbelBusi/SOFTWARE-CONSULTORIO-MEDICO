@@ -1,12 +1,4 @@
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  PLATFORM_ID,
-  signal,
-  ChangeDetectorRef,
-} from '@angular/core';
+import { Component, computed, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PacienteService } from '../../services/paciente.service';
@@ -14,17 +6,19 @@ import { PacienteInterface, PacienteDetalleLeerDTO } from '../../interface/pacie
 import { DetallePacienteModalComponent } from '../../components/detalle-paciente-modal/detalle-paciente-modal.component';
 import { ToastService } from '../../../../../core/services/toast.service';
 
+import { CustomTableComponent } from '../../../../../shared/components/custom-table/custom-table.component';
+import { TableColumn } from '../../../../../shared/components/custom-table/table-column.interface';
+
 @Component({
   selector: 'app-lista-pacientes',
   standalone: true,
-  imports: [CommonModule, FormsModule, DetallePacienteModalComponent],
+  imports: [CommonModule, FormsModule, DetallePacienteModalComponent, CustomTableComponent],
   templateUrl: './lista-pacientes.component.html',
 })
 export class ListaPacientesComponent implements OnInit {
   private readonly pacienteService = inject(PacienteService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly toastService = inject(ToastService);
-  private readonly cdr = inject(ChangeDetectorRef);
 
   search = signal<string>('');
   sortField = signal<keyof PacienteInterface>('paciente');
@@ -32,8 +26,16 @@ export class ListaPacientesComponent implements OnInit {
 
   selectedPaciente = signal<PacienteDetalleLeerDTO | null>(null);
   cargando = signal<boolean>(false);
-
   pacientesReal = signal<PacienteInterface[]>([]);
+
+  columns: TableColumn<PacienteInterface>[] = [
+    { header: 'Paciente', field: 'paciente', sortable: true, type: 'custom' },
+    { header: 'DNI', field: 'dni', sortable: true },
+    { header: 'Contacto', field: 'telefono' },
+    { header: 'Seguro', field: 'entidadAseguradora', sortable: true },
+    { header: 'Estado', field: 'estado', type: 'custom' },
+    { header: 'Acciones', field: 'actions', type: 'actions' },
+  ];
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -47,11 +49,9 @@ export class ListaPacientesComponent implements OnInit {
       next: (pacientes) => {
         this.pacientesReal.set(pacientes);
         this.cargando.set(false);
-        this.cdr.markForCheck();
       },
       error: () => {
         this.cargando.set(false);
-        this.cdr.markForCheck();
       },
     });
   }
@@ -67,24 +67,27 @@ export class ListaPacientesComponent implements OnInit {
   ]);
 
   filteredPacientes = computed(() => {
-    const texto = this.search().toLowerCase();
+    const texto = this.search().toLowerCase().trim();
     const campo = this.sortField();
     const ascendente = this.sortAsc();
 
-    return this.pacientesReal()
-      .filter((p) => `${p.paciente} ${p.dni}`.toLowerCase().includes(texto))
-      .sort((a, b) => {
-        const av = String(a[campo] ?? '').toLowerCase();
-        const bv = String(b[campo] ?? '').toLowerCase();
-        return ascendente ? av.localeCompare(bv) : bv.localeCompare(av);
-      });
+    const listaFiltrada = this.pacientesReal().filter((p) =>
+      `${p.paciente} ${p.dni}`.toLowerCase().includes(texto),
+    );
+
+    return [...listaFiltrada].sort((a, b) => {
+      const av = String(a[campo] ?? '').toLowerCase();
+      const bv = String(b[campo] ?? '').toLowerCase();
+      return ascendente ? av.localeCompare(bv) : bv.localeCompare(av);
+    });
   });
 
-  handleSort(field: keyof PacienteInterface): void {
-    if (this.sortField() === field) {
+  handleSort(field: string): void {
+    const validField = field as keyof PacienteInterface;
+    if (this.sortField() === validField) {
       this.sortAsc.update((v) => !v);
     } else {
-      this.sortField.set(field);
+      this.sortField.set(validField);
       this.sortAsc.set(true);
     }
   }
@@ -93,7 +96,6 @@ export class ListaPacientesComponent implements OnInit {
     this.pacienteService.traerPacientePorId(paciente.id).subscribe({
       next: (pacienteDetalle) => {
         this.selectedPaciente.set(pacienteDetalle);
-        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error al obtener los detalles del paciente:', err);
@@ -113,12 +115,10 @@ export class ListaPacientesComponent implements OnInit {
       next: () => {
         this.toastService.success('Paciente eliminado con éxito.');
         this.pacientesReal.update((lista) => lista.filter((p) => p.id !== paciente.id));
-        this.cdr.markForCheck();
       },
       error: (err) => {
         console.error('Error al eliminar paciente:', err);
         this.toastService.error('No se pudo completar la eliminación del paciente.');
-        this.cdr.markForCheck();
       },
     });
   }
@@ -141,6 +141,5 @@ export class ListaPacientesComponent implements OnInit {
     if (this.selectedPaciente()?.id === pacienteActualizado.id) {
       this.selectedPaciente.set(pacienteActualizado);
     }
-    this.cdr.markForCheck();
   }
 }
