@@ -49,9 +49,16 @@ public class PersonaServicioImpl implements IPersonaServicio {
 
     }
 
+    @Transactional(readOnly = true)
     @Override
     public boolean existePersonaDni(String dni) {
         return personaRepositorio.existsByDni(dni);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existePersonaCorreo(String correo) {
+        return personaRepositorio.existsByCorreo(correo);
     }
 
 }

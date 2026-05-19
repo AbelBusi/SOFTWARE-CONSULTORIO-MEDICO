@@ -47,6 +47,14 @@ public class PacienteServicioImpl implements IPacienteServicio {
             throw new DataIntegrityViolationException("No se puede agregar pacientes con dni duplicado.");
         }
 
+        if (existeNrCodigoAegurado(dto.getCodigoAseguradora())){
+            throw new DataIntegrityViolationException("No se puede duplicar codigos de seguro");
+        }
+
+        if (personaServicio.existePersonaCorreo(dto.getPersona().getCorreo())){
+            throw new DataIntegrityViolationException("No se puede duplicar el correo de una persona");
+        }
+
         Paciente paciente = pacienteMapper.pacienteDtoToPaciente(dto);
 
         Persona persona = personaMapper.personaDtoToPersona(dto.getPersona());
@@ -68,6 +76,29 @@ public class PacienteServicioImpl implements IPacienteServicio {
         if (pacienteExiste.getPersona()==null){
             throw new IllegalArgumentException("Paciente sin persona asociada");
         }
+
+        String nuevoDni = actualizarDTO.getPersona().getDni();
+        String dniActual = pacienteExiste.getPersona().getDni();
+
+        String nuevoCodigo = actualizarDTO.getCodigoAseguradora();
+        String codigoActual = pacienteExiste.getCodigoAseguradora();
+
+        boolean cambioDni = !nuevoDni.equalsIgnoreCase(dniActual);
+
+        boolean cambioCodigo = !nuevoCodigo.equalsIgnoreCase(codigoActual);
+
+        if (cambioDni && personaServicio.existePersonaDni(nuevoDni)) {
+            throw new DataIntegrityViolationException(
+                    "No se puede agregar pacientes con dni duplicado."
+            );
+        }
+
+        if (cambioCodigo && existeNrCodigoAegurado(nuevoCodigo)) {
+            throw new DataIntegrityViolationException(
+                    "No se puede duplicar códigos de seguro."
+            );
+        }
+
 
         pacienteMapper.updateFromDto(actualizarDTO, pacienteExiste);
 
@@ -95,9 +126,16 @@ public class PacienteServicioImpl implements IPacienteServicio {
         return pacienteRepositorio.leerPacientesAllActivos();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<PacienteLeerDTO> listarPacientesInativos() {
         return pacienteRepositorio.leerPacientesAllInactivos();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existeNrCodigoAegurado(String codigo) {
+        return pacienteRepositorio.existsByCodigoAseguradora(codigo);
     }
 
     @Transactional(readOnly = true)

@@ -30,4 +30,6 @@ public interface IPacienteServicio{
 
     List<PacienteLeerDTO> listarPacientesInativos();
 
+    boolean existeNrCodigoAegurado(String codigo);
+
 }

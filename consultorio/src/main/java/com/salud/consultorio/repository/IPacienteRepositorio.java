@@ -23,6 +23,8 @@ public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
         """, nativeQuery = true)
     List<NombrePacientesDTO> listarPacientesResumen();
 
+    boolean existsByCodigoAseguradora(String codigo);
+
     @Query("""
     SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
         p.id,

@@ -20,4 +20,6 @@ public interface IPersonaServicio{
 
     boolean existePersonaDni(String dni);
 
+    boolean existePersonaCorreo(String correo);
+
 }
