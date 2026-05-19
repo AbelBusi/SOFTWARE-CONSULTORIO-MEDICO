@@ -1,6 +1,7 @@
-import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, computed, inject, input, output, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { type Doctor } from '../../interface/doctor.interface';
+import { DoctorService } from '../../services/doctor.service';
+import { DoctorDetalle } from '../../interface/doctor.interface';
 import { EditarDoctorModalComponent } from '../editar-doctor-modal/editar-doctor-modal.component';
 
 @Component({
@@ -9,56 +10,74 @@ import { EditarDoctorModalComponent } from '../editar-doctor-modal/editar-doctor
   imports: [CommonModule, EditarDoctorModalComponent],
   templateUrl: './detalle-doctor-modal.component.html',
 })
-export class DetalleDoctorModalComponent implements OnChanges {
-  @Input() doctor: Doctor | null = null;
-  @Output() close = new EventEmitter<void>();
-  @Output() updateDoctor = new EventEmitter<Doctor>(); // Permite notificar los cambios al componente principal
+export class DetalleDoctorModalComponent {
+  private readonly doctorService = inject(DoctorService);
 
-  datos: Doctor | null = null;
-  iniciales = '';
-  editando = false;
+  // Inputs y Outputs modernos basados en Signals
+  doctorId = input.required<number>();
+  close = output<void>();
+  updateDoctor = output<DoctorDetalle>();
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['doctor'] && this.doctor) {
-      this.datos = this.doctor;
-      this.generarIniciales();
-    }
+  // Estados locales reactivos
+  datos = signal<DoctorDetalle | null>(null);
+  cargando = signal<boolean>(false);
+  editando = signal<boolean>(false);
+
+  constructor() {
+    effect(() => {
+      const id = this.doctorId();
+      if (id) {
+        this.cargarDetalleDoctor(id);
+      }
+    });
   }
 
-  generarIniciales(): void {
-    if (this.datos) {
-      this.iniciales = `${this.datos.nombre[0]}${this.datos.apellido[0]}`.toUpperCase();
-    }
+  private cargarDetalleDoctor(id: number): void {
+    this.cargando.set(true);
+    this.doctorService.obtenerPorId(id).subscribe({
+      next: (res) => {
+        this.datos.set(res);
+        this.cargando.set(false);
+      },
+      error: () => this.cargando.set(false),
+    });
   }
 
-  getTurnoClass(turno: string): string {
-    switch (turno) {
-      case 'Mañana':
-        return 'bg-amber-500/30 text-amber-100';
-      case 'Tarde':
-        return 'bg-blue-500/30 text-blue-100';
-      case 'Noche':
-        return 'bg-indigo-500/30 text-indigo-100';
-      default:
-        return 'bg-purple-500/30 text-purple-100';
-    }
-  }
+  // Despachadores computados idénticos a tu lógica de pacientes
+  iniciales = computed(() => {
+    const d = this.datos();
+    if (!d || !d.persona) return '';
+    const nombre = d.persona.nombre || '';
+    const apellidos = d.persona.apellidos || '';
+    return `${nombre[0] || ''}${apellidos[0] || ''}`.toUpperCase();
+  });
+
+  quickStats = computed(() => {
+    const d = this.datos();
+    if (!d) return [];
+    return [
+      { label: 'Especialidad', value: d.especialidad?.nombre, icon: 'local_hospital' },
+      { label: 'CMP', value: d.cpm, icon: 'badge' },
+      { label: 'RNE', value: d.rne || 'N/A', icon: 'assignment' },
+    ];
+  });
+
+  contactoInfo = computed(() => {
+    const d = this.datos();
+    if (!d || !d.persona) return [];
+    return [
+      { icon: 'mail', value: d.persona.correo },
+      { icon: 'phone', value: d.persona.telefono },
+    ];
+  });
 
   handleClose(): void {
     this.close.emit();
   }
 
-  abrirEdicion(): void {
-    this.editando = true;
-  }
-
-  cerrarEdicion(): void {
-    this.editando = false;
-  }
-
-  handleSave(doctorActualizado: Doctor): void {
-    this.datos = doctorActualizado; // Actualiza la vista local del detalle inmediatamente
-    this.generarIniciales();
-    this.updateDoctor.emit(doctorActualizado); // Envía los datos actualizados a la lista principal (servidor/estado local)
+  handleSave(doctorActualizado: DoctorDetalle): void {
+    this.datos.set(doctorActualizado);
+    this.updateDoctor.emit(doctorActualizado);
+    this.editando.set(false);
   }
 }

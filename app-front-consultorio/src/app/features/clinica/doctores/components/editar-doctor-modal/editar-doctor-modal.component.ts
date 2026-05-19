@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { type Doctor } from '../../interface/doctor.interface';
+import { DoctorDetalle } from '../../interface/doctor.interface';
 
 @Component({
   selector: 'app-editar-doctor-modal',
@@ -10,13 +10,18 @@ import { type Doctor } from '../../interface/doctor.interface';
   templateUrl: './editar-doctor-modal.component.html',
 })
 export class EditarDoctorModalComponent implements OnChanges {
-  @Input() doctor: Doctor | null = null;
+  @Input() doctor: DoctorDetalle | null = null;
   @Output() close = new EventEmitter<void>();
-  @Output() save = new EventEmitter<Doctor>();
+  @Output() save = new EventEmitter<DoctorDetalle>();
 
-  form: Doctor | null = null;
+  form: DoctorDetalle | null = null;
   saved = false;
   iniciales = '';
+
+  // Propiedades locales para dar soporte al HTML existente y evitar errores TS2339
+  turno = '';
+  dias: string[] = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  diasSeleccionados: string[] = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie'];
 
   especialidades: string[] = [
     'Cardiología',
@@ -37,34 +42,40 @@ export class EditarDoctorModalComponent implements OnChanges {
     'Urología',
   ];
 
-  dias: string[] = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['doctor'] && this.doctor) {
-      this.form = { ...this.doctor, diasAtencion: [...this.doctor.diasAtencion] };
+      this.form = {
+        ...this.doctor,
+        persona: { ...this.doctor.persona },
+        especialidad: { ...this.doctor.especialidad },
+      };
+
+      // Intentar recuperar el turno si viene de alguna propiedad o dejarlo por defecto
+      this.turno = (this.doctor as any).turno || 'Mañana';
+
       this.saved = false;
       this.generarIniciales();
     }
   }
 
   generarIniciales(): void {
-    if (this.form && this.form.nombre && this.form.apellido) {
-      this.iniciales = `${this.form.nombre[0]}${this.form.apellido[0]}`.toUpperCase();
+    if (this.form?.persona) {
+      const nombre = this.form.persona.nombre || '';
+      const apellidos = this.form.persona.apellidos || '';
+      this.iniciales = `${nombre[0] || ''}${apellidos[0] || ''}`.toUpperCase();
     }
   }
 
   isDiaActive(dia: string): boolean {
-    return this.form?.diasAtencion.includes(dia) ?? false;
+    return this.diasSeleccionados.includes(dia);
   }
 
   toggleDia(dia: string): void {
-    if (!this.form) return;
-
-    const index = this.form.diasAtencion.indexOf(dia);
+    const index = this.diasSeleccionados.indexOf(dia);
     if (index > -1) {
-      this.form.diasAtencion.splice(index, 1);
+      this.diasSeleccionados.splice(index, 1);
     } else {
-      this.form.diasAtencion.push(dia);
+      this.diasSeleccionados.push(dia);
     }
   }
 
@@ -75,6 +86,9 @@ export class EditarDoctorModalComponent implements OnChanges {
   handleSubmit(event: Event): void {
     event.preventDefault();
     if (!this.form) return;
+
+    // Si tu backend en algún momento requiere el turno, se lo puedes inyectar aquí antes de emitir:
+    // (this.form as any).turno = this.turno;
 
     this.save.emit(this.form);
     this.saved = true;

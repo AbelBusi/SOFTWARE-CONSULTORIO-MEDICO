@@ -1,5 +1,5 @@
 export interface Doctor {
-  id?: number; // o string, según tu backend
+  id?: number;
   nombre: string;
   apellido: string;
   especialidad: string;
@@ -11,4 +11,30 @@ export interface Doctor {
   telefono: string;
   email: string;
   diasAtencion: string[];
+}
+
+export interface Persona {
+  id: number;
+  dni: string;
+  nombre: string;
+  apellidos: string;
+  fechaNacimiento: string;
+  genero: string;
+  telefono: string;
+  nacionalidad: string;
+  correo: string;
+}
+
+export interface Especialidad {
+  nombre: string;
+}
+
+export interface DoctorDetalle {
+  id: number;
+  persona: Persona;
+  cpm: string;
+  rne: string;
+  consejoRegional: string;
+  especialidad: Especialidad;
+  estado: number;
 }
