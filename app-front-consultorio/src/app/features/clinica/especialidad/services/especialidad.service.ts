@@ -8,6 +8,7 @@ import {
   MensajeResponse,
   MensajeResponseSingle,
   EspecialidadActualizar,
+  MensajeResponseResumen,
 } from '../interface/especialidad.interface';
 
 @Injectable({
@@ -33,6 +34,10 @@ export class EspecialidadService {
 
   eliminarPorId(id: number): Observable<MensajeResponse> {
     return this.http.delete<MensajeResponse>(`${this.baseUrl}/${id}`);
+  }
+
+  listarResumen(): Observable<MensajeResponseResumen> {
+    return this.http.get<MensajeResponseResumen>(`${this.baseUrl}/resumen`);
   }
 
 }

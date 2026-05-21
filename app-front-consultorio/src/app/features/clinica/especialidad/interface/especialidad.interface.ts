@@ -26,3 +26,13 @@ export interface EspecialidadActualizar {
   descripcion: string;
   estado: number;
 }
+
+export interface NombreEspecialidadDTO {
+  idEspecialidad: number;
+  nombreEspecialidad: string;
+}
+
+export interface MensajeResponseResumen {
+  mensaje: string;
+  object: NombreEspecialidadDTO[];
+}

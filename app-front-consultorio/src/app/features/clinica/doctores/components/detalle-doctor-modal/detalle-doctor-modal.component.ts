@@ -13,12 +13,10 @@ import { EditarDoctorModalComponent } from '../editar-doctor-modal/editar-doctor
 export class DetalleDoctorModalComponent {
   private readonly doctorService = inject(DoctorService);
 
-  // Inputs y Outputs modernos basados en Signals
   doctorId = input.required<number>();
   close = output<void>();
   updateDoctor = output<DoctorDetalle>();
 
-  // Estados locales reactivos
   datos = signal<DoctorDetalle | null>(null);
   cargando = signal<boolean>(false);
   editando = signal<boolean>(false);
@@ -43,7 +41,6 @@ export class DetalleDoctorModalComponent {
     });
   }
 
-  // Despachadores computados idénticos a tu lógica de pacientes
   iniciales = computed(() => {
     const d = this.datos();
     if (!d || !d.persona) return '';
@@ -76,7 +73,6 @@ export class DetalleDoctorModalComponent {
   }
 
   handleSave(doctorActualizado: DoctorDetalle): void {
-    this.datos.set(doctorActualizado);
     this.updateDoctor.emit(doctorActualizado);
     this.editando.set(false);
   }

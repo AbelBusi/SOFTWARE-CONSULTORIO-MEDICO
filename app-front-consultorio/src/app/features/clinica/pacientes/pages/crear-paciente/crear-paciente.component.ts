@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PacienteService } from '../../services/paciente.service';
-import { ReniecService } from '../../services/reniec.service';
+import { ReniecService } from '../../../../../core/services/reniec.service';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { PacienteCrearDTO } from '../../interface/paciente.interface';
 
