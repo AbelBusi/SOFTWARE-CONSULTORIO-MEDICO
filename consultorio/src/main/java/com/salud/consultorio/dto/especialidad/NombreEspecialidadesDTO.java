@@ -28,4 +28,5 @@ public class NombreEspecialidadesDTO {
             example = "Traumatología"
     )
     private String nombreEspecialidad;
+
 }

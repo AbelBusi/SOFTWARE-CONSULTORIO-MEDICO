@@ -56,7 +56,19 @@ public class DoctorServicioImpl implements IDoctorServicio {
         }
 
         if (personaServicio.existePersonaDni(dto.getPersona().getDni())){
-            throw new DataIntegrityViolationException("El dni ya existe en la entidad");
+            throw new DataIntegrityViolationException("El DNI ya existe en la entidad");
+        }
+
+        if (existeCpm(dto.getCpm())){
+            throw new DataIntegrityViolationException("El CPM ya existe en la entidad");
+        }
+
+        if (existeRne(dto.getRne())){
+            throw new DataIntegrityViolationException("El RNE ya se encuentra en la entidad");
+        }
+
+        if (personaServicio.existePersonaCorreo(dto.getPersona().getCorreo())){
+            throw new DataIntegrityViolationException("El CORREO ya existe en la entidad");
         }
 
         Doctor doctor = doctorMapper.doctordDtoToDoctor(dto);
@@ -84,6 +96,42 @@ public class DoctorServicioImpl implements IDoctorServicio {
 
         if (!especialidadServicio.existeEspecialidad(dto.getEspecialidad().getId())){
             throw new EntityNotFoundException("No existe la especialidad en la entidad");
+        }
+
+        String dtoRne = dto.getRne();
+        String dtoCpm = dto.getCpm();
+        String dtoDni = dto.getPersona().getDni();
+        String dtoCorreo = dto.getPersona().getCorreo();
+
+        String strDoctorCpm = doctor.getCpm();
+        String strDoctorRne = doctor.getRne();
+        String strDoctorDni = doctor.getPersona().getDni();
+        String strDoctorCorreo = doctor.getPersona().getCorreo();
+
+        boolean valRne = dtoRne.equalsIgnoreCase(strDoctorRne);
+        boolean valCpm = dtoCpm.equalsIgnoreCase(strDoctorCpm);
+        boolean valDni = dtoDni.equalsIgnoreCase(strDoctorDni);
+        boolean valCorreo = dtoCorreo.equalsIgnoreCase(strDoctorCorreo);
+
+        boolean existeRne = existeRne(dtoRne);
+        boolean existeCpm = existeCpm(dtoCpm);
+        boolean existeDni = personaServicio.existePersonaDni(dtoDni);
+        boolean existeCorreo = personaServicio.existePersonaCorreo(dtoCorreo);
+
+        if (!valRne && existeRne){
+            throw new DataIntegrityViolationException("El RNE ya se encuentra en la entidad");
+        }
+
+        if (!valCpm && existeCpm){
+            throw new DataIntegrityViolationException("El CPM ya existe en la entidad");
+        }
+
+        if (!valDni && existeDni){
+            throw new DataIntegrityViolationException("El dni ya existe en la entidad");
+        }
+
+        if (!valCorreo && existeCorreo){
+            throw new DataIntegrityViolationException("El correo ya existe en la entidad");
         }
 
         Especialidad especialidad = especialidadMapper.especialidadRefDtoToEspecialidad(dto.getEspecialidad());
@@ -139,6 +187,26 @@ public class DoctorServicioImpl implements IDoctorServicio {
     @Override
     public List<DoctorEspecialidadPorIdDTO> listaDoctoresEspecialidadSeleccionada(Integer id) {
         return doctorRepositorio.listaDoctoresEspecialidadSeleccionada(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public DoctorDetalleLeerDTO obtenerDatosPersonales(Integer id) {
+        return doctorRepositorio.obtenerDetallePorId(id).orElseThrow(
+                ()-> new EntityNotFoundException("El doctor que desea obtener, no esta registrado en el sistema")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existeCpm(String cpm) {
+        return doctorRepositorio.existsByCpm(cpm);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean existeRne(String rne) {
+        return doctorRepositorio.existsByRne(rne);
     }
 
     @Transactional(readOnly = true)

@@ -32,4 +32,9 @@ public interface IDoctorServicio {
 
     List<DoctorEspecialidadPorIdDTO> listaDoctoresEspecialidadSeleccionada(Integer id);
 
+    DoctorDetalleLeerDTO obtenerDatosPersonales(Integer id);
+
+    boolean existeCpm(String cpm);
+    boolean existeRne(String rne);
+
 }

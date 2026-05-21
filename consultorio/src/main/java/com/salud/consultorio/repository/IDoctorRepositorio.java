@@ -1,9 +1,11 @@
 package com.salud.consultorio.repository;
 
+import com.salud.consultorio.dto.doctor.DoctorDetalleLeerDTO;
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDTO;
 import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -112,4 +114,36 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
     """)
     List<DoctorEspecialidadPorIdDTO> listaDoctoresEspecialidadSeleccionada(@Param("id") Integer id);
 
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.DoctorDetalleLeerDTO(
+        d.id,
+        new com.salud.consultorio.dto.persona.PersonaLeerDTO(
+            p.id,
+            p.dni,
+            p.nombre,
+            p.apellidos,
+            p.fechaNacimiento,
+            p.genero,
+            p.telefono,
+            p.nacionalidad,
+            p.correo
+        ),
+        d.cpm,
+        d.rne,
+        d.consejoRegional,
+        new com.salud.consultorio.dto.especialidad.EspecialidadDoctorLeerDTO(
+            e.nombre
+        ),
+        d.estado
+    )
+    FROM Doctor d
+    JOIN d.persona p
+    JOIN d.especialidad e
+    WHERE d.id = :id
+""")
+    Optional<DoctorDetalleLeerDTO> obtenerDetallePorId(@Param("id") Integer id);
+
+    boolean existsByCpm(String cpm);
+
+    boolean existsByRne(String rne);
 }

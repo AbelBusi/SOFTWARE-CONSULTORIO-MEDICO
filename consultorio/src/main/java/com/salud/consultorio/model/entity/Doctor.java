@@ -27,10 +27,10 @@ public class Doctor {
     @JoinColumn(name = "id_especialidad",nullable = false)
     private Especialidad especialidad;
 
-    @Column(name = "cpm", length = 20, nullable = false)
+    @Column(name = "cpm", length = 20, nullable = false,unique = true)
     private String cpm;
 
-    @Column(name = "rne", length = 20, nullable = true)
+    @Column(name = "rne", length = 20, nullable = true,unique = true)
     private String rne;
 
     @Column(name = "consejo_regional", length = 50, nullable = false)

@@ -106,7 +106,7 @@ public class DoctorController {
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerDoctorPorId(@PathVariable Integer id){
 
-        DoctorEspecialidadLeerDTO leer = doctorServicio.leerPorId(id);
+        DoctorDetalleLeerDTO leer = doctorServicio.obtenerDatosPersonales(id);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Informacion del doctor solicitado")
