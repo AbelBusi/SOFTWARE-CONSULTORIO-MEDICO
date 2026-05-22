@@ -15,13 +15,15 @@ import java.util.Optional;
 @Repository
 public interface IRecepcionistaRepositorio extends JpaRepository<Recepcionista,Integer> {
 
-    @Query(value = """
-            SELECT 
-                r.id AS idRecepcionista,
-                CONCAT(p.nombre, ' ', p.apellidos) AS nombreRecepcionista
-            FROM recepcionista r
-            INNER JOIN persona p ON r.id_persona = p.id
-                    """, nativeQuery = true)
+    @Query("""
+    SELECT new com.salud.consultorio.dto.recepcionista.NombreRecepcionistaDTO( 
+        r.id,
+        CONCAT(p.nombre, ' ', p.apellidos) AS nombreRecepcionista
+    )
+    FROM Recepcionista r
+    JOIN r.persona p
+    WHERE r.estado = 1
+    """)
     List<NombreRecepcionistaDTO> listarRecepcionistasNombres();
 
     boolean existsByCodigoEmpleado(String nombre);

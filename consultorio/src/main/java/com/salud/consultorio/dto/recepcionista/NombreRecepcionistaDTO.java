@@ -7,7 +7,6 @@ import lombok.*;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "DTO de nombres de recepcionistas")
 public class NombreRecepcionistaDTO {
@@ -17,7 +16,7 @@ public class NombreRecepcionistaDTO {
             description = "Identificador único del recepcionista",
             example = "1"
     )
-    private Integer idRecepcionista;
+    private Integer id;
 
     @NotBlank(message = "El nombre del recepcionista es obligatorio")
     @Schema(
@@ -25,4 +24,10 @@ public class NombreRecepcionistaDTO {
             example = "María López"
     )
     private String nombreRecepcionista;
+
+    public NombreRecepcionistaDTO(Integer id, String nombreRecepcionista) {
+        this.id = id;
+        this.nombreRecepcionista = nombreRecepcionista;
+    }
+
 }

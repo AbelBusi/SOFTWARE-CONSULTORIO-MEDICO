@@ -129,14 +129,16 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
     void CitaCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
 
     @Query("""
-        SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
-        FROM CitaMedica c
-        WHERE c.fecha = :fechaCita
-        AND c.horaInicio < :nuevaHoraSalida
-        AND c.horaSalida > :nuevaHoraEntrada
-    """)
+    SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
+    FROM CitaMedica c
+    WHERE c.fecha = :fechaCita
+    AND c.doctor.id = :doctorId
+    AND c.horaInicio < :nuevaHoraSalida
+    AND c.horaSalida > :nuevaHoraEntrada
+""")
     boolean cruceHorasCitas(
             @Param("fechaCita") LocalDate fecha,
+            @Param("doctorId") Integer doctorId,
             @Param("nuevaHoraSalida") LocalTime horaSalida,
             @Param("nuevaHoraEntrada") LocalTime horaEntrada
     );

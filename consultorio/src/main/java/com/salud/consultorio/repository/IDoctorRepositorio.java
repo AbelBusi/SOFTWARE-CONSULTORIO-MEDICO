@@ -19,13 +19,15 @@ import java.util.Optional;
 public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
 
 
-    @Query(value = """
-    SELECT 
-        d.id AS idDoctor,
-        CONCAT(pe.nombre, ' ', pe.apellidos) AS nombreDoctor
-    FROM doctor d
-    INNER JOIN persona pe ON d.id_persona = pe.id
-""", nativeQuery = true)
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.NombreDoctoresDTO(
+            d.id,
+            CONCAT(pe.nombre, ' ', pe.apellidos)
+    )    
+    FROM Doctor d
+    JOIN d.persona pe
+    WHERE d.estado = 1
+    """)
     List<NombreDoctoresDTO> listarDoctoresResumen();
 
     @Query("""

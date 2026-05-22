@@ -10,7 +10,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "DTO de nombres de pacientes")
 public class NombrePacientesDTO {
@@ -28,4 +27,9 @@ public class NombrePacientesDTO {
             example = "José Ramírez"
     )
     private String nombrePaciente;
+
+    public NombrePacientesDTO(Integer idPaciente, String nombrePaciente) {
+        this.idPaciente = idPaciente;
+        this.nombrePaciente = nombrePaciente;
+    }
 }

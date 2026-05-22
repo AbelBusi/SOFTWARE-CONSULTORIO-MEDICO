@@ -26,7 +26,7 @@ public interface ICitaMedicaServicio{
 
     Optional<CitaMedica> obtenerPorId(Integer id);
 
-    boolean cruceHorarios(LocalDate fecha, LocalTime horaSalida, LocalTime horaEntrada);
+    boolean cruceHorarios(LocalDate fecha,LocalTime horaSalida, LocalTime horaEntrada, Integer id);
 
     CitaMedica crear(CitaMedicaDTO dto);
 

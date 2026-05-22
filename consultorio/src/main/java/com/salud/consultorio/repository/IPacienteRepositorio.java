@@ -14,13 +14,15 @@ import java.util.Optional;
 
 public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
 
-    @Query(value = """
-                SELECT 
-                    p.id AS idPaciente,
-                    CONCAT(pe.nombre, ' ', pe.apellidos) AS nombrePaciente
-                FROM paciente p
-                INNER JOIN persona pe ON p.id_persona = pe.id
-        """, nativeQuery = true)
+    @Query("""
+    SELECT new com.salud.consultorio.dto.paciente.NombrePacientesDTO(  
+        p.id,
+        CONCAT(pe.nombre, ' ', pe.apellidos)
+    )
+    FROM Paciente p
+    JOIN p.persona pe
+    WHERE p.estado = 1
+    """)
     List<NombrePacientesDTO> listarPacientesResumen();
 
     boolean existsByCodigoAseguradora(String codigo);
