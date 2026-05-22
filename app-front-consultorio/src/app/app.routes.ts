@@ -94,6 +94,51 @@ export const routes: Routes = [
             (m) => m.ListaEspecialidadComponent,
           ),
       },
+      {
+        path: 'recepcionistas',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/clinica/recepcionistas/pages/lista-recepcionistas/lista-recepcionistas.component').then(
+                (m) => m.ListaRecepcionistasComponent,
+              ),
+          },
+          {
+            path: 'nuevo',
+            loadComponent: () =>
+              import('./features/clinica/recepcionistas/pages/crear-recepcionista/crear-recepcionista.component').then(
+                (m) => m.CrearRecepcionistaComponent,
+              ),
+          },
+        ],
+      },
+      {
+        path: 'roles',
+        loadComponent: () =>
+          import('./features/admin/roles/pages/lista-roles/lista-roles.component').then(
+            (m) => m.ListaRolesComponent,
+          ),
+      },
+      {
+        path: 'usuarios',
+        children: [
+          {
+            path: '',
+            loadComponent: () =>
+              import('./features/admin/usuarios/pages/lista-usuarios/lista-usuarios.component').then(
+                (m) => m.ListaUsuariosComponent,
+              ),
+          },
+          {
+            path: 'nuevo',
+            loadComponent: () =>
+              import('./features/admin/usuarios/pages/crear-usuario/crear-usuario.component').then(
+                (m) => m.CrearUsuarioComponent,
+              ),
+          },
+        ],
+      },
     ],
   },
 

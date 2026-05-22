@@ -25,6 +25,11 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/doctores': { title: 'Doctores', subtitle: 'Equipo médico del consultorio' },
   '/dashboard/doctores/nuevo': { title: 'Nuevo doctor', subtitle: 'Alta de especialista' },
   '/dashboard/especialidades': { title: 'Especialidades', subtitle: 'Áreas médicas disponibles' },
+  '/dashboard/recepcionistas': { title: 'Recepcionistas', subtitle: 'Personal de recepción' },
+  '/dashboard/recepcionistas/nuevo': { title: 'Nuevo recepcionista', subtitle: 'Alta de recepcionista' },
+  '/dashboard/usuarios': { title: 'Usuarios', subtitle: 'Cuentas del sistema' },
+  '/dashboard/usuarios/nuevo': { title: 'Nuevo usuario', subtitle: 'Crear cuenta de acceso' },
+  '/dashboard/roles': { title: 'Roles', subtitle: 'Perfiles de acceso del sistema' },
 };
 
 @Component({
@@ -88,6 +93,23 @@ export class DashboardLayoutComponent {
       label: 'Especialidades',
       icon: 'local_hospital',
       sub: [{ label: 'Ver especialidades', route: '/dashboard/especialidades' }],
+    },
+    {
+      label: 'Recepcionistas',
+      icon: 'support_agent',
+      sub: [
+        { label: 'Ver recepcionistas', route: '/dashboard/recepcionistas' },
+        { label: 'Nuevo recepcionista', route: '/dashboard/recepcionistas/nuevo' },
+      ],
+    },
+    {
+      label: 'Usuarios',
+      icon: 'manage_accounts',
+      sub: [
+        { label: 'Ver usuarios', route: '/dashboard/usuarios' },
+        { label: 'Nuevo usuario', route: '/dashboard/usuarios/nuevo' },
+        { label: 'Roles', route: '/dashboard/roles' },
+      ],
     },
   ];
 

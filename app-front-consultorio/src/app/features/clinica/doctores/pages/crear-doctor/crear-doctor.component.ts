@@ -10,7 +10,7 @@ import { ToastService } from '../../../../../core/services/toast.service';
 @Component({
   selector: 'app-crear-doctor',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ConsultaDniComponent],
   templateUrl: './crear-doctor.component.html',
 })
 export class CrearDoctorComponent implements OnInit {
@@ -47,8 +47,17 @@ export class CrearDoctorComponent implements OnInit {
     });
   }
 
-  handleConsultarDNI() {
-    const dniDestino = this.form.dni;
+  onDatosReniec(datos: DatosPersonaReniec) {
+    this.form.dni = datos.dni;
+    this.form.nombre = datos.nombre;
+    this.form.apellidos = datos.apellidos;
+    this.showAlert('success', 'Datos cargados desde RENIEC.');
+  }
+
+  showAlert(type: 'success' | 'error', msg: string) {
+    this.alert.set({ type, msg });
+    if (type === 'success') setTimeout(() => this.alert.set(null), 4000);
+  }
 
     if (!dniDestino || dniDestino.length !== 8) {
       this.toastService.warning('El DNI debe tener exactamente 8 dígitos.');
@@ -112,6 +121,7 @@ export class CrearDoctorComponent implements OnInit {
         estado: this.form.estado,
       })
       .subscribe({
+<<<<<<< HEAD
         next: (response: any) => {
           this.loading = false;
           this.isSaving = true;
@@ -130,6 +140,11 @@ export class CrearDoctorComponent implements OnInit {
 
           const mensajeError = err.error?.mensaje || 'No se pudo registrar el doctor.';
           this.toastService.error(mensajeError);
+=======
+        next: () => {
+          this.showAlert('success', 'Doctor registrado correctamente en la base de datos.');
+          setTimeout(() => this.router.navigate(['/dashboard/doctores']), 1500);
+>>>>>>> 7103b47 (avance frontend implementacion recepcionista y roles)
         },
       });
   }

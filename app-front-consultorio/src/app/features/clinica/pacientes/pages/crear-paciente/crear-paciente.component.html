@@ -20,6 +20,7 @@
           <span class="material-icons text-base text-[#0d6b68] select-none">badge</span>
           Validación RENIEC
         </h3>
+<<<<<<< HEAD
         <div class="flex gap-3 items-end">
           <div class="flex-1 space-y-1.5">
             <label class="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Número de DNI *</label>
@@ -38,6 +39,13 @@
             Consultar
           </button>
         </div>
+=======
+        <app-consulta-dni
+          [dni]="form.persona.dni"
+          (dniChange)="form.persona.dni = $event"
+          (datosCargados)="onDatosReniec($event)"
+        />
+>>>>>>> 7103b47 (avance frontend implementacion recepcionista y roles)
       </div>
 
       <div class="bg-[#fdfdfd] border border-gray-200 rounded p-6 shadow-sm space-y-4">

@@ -3,11 +3,23 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { InicioSolicitud, TokenResponse } from '../models/auth.models';
 
+export interface UsuarioRegistroDTO {
+  persona: { id: number };
+  rol: { id: number };
+  usuario: string;
+  claveAcceso: string;
+  estado: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
+
+  registrar(dto: UsuarioRegistroDTO): Observable<TokenResponse> {
+    return this.http.post<TokenResponse>('/auth/register', dto);
+  }
 
   login(credenciales: InicioSolicitud): Observable<TokenResponse> {
     return this.http

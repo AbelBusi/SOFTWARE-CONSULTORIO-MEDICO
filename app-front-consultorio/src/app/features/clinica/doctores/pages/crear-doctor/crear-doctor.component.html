@@ -175,4 +175,86 @@
       </div>
     </form>
   </div>
+
+  <form (submit)="handleSubmit($event)" class="card p-6 space-y-6">
+    <section>
+      <h3 class="text-xs font-bold text-teal-700 uppercase tracking-wider mb-4">Datos profesionales</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">CPM *</label>
+          <input [(ngModel)]="form.cpm" name="cpm" required class="input-field" placeholder="CMP-12345" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">RNE</label>
+          <input [(ngModel)]="form.rne" name="rne" class="input-field" placeholder="Opcional" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Consejo regional *</label>
+          <input [(ngModel)]="form.consejoRegional" name="consejoRegional" required class="input-field" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Especialidad *</label>
+          <select [(ngModel)]="form.especialidadId" name="especialidadId" required class="input-field">
+            <option [value]="0">Seleccionar...</option>
+            @for (e of especialidades(); track e.id) {
+              <option [value]="e.id">{{ e.nombre }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h3 class="text-xs font-bold text-teal-700 uppercase tracking-wider mb-4">Datos personales</h3>
+      <div class="mb-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+        <app-consulta-dni
+          [dni]="form.dni"
+          (dniChange)="form.dni = $event"
+          (datosCargados)="onDatosReniec($event)"
+        />
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Fecha nacimiento *</label>
+          <input type="date" [(ngModel)]="form.fechaNacimiento" name="fechaNacimiento" required class="input-field" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Nombres *</label>
+          <input [(ngModel)]="form.nombre" name="nombre" required class="input-field" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Apellidos *</label>
+          <input [(ngModel)]="form.apellidos" name="apellidos" required class="input-field" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Género</label>
+          <select [(ngModel)]="form.genero" name="genero" class="input-field">
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Teléfono</label>
+          <input [(ngModel)]="form.telefono" name="telefono" maxlength="9" class="input-field" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Correo</label>
+          <input type="email" [(ngModel)]="form.correo" name="correo" class="input-field" />
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-500 uppercase mb-1 block">Nacionalidad</label>
+          <input [(ngModel)]="form.nacionalidad" name="nacionalidad" class="input-field" />
+        </div>
+      </div>
+    </section>
+
+    <div class="flex justify-end gap-3 pt-2">
+      <button type="submit" [disabled]="loading()" class="btn-primary px-8 py-3">
+        @if (loading()) {
+          <span class="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+        }
+        Registrar doctor
+      </button>
+    </div>
+  </form>
 </div>

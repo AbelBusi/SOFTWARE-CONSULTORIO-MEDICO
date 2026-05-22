@@ -1,0 +1,86 @@
+<div class="animate-fade-in max-w-3xl mx-auto space-y-6">
+  <div class="page-header">
+    <h2>Nuevo usuario</h2>
+    <p>Cree la persona y la cuenta de acceso al sistema</p>
+  </div>
+
+  @if (alert(); as a) {
+    <div
+      class="rounded-lg px-4 py-3 text-sm"
+      [class.bg-emerald-50]="a.type === 'success'"
+      [class.text-emerald-800]="a.type === 'success'"
+      [class.bg-red-50]="a.type === 'error'"
+      [class.text-red-800]="a.type === 'error'"
+    >
+      {{ a.msg }}
+    </div>
+  }
+
+  <form class="card space-y-6" (submit)="handleSubmit($event)">
+    <div>
+      <h3 class="text-sm font-semibold text-slate-700 mb-3">Cuenta de acceso</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Nombre de usuario *</label>
+          <input class="input-field" [(ngModel)]="form.usuario" name="usuario" required />
+        </div>
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Contraseña *</label>
+          <input type="password" class="input-field" [(ngModel)]="form.claveAcceso" name="clave" required />
+        </div>
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Rol *</label>
+          <select class="input-field" [(ngModel)]="form.rolId" name="rolId" required>
+            @for (r of roles(); track r.id) {
+              <option [ngValue]="r.id">{{ r.nombre }} — {{ r.descripcion }}</option>
+            }
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-sm font-semibold text-slate-700 mb-3">Datos personales</h3>
+      <div class="mb-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
+        <app-consulta-dni
+          [dni]="form.persona.dni"
+          (dniChange)="form.persona.dni = $event"
+          (datosCargados)="onDatosReniec($event)"
+        />
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Nombres *</label>
+          <input class="input-field" [(ngModel)]="form.persona.nombre" name="nombre" required />
+        </div>
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Apellidos *</label>
+          <input class="input-field" [(ngModel)]="form.persona.apellidos" name="apellidos" required />
+        </div>
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Correo</label>
+          <input type="email" class="input-field" [(ngModel)]="form.persona.correo" name="correo" />
+        </div>
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Teléfono</label>
+          <input class="input-field" [(ngModel)]="form.persona.telefono" name="telefono" />
+        </div>
+        <div>
+          <label class="block text-sm text-slate-600 mb-1">Género</label>
+          <input class="input-field" [(ngModel)]="form.persona.genero" name="genero" />
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-3">
+      <a routerLink="/dashboard/usuarios" class="btn-secondary">Cancelar</a>
+      <button type="submit" class="btn-primary" [disabled]="loading()">
+        @if (loading()) {
+          Guardando...
+        } @else {
+          Crear usuario
+        }
+      </button>
+    </div>
+  </form>
+</div>
