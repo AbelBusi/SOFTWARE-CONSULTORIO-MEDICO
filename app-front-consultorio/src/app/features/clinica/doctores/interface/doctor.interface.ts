@@ -13,6 +13,11 @@ export interface Doctor {
   diasAtencion: string[];
 }
 
+export interface DoctorEspecialidadResumen {
+  id: number;
+  nombres: string;
+}
+
 export interface Persona {
   id: number;
   dni: string;

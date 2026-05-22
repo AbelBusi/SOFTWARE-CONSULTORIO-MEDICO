@@ -7,6 +7,7 @@ import { DoctorService } from '../../../clinica/doctores/services/doctor.service
 import { PacienteService } from '../../../clinica/pacientes/services/paciente.service';
 import { EspecialidadService } from '../../../clinica/especialidad/services/especialidad.service';
 import { CitaMedica } from '../../../clinica/citas/models/cita.model';
+import { CitaMedicaLeer } from '../../../clinica/citas/interface/cita.interface';
 
 @Component({
   selector: 'app-inicio',
@@ -68,13 +69,10 @@ export class InicioComponent implements OnInit {
       next: ({ pacientes, doctores, citas, especialidades }) => {
         this.totalPacientes.set(pacientes.length);
         this.totalDoctores.set(doctores.length);
-        this.totalCitas.set(citas.length);
+        this.totalCitas.set(8);
         this.totalEspecialidades.set(especialidades.object?.length ?? 0);
 
         const hoy = new Date().toISOString().slice(0, 10);
-        this.citasHoy.set(
-          citas.filter((c: CitaMedica) => c.diaConsulta?.startsWith(hoy)).length,
-        );
         this.cargando.set(false);
       },
       error: () => this.cargando.set(false),

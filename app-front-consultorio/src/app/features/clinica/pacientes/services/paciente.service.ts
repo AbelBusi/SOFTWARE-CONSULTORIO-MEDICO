@@ -7,6 +7,7 @@ import {
   PacienteInterface,
   PacienteDetalleLeerDTO,
   PacienteCrearDTO,
+  PacienteResumenDTO,
 } from '../interface/paciente.interface';
 import { MensajeResponse } from '../models/paciente.model';
 
@@ -26,6 +27,12 @@ export class PacienteService {
 
     return this.http
       .get<MensajeResponse<PacienteInterface[]>>(this.baseUrl, { params })
+      .pipe(map((response) => response.object || []));
+  }
+
+  resumen(): Observable<PacienteResumenDTO[]> {
+    return this.http
+      .get<MensajeResponse<PacienteResumenDTO[]>>(`${this.baseUrl}/resumen`)
       .pipe(map((response) => response.object || []));
   }
 

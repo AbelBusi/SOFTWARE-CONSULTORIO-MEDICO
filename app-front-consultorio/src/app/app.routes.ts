@@ -36,8 +36,8 @@ export const routes: Routes = [
           {
             path: '',
             loadComponent: () =>
-              import('./features/clinica/citas/pages/lista-citas/citas.component').then(
-                (m) => m.CitasComponent,
+              import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
+                (m) => m.ListaCitaComponent,
               ),
           },
           {

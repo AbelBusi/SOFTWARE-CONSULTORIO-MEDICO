@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { MensajeResponse } from '../../../../shared/models/mensaje-response.model';
 import { DoctorLeer, DoctorCrearDTO, NombreDoctorResumen } from '../models/doctor.model';
-import { DoctorDetalle,DoctorActualizarDTO } from '../interface/doctor.interface';
+import { DoctorDetalle,DoctorActualizarDTO, DoctorEspecialidadResumen } from '../interface/doctor.interface';
 
 @Injectable({ providedIn: 'root' })
 export class DoctorService {
@@ -55,6 +55,14 @@ export class DoctorService {
 
   actualizar(id: number, dto: DoctorActualizarDTO): Observable<MensajeResponse<unknown>> {
     return this.http.put<MensajeResponse<unknown>>(`${this.baseUrl}/${id}`, dto);
+  }
+
+  listarPorEspecialidad(especialidadId: number): Observable<DoctorEspecialidadResumen[]> {
+    return this.http
+      .get<
+        MensajeResponse<DoctorEspecialidadResumen[]>
+      >(`${this.baseUrl}/especialidad/${especialidadId}`)
+      .pipe(map((r) => r.object ?? []));
   }
 
 }

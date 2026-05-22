@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core'; // <-- Importa NgZone
+import { Component, OnInit, ChangeDetectorRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Especialidad } from '../../interface/especialidad.interface';
@@ -48,7 +48,7 @@ export class ListaEspecialidadComponent implements OnInit {
     private readonly especialidadService: EspecialidadService,
     private readonly toastService: ToastService,
     private readonly cdr: ChangeDetectorRef,
-    private readonly zone: NgZone, // <-- Inyéctalo aquí en el constructor
+    private readonly zone: NgZone,
   ) {}
 
   ngOnInit(): void {
@@ -188,3 +188,4 @@ export class ListaEspecialidadComponent implements OnInit {
       });
     });
   }}
+

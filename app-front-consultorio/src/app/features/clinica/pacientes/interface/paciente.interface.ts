@@ -70,3 +70,8 @@ export interface PacienteMensajeResponse {
   mensaje: string;
   object: PacienteDetalleLeerDTO;
 }
+
+export interface PacienteResumenDTO {
+  idPaciente: number;
+  nombrePaciente: string;
+}
