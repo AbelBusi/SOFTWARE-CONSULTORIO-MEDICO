@@ -9,13 +9,13 @@ import { AuthService } from '../../features/auth/services/auth.service';
 interface SubNavItem {
   label: string;
   route: string;
-  permiso?: string; // 🔒 Permiso opcional para submenús
+  permiso?: string;
 }
 
 interface NavItem {
   label: string;
   icon: string;
-  permiso?: string; // 🔒 Permiso opcional para menús principales
+  permiso?: string;
   sub?: SubNavItem[];
 }
 
@@ -93,7 +93,11 @@ export class DashboardLayoutComponent {
       icon: 'groups',
       sub: [
         { label: 'Ver pacientes', route: '/dashboard/pacientes', permiso: 'PACIENTE_READ' },
-        { label: 'Nuevo paciente', route: '/dashboard/pacientes/nuevo', permiso: 'PACIENTE_CREATE' },
+        {
+          label: 'Nuevo paciente',
+          route: '/dashboard/pacientes/nuevo',
+          permiso: 'PACIENTE_CREATE',
+        },
       ],
     },
     {
@@ -181,8 +185,11 @@ export class DashboardLayoutComponent {
       return;
     }
     this.http
-      .post('/auth/logout', {}, { headers: { Authorization: `Bearer ${token}` } })
-      .subscribe({ next: () => this.limpiarSesionLocal(), error: () => this.limpiarSesionLocal() });
+      .post('/api/v1/auth/logout', {}, { headers: { Authorization: `Bearer ${token}` } })
+      .subscribe({
+        next: () => this.limpiarSesionLocal(),
+        error: () => this.limpiarSesionLocal(),
+      });
   }
 
   private limpiarSesionLocal() {
