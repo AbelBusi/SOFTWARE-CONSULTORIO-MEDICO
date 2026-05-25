@@ -1,8 +1,10 @@
 package com.salud.consultorio.controller;
 
+import com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO;
 import com.salud.consultorio.dto.doctor.*;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
+import com.salud.consultorio.service.ICitaMedicaServicio;
 import com.salud.consultorio.service.IDoctorServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,8 +12,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +30,7 @@ import java.util.List;
 public class DoctorController {
 
     private final IDoctorServicio doctorServicio;
+    private final ICitaMedicaServicio citaMedicaServicio;
 
     @Operation(summary = "Registrar un nuevo doctor")
     @ApiResponses(value = {
@@ -33,6 +38,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PostMapping
+    @PreAuthorize("hasAuthority('DOCTOR_CREATE')")
     public ResponseEntity<MensajeResponse> crearDoctor(@Valid @RequestBody DoctorCrearDTO doctorCrearDTO){
 
         DoctorRespuestaDTO doctor =doctorServicio.crear(doctorCrearDTO);
@@ -42,6 +48,49 @@ public class DoctorController {
                 .object(doctorCrearDTO).build(), HttpStatus.CREATED);
 
     }
+
+
+    @GetMapping("/{id}/citas-medicas")
+    @PreAuthorize("hasAuthority('CITA_READ')")
+    public ResponseEntity<MensajeResponse> traerCitasPorDoctor(
+            @RequestParam(required = false, name = "estado") EntidadEstado estado,
+            @PathVariable("id") Integer id){
+
+        if (estado!=null){
+
+            if (estado.equals(estado.EN_PROCESO)){
+                List<DoctorCitaAtendidaDTO> cita = citaMedicaServicio.listarCitasAtendidasPorDoctor(id,1);
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE CITAS EN PROCESO POR DOCTOR")
+                        .object(cita).build(),HttpStatus.OK);
+            }
+
+            if (estado.equals(estado.CANCELADO)){
+
+                List<DoctorCitaAtendidaDTO> cita = citaMedicaServicio.listarCitasAtendidasPorDoctor(id,0);
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE CITAS CANCELADAS POR DOCTOR")
+                        .object(cita).build(),HttpStatus.OK);
+            }
+
+            if (estado.equals(estado.ATENDIDO)){
+                List<DoctorCitaAtendidaDTO> cita = citaMedicaServicio.listarCitasAtendidasPorDoctor(id,2);
+                return new ResponseEntity<>(MensajeResponse.builder()
+                        .mensaje("LISTA DE CITAS ATENDIDAS POR DOCTOR")
+                        .object(cita).build(),HttpStatus.OK);
+            }
+
+        }
+
+        List<DoctorCitaAtendidaDTO> cita = citaMedicaServicio.listarCitasAtendidasPorDoctorHistorial(id);
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("HISTORIAL DE CITAS POR DOCTOR")
+                .object(cita).build(),HttpStatus.OK);
+
+
+
+    }
+
 
     @Operation(summary = "Listar nombres de doctores")
     @ApiResponses(value = {
@@ -63,6 +112,7 @@ public class DoctorController {
                 .mensaje("LISTA DE DOCTORES")
                 .object(leerNombreDoctoresDTOS).build(), HttpStatus.OK);
     }
+
 
     @Operation(summary = "Listar doctores")
     @ApiResponses(value = {

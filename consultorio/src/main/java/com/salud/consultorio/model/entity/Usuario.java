@@ -22,7 +22,7 @@ public class Usuario {
     @JoinColumn(name = "id_persona",nullable = false)
     private Persona persona;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_rol",nullable = false)
     private Rol rol;
 

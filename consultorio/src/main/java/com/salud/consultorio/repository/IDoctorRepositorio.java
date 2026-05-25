@@ -18,7 +18,6 @@ import java.util.Optional;
 @Repository
 public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
 
-
     @Query("""
     SELECT new com.salud.consultorio.dto.doctor.NombreDoctoresDTO(
             d.id,

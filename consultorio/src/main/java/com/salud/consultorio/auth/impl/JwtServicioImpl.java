@@ -7,11 +7,14 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class JwtServicioImpl implements IJwtServicio {
@@ -50,9 +53,21 @@ public class JwtServicioImpl implements IJwtServicio {
 
     @Override
     public String construirToken(Usuario usuario, Integer expiration) {
+
+        List<String> permisos = usuario.getRol()
+                .getRolPermisos()
+                .stream()
+                .map(rolPermiso -> rolPermiso.getPermiso().getNombre())
+                .toList();
+
+        Map<String, Object> extraClaims = Map.of(
+                "name", usuario.getUsuario(),
+                "authorities",permisos
+        );
+
         return Jwts.builder()
                 .id(usuario.getId().toString())
-                .claims(Map.of("name",usuario.getUsuario()))
+                .claims(extraClaims)
                 .subject(usuario.getUsuario())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis()+expiration))
@@ -61,12 +76,9 @@ public class JwtServicioImpl implements IJwtServicio {
     }
 
     @Override
-    public boolean tokenValido(String token, Usuario usuario) {
-
-        final  String usuarioToken = extraerUsuario(token);
-
-        return (usuarioToken.equals(usuario.getUsuario()) && !tokenExpirado(token));
-
+    public boolean tokenValido(String token, UserDetails userDetails) {
+        final String usuarioToken = extraerUsuario(token);
+        return (usuarioToken.equals(userDetails.getUsername()) && !tokenExpirado(token));
     }
 
     @Override
@@ -90,6 +102,17 @@ public class JwtServicioImpl implements IJwtServicio {
     public SecretKey getSignInKey(){
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    @Override
+    public List<String> extraerPermisos(final String token) {
+        final Claims claims = Jwts.parser()
+                .verifyWith(getSignInKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+
+        return claims.get("authorities", List.class);
     }
 
 

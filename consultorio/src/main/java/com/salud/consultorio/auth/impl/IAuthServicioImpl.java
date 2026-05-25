@@ -21,6 +21,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -73,9 +76,9 @@ public class IAuthServicioImpl implements IAuthServicio {
         String jwtToken = jwtServicio.generarToken(usuario);
         String refreshToken = jwtServicio.generarTokenRefrescado(usuario);
 
-        saveUserToken(guardado,jwtToken);
+        saveUserToken(guardado, jwtToken);
 
-        return new TokenResponse(jwtToken,refreshToken);
+        return new TokenResponse(jwtToken, refreshToken);
     }
 
     @Transactional
@@ -89,20 +92,18 @@ public class IAuthServicioImpl implements IAuthServicio {
         );
 
         Usuario guardado = usuarioRepositorio.findByUsuario(request.usuario())
-                .orElseThrow(()-> new UsernameNotFoundException("No existe el usuario"));
+                .orElseThrow(() -> new UsernameNotFoundException("No existe el usuario"));
 
         String jwtToken = jwtServicio.generarToken(guardado);
-
         String refreshToken = jwtServicio.generarTokenRefrescado(guardado);
 
         revokeAllUserToken(guardado);
+        saveUserToken(guardado, jwtToken);
 
-        saveUserToken(guardado,jwtToken);
-
-        return new TokenResponse(jwtToken,refreshToken);
-
+        return new TokenResponse(jwtToken, refreshToken);
     }
 
+    @Transactional
     @Override
     public TokenResponse refrescarToken(final String authHeder) {
 
@@ -113,29 +114,33 @@ public class IAuthServicioImpl implements IAuthServicio {
         final String refreshToken = authHeder.substring(7);
         final String user = jwtServicio.extraerUsuario(refreshToken);
 
-        if (user== null){
+        if (user == null){
             throw new IllegalArgumentException("Token Bearer Invalido2");
         }
 
         final Usuario usuario = usuarioRepositorio.findByUsuario(user).orElseThrow(
-                ()-> new UsernameNotFoundException(user)
+                () -> new UsernameNotFoundException(user)
         );
 
-        if(!jwtServicio.tokenValido(refreshToken,usuario)){
+        List<SimpleGrantedAuthority> authorities = usuario.getRol()
+                .getRolPermisos()
+                .stream()
+                .map(rolPermiso -> new SimpleGrantedAuthority(rolPermiso.getPermiso().getNombre()))
+                .toList();
 
+        UserDetails userDetails = new User(usuario.getUsuario(), usuario.getClaveAcceso(), authorities);
+
+        if (!jwtServicio.tokenValido(refreshToken, userDetails)){
             throw new IllegalArgumentException("Token Bearer Invalido3");
-
         }
 
         final String accesoToken = jwtServicio.generarToken(usuario);
 
         revokeAllUserToken(usuario);
-        saveUserToken(usuario,accesoToken);
+        saveUserToken(usuario, accesoToken);
 
-        return new TokenResponse(accesoToken,refreshToken);
-
+        return new TokenResponse(accesoToken, refreshToken);
     }
-
 
     private void saveUserToken(Usuario usuario, String jwtToken){
 
@@ -148,7 +153,6 @@ public class IAuthServicioImpl implements IAuthServicio {
                 .build();
 
         tokenRepositorio.save(token);
-
     }
 
     private void revokeAllUserToken(final Usuario usuario){
@@ -156,12 +160,11 @@ public class IAuthServicioImpl implements IAuthServicio {
                 .findAllByUsuarioIdAndExpiredFalseAndRevokedFalse(usuario.getId());
 
         if (!validUserTokens.isEmpty()){
-            for (final Token token:validUserTokens){
+            for (final Token token : validUserTokens){
                 token.setExpired(true);
                 token.setRevoked(true);
             }
             tokenRepositorio.saveAll(validUserTokens);
         }
     }
-
 }

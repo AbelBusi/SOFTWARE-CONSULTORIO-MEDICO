@@ -33,11 +33,10 @@ public class SecurityFilterConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/doctores/**").permitAll()
-                        .requestMatchers("/api/v1/especialidades/**").permitAll()
                         .requestMatchers("/api/v1/pacientes/**").permitAll()
                         .requestMatchers("/api/v1/recepcionistas/**").permitAll()
-                        .requestMatchers("/api/v1/citas-medicas/**").permitAll()
+                        .requestMatchers("/api/v1/doctores/**").authenticated()
+                        .requestMatchers("/api/v1/citas-medicas/**").authenticated()
                         .requestMatchers("/swagger-ui/**","v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

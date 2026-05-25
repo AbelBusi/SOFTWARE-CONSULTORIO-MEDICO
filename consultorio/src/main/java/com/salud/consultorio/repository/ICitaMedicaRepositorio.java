@@ -1,6 +1,7 @@
 package com.salud.consultorio.repository;
 
 import com.salud.consultorio.dto.citaMedica.CitaMedicaLeerDTO;
+import com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO;
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -142,5 +143,56 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
             @Param("nuevaHoraSalida") LocalTime horaSalida,
             @Param("nuevaHoraEntrada") LocalTime horaEntrada
     );
+
+    @Query("""
+        SELECT new com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO(
+               c.id,
+               pe.dni,
+               CONCAT(pe.nombre, ' ', pe.apellidos),
+               c.motivo,
+               e.nombre,
+               c.fecha,
+               c.horaInicio,
+               c.horaSalida,
+               c.estado
+        )
+        FROM CitaMedica c
+            INNER JOIN c.doctor d
+            INNER JOIN d.persona p
+            INNER JOIN Usuario u ON u.persona.id = p.id
+            INNER JOIN c.paciente pa
+            INNER JOIN pa.persona pe
+            INNER JOIN c.especialidad e
+        WHERE u.id = :idUsuario
+        AND c.estado = :idEstado
+    """)
+    List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctor(
+            @Param("idUsuario") Integer idUsuario,
+            @Param("idEstado") Integer idEstado
+    );
+
+    @Query("""
+        SELECT new com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO(
+               c.id,
+               pe.dni,
+               CONCAT(pe.nombre, ' ', pe.apellidos),
+               c.motivo,
+               e.nombre,
+               c.fecha,
+               c.horaInicio,
+               c.horaSalida,
+               c.estado
+        )
+        FROM CitaMedica c
+            INNER JOIN c.doctor d
+            INNER JOIN d.persona p
+            INNER JOIN Usuario u ON u.persona.id = p.id
+            INNER JOIN c.paciente pa
+            INNER JOIN pa.persona pe
+            INNER JOIN c.especialidad e
+        WHERE u.id = :idUsuario
+    """)
+    List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctorHistorial(
+            @Param("idUsuario") Integer idUsuario);
 
 }

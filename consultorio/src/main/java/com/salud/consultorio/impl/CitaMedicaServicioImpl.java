@@ -174,6 +174,18 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
     @Transactional(readOnly = true)
     @Override
+    public List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctor(Integer idUsuario, Integer idEstado) {
+        return citaMedicaRepositorio.listarCitasAtendidasPorDoctor(idUsuario,idEstado);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctorHistorial(Integer idUsuario) {
+        return citaMedicaRepositorio.listarCitasAtendidasPorDoctorHistorial(idUsuario);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public CitaMedicaLeerDTO mostrarCitaMedicaPorId(Integer id) {
         return citaMedicaRepositorio.traerCitaMedicaId(id).orElseThrow(
                 () -> new EntityNotFoundException("La cita medica no existe en la entidad")

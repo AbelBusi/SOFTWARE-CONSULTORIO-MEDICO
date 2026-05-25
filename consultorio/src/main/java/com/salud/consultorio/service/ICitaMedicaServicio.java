@@ -31,4 +31,7 @@ public interface ICitaMedicaServicio{
     CitaMedica crear(CitaMedicaDTO dto);
 
     void eliminarPorId(Integer id);
+
+    List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctor(Integer idUsuario, Integer idEstado);
+    List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctorHistorial(Integer idUsuario);
 }
