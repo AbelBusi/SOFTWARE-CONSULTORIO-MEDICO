@@ -28,44 +28,131 @@
 
     <form #editForm="ngForm" (ngSubmit)="editForm.valid && handleSubmit()" class="space-y-0" novalidate>
 
-      <div>
-        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">1. Datos de Identidad</h4>
-        <div class="mb-4 p-3 rounded-lg bg-gray-50 border border-gray-100">
-          <app-consulta-dni
-            [dni]="form().persona.dni"
-            (dniChange)="actualizarDni($event)"
-            (datosCargados)="onDatosReniec($event)"
-          />
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Nombres</label>
-            <input type="text" name="nombre" [(ngModel)]="form().persona.nombre" required maxlength="70"
-                   class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-green-600 text-gray-800" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Apellidos</label>
-            <input type="text" name="apellidos" [(ngModel)]="form().persona.apellidos" required maxlength="100"
-                   class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-green-600 text-gray-800" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Género</label>
-            <select name="genero" [(ngModel)]="form().persona.genero" required
-                    class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-green-600 text-gray-800 bg-white">
-              @for (g of generos; track g) {
-                <option [value]="g">{{ g }}</option>
-              }
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Fecha de Nacimiento</label>
-            <input type="date" name="fechaNacimiento" [(ngModel)]="form().persona.fechaNacimiento" required
-                   class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-green-600 text-gray-800" />
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">Nacionalidad</label>
-            <input type="text" name="nacionalization" [(ngModel)]="form().persona.nacionalidad" required maxlength="50"
-                   class="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-green-600 text-gray-800" />
+      <div class="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+
+        <div>
+          <h4 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4">1. Datos de Identidad</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-semibold transition-colors"
+                       [class.text-red-600]="nombre.invalid && (nombre.dirty || nombre.touched || editForm.submitted)"
+                       [class.text-gray-600]="!(nombre.invalid && (nombre.dirty || nombre.touched || editForm.submitted))">Nombres
+                  *</label>
+                <span class="text-[10px] font-mono select-none transition-colors"
+                      [class.text-red-600]="nombre.invalid && (nombre.dirty || nombre.touched || editForm.submitted)"
+                      [class.text-gray-400]="!(nombre.invalid && (nombre.dirty || nombre.touched || editForm.submitted))">
+                  {{ form().persona.nombre.length || 0 }}/70
+                </span>
+              </div>
+              <input type="text" name="nombre" [(ngModel)]="form().persona.nombre" #nombre="ngModel"
+                     required maxlength="70"
+                     [class.border-red-500]="nombre.invalid && (nombre.dirty || nombre.touched || editForm.submitted)"
+                     class="w-full text-xs px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#0d6b68] text-gray-800 font-medium transition-colors" />
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-semibold transition-colors"
+                       [class.text-red-600]="apellidos.invalid && (apellidos.dirty || apellidos.touched || editForm.submitted)"
+                       [class.text-gray-600]="!(apellidos.invalid && (apellidos.dirty || apellidos.touched || editForm.submitted))">Apellidos
+                  *</label>
+                <span class="text-[10px] font-mono select-none transition-colors"
+                      [class.text-red-600]="apellidos.invalid && (apellidos.dirty || apellidos.touched || editForm.submitted)"
+                      [class.text-gray-400]="!(apellidos.invalid && (apellidos.dirty || apellidos.touched || editForm.submitted))">
+                  {{ form().persona.apellidos.length || 0 }}/100
+                </span>
+              </div>
+              <input type="text" name="apellidos" [(ngModel)]="form().persona.apellidos" #apellidos="ngModel"
+                     required maxlength="100"
+                     [class.border-red-500]="apellidos.invalid && (apellidos.dirty || apellidos.touched || editForm.submitted)"
+                     class="w-full text-xs px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#0d6b68] text-gray-800 font-medium transition-colors" />
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <div class="flex items-center gap-1.5">
+                  <span class="material-icons text-[14px] transition-colors select-none"
+                        [class.text-red-600]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
+                        [class.text-gray-400]="!(dni.invalid && (dni.dirty || dni.touched || editForm.submitted))">
+                    lock
+                  </span>
+                  <label class="text-xs font-semibold transition-colors"
+                         [class.text-red-600]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
+                         [class.text-gray-600]="!(dni.invalid && (dni.dirty || dni.touched || editForm.submitted))">
+                    DNI (8 dígitos) *
+                  </label>
+                </div>
+                <span class="text-[10px] font-mono select-none transition-colors"
+                      [class.text-red-600]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
+                      [class.text-gray-400]="!(dni.invalid && (dni.dirty || dni.touched || editForm.submitted))">
+                  {{ form().persona.dni.length || 0 }}/8
+                </span>
+              </div>
+
+              <input type="text" name="dni" [(ngModel)]="form().persona.dni" #dni="ngModel"
+                     required minlength="8" maxlength="8" pattern="\d{8}" placeholder="00000000" readonly
+                     [class.border-red-500]="dni.invalid && (dni.dirty || dni.touched || editForm.submitted)"
+                     class="w-full text-xs px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 font-bold tracking-wider font-mono cursor-not-allowed select-none focus:outline-none transition-colors" />
+            </div>
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-semibold transition-colors"
+                       [class.text-red-600]="genero.invalid && (genero.dirty || genero.touched || editForm.submitted)"
+                       [class.text-gray-600]="!(genero.invalid && (genero.dirty || genero.touched || editForm.submitted))">Género
+                  *</label>
+              </div>
+              <select name="genero" [(ngModel)]="form().persona.genero" #genero="ngModel" required
+                      [class.border-red-500]="genero.invalid && (genero.dirty || genero.touched || editForm.submitted)"
+                      class="w-full text-xs px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#0d6b68] text-gray-800 font-medium bg-white transition-colors cursor-pointer">
+                <option value="" disabled>Seleccione género</option>
+                @for (g of generos; track g) {
+                  <option [value]="g">{{ g }}</option>
+                }
+              </select>
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <label class="text-xs font-semibold transition-colors"
+                       [class.text-red-600]="fechaNac.invalid && (fechaNac.dirty || fechaNac.touched || editForm.submitted)"
+                       [class.text-gray-600]="!(fechaNac.invalid && (fechaNac.dirty || fechaNac.touched || editForm.submitted))">Fecha
+                  de Nacimiento *</label>
+              </div>
+              <input type="date" name="fechaNacimiento" [(ngModel)]="form().persona.fechaNacimiento" #fechaNac="ngModel"
+                     required
+                     [max]="fechaMaxima()"
+                     [class.border-red-500]="fechaNac.invalid && (fechaNac.dirty || fechaNac.touched || editForm.submitted)"
+                     class="w-full text-xs px-3 py-2 border border-gray-200 rounded focus:outline-none focus:border-[#0d6b68] text-gray-800 font-medium transition-colors" />
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center mb-1">
+                <div class="flex items-center gap-1.5">
+      <span class="material-icons text-[14px] transition-colors select-none"
+            [class.text-red-600]="nacionalidad.invalid && (nacionalidad.dirty || nacionalidad.touched || editForm.submitted)"
+            [class.text-gray-400]="!(nacionalidad.invalid && (nacionalidad.dirty || nacionalidad.touched || editForm.submitted))">
+        lock
+      </span>
+                  <label class="text-xs font-semibold transition-colors"
+                         [class.text-red-600]="nacionalidad.invalid && (nacionalidad.dirty || nacionalidad.touched || editForm.submitted)"
+                         [class.text-gray-600]="!(nacionalidad.invalid && (nacionalidad.dirty || nacionalidad.touched || editForm.submitted))">
+                    Nacionalidad *
+                  </label>
+                </div>
+                <span class="text-[10px] font-mono select-none transition-colors"
+                      [class.text-red-600]="nacionalidad.invalid && (nacionalidad.dirty || nacionalidad.touched || editForm.submitted)"
+                      [class.text-gray-400]="!(nacionalidad.invalid && (nacionalidad.dirty || nacionalidad.touched || editForm.submitted))">
+      {{ form().persona.nacionalidad.length || 0 }}/50
+    </span>
+              </div>
+
+              <input type="text" name="nacionalidad" [(ngModel)]="form().persona.nacionalidad" #nacionalidad="ngModel"
+                     required maxlength="50" readonly
+                     [class.border-red-500]="nacionalidad.invalid && (nacionalidad.dirty || nacionalidad.touched || editForm.submitted)"
+                     class="w-full text-xs px-3 py-2 border border-gray-200 rounded bg-gray-50 text-gray-500 font-medium cursor-not-allowed select-none focus:outline-none transition-colors" />
+            </div>
           </div>
         </div>
 

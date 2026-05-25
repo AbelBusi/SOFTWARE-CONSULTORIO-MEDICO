@@ -5,7 +5,7 @@ import { publicGuard } from './core/guards/public.guard';
 export const routes: Routes = [
   {
     path: 'login',
-    canActivate: [publicGuard], // Impide que usuarios logueados entren aquí
+    canActivate: [publicGuard],
     loadComponent: () =>
       import('./features/auth/pages/login/login.component').then((m) => m.LoginComponent),
   },
@@ -47,6 +47,14 @@ export const routes: Routes = [
                 (m) => m.CrearCitaComponent,
               ),
           },
+          {
+            path: 'por-doctor',
+            data: { permisoRequerido: 'CITA_READ' },
+            loadComponent: () =>
+              import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
+                (m) => m.ListaCitaComponent,
+              ),
+          },
         ],
       },
       {
@@ -70,9 +78,11 @@ export const routes: Routes = [
       },
       {
         path: 'doctores',
+        data: { permisoRequerido: 'DOCTOR_GESTIONAR' },
         children: [
           {
             path: '',
+            data: { permisoRequerido: 'DOCTOR_READ' },
             loadComponent: () =>
               import('./features/clinica/doctores/pages/lista-doctores/lista-doctores.component').then(
                 (m) => m.ListaDoctoresComponent,
@@ -80,6 +90,7 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
+            data: { permisoRequerido: 'DOCTOR_CREATE' },
             loadComponent: () =>
               import('./features/clinica/doctores/pages/crear-doctor/crear-doctor.component').then(
                 (m) => m.CrearDoctorComponent,
@@ -89,6 +100,7 @@ export const routes: Routes = [
       },
       {
         path: 'especialidades',
+        data: { permisoRequerido: 'ESPECIALIDAD_GESTIONAR' },
         loadComponent: () =>
           import('./features/clinica/especialidad/pages/lista-especialidad/lista-especialidad.component').then(
             (m) => m.ListaEspecialidadComponent,
@@ -96,9 +108,11 @@ export const routes: Routes = [
       },
       {
         path: 'recepcionistas',
+        data: { permisoRequerido: 'RECEPCIONISTA_GESTIONAR' },
         children: [
           {
             path: '',
+            data: { permisoRequerido: 'RECEPCIONISTA_READ' },
             loadComponent: () =>
               import('./features/clinica/recepcionistas/pages/lista-recepcionistas/lista-recepcionistas.component').then(
                 (m) => m.ListaRecepcionistasComponent,
@@ -106,6 +120,7 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
+            data: { permisoRequerido: 'RECEPCIONISTA_CREATE' },
             loadComponent: () =>
               import('./features/clinica/recepcionistas/pages/crear-recepcionista/crear-recepcionista.component').then(
                 (m) => m.CrearRecepcionistaComponent,
@@ -115,6 +130,7 @@ export const routes: Routes = [
       },
       {
         path: 'roles',
+        data: { permisoRequerido: 'ROLES_CRUD' },
         loadComponent: () =>
           import('./features/admin/roles/pages/lista-roles/lista-roles.component').then(
             (m) => m.ListaRolesComponent,
@@ -122,9 +138,11 @@ export const routes: Routes = [
       },
       {
         path: 'usuarios',
+        data: { permisoRequerido: 'USUARIO_GESTIONAR' },
         children: [
           {
             path: '',
+            data: { permisoRequerido: 'USUARIO_READ' },
             loadComponent: () =>
               import('./features/admin/usuarios/pages/lista-usuarios/lista-usuarios.component').then(
                 (m) => m.ListaUsuariosComponent,
@@ -132,6 +150,7 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
+            data: { permisoRequerido: 'USUARIO_CREATE' },
             loadComponent: () =>
               import('./features/admin/usuarios/pages/crear-usuario/crear-usuario.component').then(
                 (m) => m.CrearUsuarioComponent,

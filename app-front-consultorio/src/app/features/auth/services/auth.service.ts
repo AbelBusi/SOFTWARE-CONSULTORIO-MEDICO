@@ -29,7 +29,6 @@ export class AuthService {
 
   refrescarToken(): Observable<TokenResponse> {
     const refreshToken = this.getRefreshToken();
-
     const headers = new HttpHeaders().set('Authorization', `Bearer ${refreshToken}`);
 
     return this.http
@@ -48,6 +47,20 @@ export class AuthService {
 
   getRefreshToken(): string | null {
     return localStorage.getItem('refresh_token');
+  }
+
+  getAuthorities(): string[] {
+    const token = this.getAccessToken();
+    if (!token) return [];
+
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadDecoded = atob(payloadBase64);
+      const payloadJson = JSON.parse(payloadDecoded);
+      return payloadJson.authorities || [];
+    } catch (e) {
+      return [];
+    }
   }
 
   logout(): void {

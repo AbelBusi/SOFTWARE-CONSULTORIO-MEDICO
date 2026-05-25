@@ -18,7 +18,9 @@ export interface DatosPersonaReniec {
   apellidos: string;
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class ReniecService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'https://miapi.cloud/v1/dni';
@@ -32,11 +34,7 @@ export class ReniecService {
 
     return this.http.get<ApiResponseDni>(`${this.apiUrl}/${dni}`, { headers }).pipe(
       map((response) => {
-<<<<<<< HEAD
         if (response && response.success && response.datos) {
-=======
-        if (response?.success && response.datos) {
->>>>>>> 7103b47 (avance frontend implementacion recepcionista y roles)
           const d = response.datos;
           return {
             dni: d.dni,

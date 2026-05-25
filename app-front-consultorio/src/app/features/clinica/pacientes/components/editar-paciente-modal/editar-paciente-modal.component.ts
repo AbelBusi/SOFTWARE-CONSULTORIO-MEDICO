@@ -7,13 +7,12 @@ import {
   PacienteMensajeResponse,
 } from '../../interface/paciente.interface';
 import { PacienteService } from '../../services/paciente.service';
-import { ConsultaDniComponent } from '../../../../../shared/components/consulta-dni/consulta-dni.component';
-import { DatosPersonaReniec } from '../../../../../core/services/reniec.service';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-editar-paciente-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule, ConsultaDniComponent],
+  imports: [CommonModule, FormsModule],
   templateUrl: './editar-paciente-modal.component.html',
 })
 export class EditarPacienteModalComponent implements OnInit {
@@ -76,22 +75,6 @@ export class EditarPacienteModalComponent implements OnInit {
     }
   }
 
-  actualizarDni(dni: string): void {
-    this.form.update((f) => ({ ...f, persona: { ...f.persona, dni } }));
-  }
-
-  onDatosReniec(datos: DatosPersonaReniec): void {
-    this.form.update((f) => ({
-      ...f,
-      persona: {
-        ...f.persona,
-        dni: datos.dni,
-        nombre: datos.nombre,
-        apellidos: datos.apellidos,
-      },
-    }));
-  }
-
   iniciales = computed(() => {
     const f = this.form();
     if (!f || !f.persona || !f.persona.nombre) return 'P';
@@ -146,10 +129,10 @@ export class EditarPacienteModalComponent implements OnInit {
         this.guardando.set(false);
         console.error('Error al actualizar el paciente:', err);
 
-        const mensajeError = err.error?.mensaje || 'No se pudieron guardar los cambios del paciente.';
+        const mensajeError =
+          err.error?.mensaje || 'No se pudieron guardar los cambios del paciente.';
         this.toastService.error(mensajeError);
       },
     });
-
   }
 }
