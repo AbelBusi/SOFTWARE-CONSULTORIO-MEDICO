@@ -1,10 +1,11 @@
-import { Component, inject, computed } from '@angular/core';
+import { Component, inject, computed, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { filter, map, startWith } from 'rxjs/operators';
 import { AuthService } from '../../features/auth/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 interface SubNavItem {
   label: string;
@@ -19,28 +20,29 @@ interface NavItem {
   sub?: SubNavItem[];
 }
 
+interface UsuarioRolInfo {
+  nombres: string;
+  rol: string;
+}
+
+interface MensajeResponse {
+  mensaje: string;
+  object: UsuarioRolInfo;
+}
+
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/inicio': { title: 'Inicio', subtitle: 'Resumen del consultorio' },
-  '/dashboard/horario': {
-    title: 'Horarios Médicos',
-    subtitle: 'Planificación de turnos y disponibilidad',
-  },
+  '/dashboard/horario': { title: 'Horarios Médicos', subtitle: 'Planificación de turnos y disponibilidad' },
   '/dashboard/citas': { title: 'Citas médicas', subtitle: 'Agenda y consultas programadas' },
   '/dashboard/citas/nuevo': { title: 'Nueva cita', subtitle: 'Registrar cita médica' },
-  '/dashboard/citas/por-doctor': {
-    title: 'Citas por doctor',
-    subtitle: 'Panel de consultas asignadas al médico',
-  },
+  '/dashboard/citas/por-doctor': { title: 'Citas por doctor', subtitle: 'Panel de consultas asignadas al médico' },
   '/dashboard/pacientes': { title: 'Pacientes', subtitle: 'Historial y datos de pacientes' },
   '/dashboard/pacientes/nuevo': { title: 'Nuevo paciente', subtitle: 'Registro de paciente' },
   '/dashboard/doctores': { title: 'Doctores', subtitle: 'Equipo médico del consultorio' },
   '/dashboard/doctores/nuevo': { title: 'Nuevo doctor', subtitle: 'Alta de especialista' },
   '/dashboard/especialidades': { title: 'Especialidades', subtitle: 'Áreas médicas disponibles' },
   '/dashboard/recepcionistas': { title: 'Recepcionistas', subtitle: 'Personal de recepción' },
-  '/dashboard/recepcionistas/nuevo': {
-    title: 'Nuevo recepcionista',
-    subtitle: 'Alta de recepcionista',
-  },
+  '/dashboard/recepcionistas/nuevo': { title: 'Nuevo recepcionista', subtitle: 'Alta de recepcionista' },
   '/dashboard/usuarios': { title: 'Usuarios', subtitle: 'Cuentas del sistema' },
   '/dashboard/usuarios/nuevo': { title: 'Nuevo usuario', subtitle: 'Crear cuenta de acceso' },
   '/dashboard/roles': { title: 'Roles', subtitle: 'Perfiles de acceso del sistema' },
@@ -52,13 +54,21 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './dashboard-layout.component.html',
 })
-export class DashboardLayoutComponent {
+export class DashboardLayoutComponent implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
   private authService = inject(AuthService);
 
   open = true;
   expandedItem: string | null = 'Inicio';
+
+  usuarioInfo = signal<UsuarioRolInfo | null>(null);
+  cargandoPerfil = signal<boolean>(true);
+
+  inicialAvatar = computed(() => {
+    const info = this.usuarioInfo();
+    return info && info.nombres ? info.nombres.charAt(0).toUpperCase() : '?';
+  });
 
   private currentUrl = toSignal(
     this.router.events.pipe(
@@ -90,7 +100,7 @@ export class DashboardLayoutComponent {
       icon: 'calendar_today',
       sub: [
         { label: 'Ver citas', route: '/dashboard/citas' },
-        { label: 'Nueva cita', route: '/dashboard/citas/nuevo' },
+        { label: 'Nueva cita', route: '/dashboard/citas/nuevo', permiso:'CITA_CREATE' },
         { label: 'Citas por doctor', route: '/dashboard/citas/por-doctor', permiso: 'CITA_READ' },
       ],
     },
@@ -175,6 +185,31 @@ export class DashboardLayoutComponent {
       });
   });
 
+  ngOnInit(): void {
+    this.obtenerPerfilUsuario();
+  }
+
+  private obtenerPerfilUsuario() {
+    const userId = this.authService.getUserId();
+    const token = this.authService.getAccessToken();
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http
+      .get<MensajeResponse>(`${environment.apiUrl}/usuarios/${userId}/rol`, { headers })
+      .subscribe({
+        next: (res) => {
+          if (res && res.object) {
+            this.usuarioInfo.set(res.object);
+          }
+          this.cargandoPerfil.set(false);
+        },
+        error: (err) => {
+          console.error('Error al capturar datos del usuario', err);
+          this.cargandoPerfil.set(false);
+        },
+      });
+  }
   toggleSidebar() {
     this.open = !this.open;
     if (!this.open) this.expandedItem = null;
@@ -192,7 +227,11 @@ export class DashboardLayoutComponent {
       return;
     }
     this.http
-      .post('/api/v1/auth/logout', {}, { headers: { Authorization: `Bearer ${token}` } })
+      .post(
+        `${environment.apiUrl}/auth/logout`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
+      )
       .subscribe({
         next: () => this.limpiarSesionLocal(),
         error: () => this.limpiarSesionLocal(),

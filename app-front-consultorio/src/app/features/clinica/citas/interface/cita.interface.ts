@@ -32,3 +32,36 @@ export interface CitaMedicaCrearDTO {
   costo: number;
   estado: number;
 }
+
+export interface CitaMedicaActualizarDTO {
+  recepcionista: { id: number };
+  paciente: { id: number };
+  doctor: { id: number };
+  especialidad: { id: number };
+  motivo: string;
+  fecha: string; // LocalDate → "YYYY-MM-DD"
+  horaInicio: string; // LocalTime → "HH:mm"
+  horaSalida: string; // LocalTime → "HH:mm"
+  costo: number;
+  estado: number;
+}
+
+export interface CitaMedicaResumenDTO {
+  id: number;
+  nombrePaciente: string;
+  apellidosPaciente: string;
+  motivoConsulta: string;
+  especialidad: string;
+  nombreDoctor: string;
+  diaConsulta: string; // "YYYY-MM-DD"
+  horaInicio: string; // "HH:mm"
+  horaSalida: string; // "HH:mm"
+  costo: number;
+  estado: number;
+
+  // IDs necesarios para pre-llenar el modal de edición
+  recepcionistaId?: number;
+  pacienteId?: number;
+  especialidadId?: number;
+  doctorId?: number;
+}

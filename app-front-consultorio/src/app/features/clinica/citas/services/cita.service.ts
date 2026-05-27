@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
-import { MensajeResponse, CitaMedicaCrearDTO} from '../interface/cita.interface';
+import { MensajeResponse, CitaMedicaCrearDTO, CitaMedicaActualizarDTO} from '../interface/cita.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -26,4 +26,7 @@ export class CitaService {
     return this.http.post<MensajeResponse>(this.baseUrl, dto).pipe(map((r) => r.object));
   }
 
+  actualizar(id: number, dto: CitaMedicaActualizarDTO): Observable<any> {
+    return this.http.put(`${this.baseUrl}/${id}`, dto);
+  }
 }

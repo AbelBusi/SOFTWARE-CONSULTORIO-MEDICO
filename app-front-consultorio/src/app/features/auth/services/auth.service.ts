@@ -49,6 +49,19 @@ export class AuthService {
     return localStorage.getItem('refresh_token');
   }
 
+  getUserId(): number {
+    const token = this.getAccessToken();
+    if (!token) return 4;
+
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = JSON.parse(atob(payloadBase64));
+
+      return payloadJson.jti ? Number(payloadJson.jti) : 4;
+    } catch (e) {
+      return 4;
+    }
+  }
   getAuthorities(): string[] {
     const token = this.getAccessToken();
     if (!token) return [];

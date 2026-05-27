@@ -68,3 +68,12 @@
     (edit)="handleEdit($event)"
   />
 }
+
+@if (citaAEditar()) {
+  <app-editar-cita-modal
+    [cita]="citaAEditar()!"
+    (close)="citaAEditar.set(null)"
+    (guardadoExitoso)="cargarCitas(); citaAEditar.set(null)"
+  />
+}
+

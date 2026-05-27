@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CitaMedicaLeer } from '../../interface/cita.interface';
+import { CitaMedicaLeer, CitaMedicaResumenDTO } from '../../interface/cita.interface';
 import { CitaService } from '../../services/cita.service';
+import { EditarCitaModalComponent} from '../../components/editar-cita-modal/editar-cita-modal.component'
 import { ToastService } from '../../../../../core/services/toast.service';
 import { CustomTableComponent } from '../../../../../shared/components/custom-table/custom-table.component';
 import { TableColumn } from '../../../../../shared/components/custom-table/table-column.interface';
@@ -11,7 +12,13 @@ import { DetalleCitaModalComponent } from '../../components/detalle-cita-modal/d
 @Component({
   selector: 'app-lista-cita',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomTableComponent, DetalleCitaModalComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    CustomTableComponent,
+    DetalleCitaModalComponent,
+    EditarCitaModalComponent,
+  ],
   templateUrl: './lista-citas-medicas-component.html',
 })
 export class ListaCitaComponent implements OnInit {
@@ -31,8 +38,9 @@ export class ListaCitaComponent implements OnInit {
   citas: CitaMedicaLeer[] = [];
   cargando = false;
 
-  // Signal para gestionar el estado de la cita abierta en el modal
   citaSeleccionada = signal<CitaMedicaLeer | null>(null);
+
+  citaAEditar = signal<CitaMedicaResumenDTO | null>(null);
 
   columnas: TableColumn<CitaMedicaLeer>[] = [
     { field: 'nombrePaciente', header: 'Paciente', type: 'custom', sortable: true },
@@ -138,7 +146,22 @@ export class ListaCitaComponent implements OnInit {
   }
 
   handleEdit(cita: CitaMedicaLeer): void {
-    // Aquí puedes vincular la lógica con tu componente 'app-editar-paciente-modal'
-    console.log('Editar cita:', cita);
+    this.cargando = true;
+
+    this.citaService.obtenerPorId(cita.id).subscribe({
+      next: (response) => {
+        const data = response.object;
+        const citaCompleta = Array.isArray(data) ? data[0] : data;
+
+        this.citaSeleccionada.set(null);
+        this.citaAEditar.set(citaCompleta as CitaMedicaResumenDTO); // Abre la edición con la data completa
+        this.cargando = false;
+      },
+      error: () => {
+        this.toastService.error('No se pudo cargar la cita para edición');
+        this.cargando = false;
+      },
+    });
   }
 }
+
