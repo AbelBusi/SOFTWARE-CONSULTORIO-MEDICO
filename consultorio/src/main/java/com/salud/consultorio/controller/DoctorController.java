@@ -98,6 +98,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "No existen doctores")
     })
     @GetMapping("/resumen")
+    @PreAuthorize("hasAuthority('CITA_READ')")
     public ResponseEntity<MensajeResponse> listaNombres() {
         List<NombreDoctoresDTO> leerNombreDoctoresDTOS = doctorServicio.listaNombreDoctoresDtos();
 
@@ -119,6 +120,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "200", description = "Lista de doctores obtenida correctamente")
     })
     @GetMapping
+    @PreAuthorize("hasAuthority('CITA_READ')")
     public ResponseEntity<MensajeResponse> leerDoctores(
             @RequestParam(required = false,name = "estado") EntidadEstado estado){
 
@@ -154,6 +156,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "Doctor no encontrado")
     })
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('CITA_READ')")
     public ResponseEntity<MensajeResponse> leerDoctorPorId(@PathVariable Integer id){
 
         DoctorDetalleLeerDTO leer = doctorServicio.obtenerDatosPersonales(id);
@@ -171,6 +174,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "Doctor no encontrado")
     })
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('CITA_UPDATE')")
     public ResponseEntity<MensajeResponse> actualizarDoctor(
             @PathVariable Integer id,
             @Valid @RequestBody DoctorActualizarDTO dto){
@@ -189,6 +193,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "Doctor no encontrado")
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('CITA_DELETE')")
     public ResponseEntity<MensajeResponse> eliminarDoctorPorId(@PathVariable Integer id){
 
         doctorServicio.eliminarPorId(id);
@@ -205,6 +210,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
     })
     @GetMapping("/especialidad/{id}")
+    @PreAuthorize("hasAuthority('CITA_READ')")
     public ResponseEntity<MensajeResponse> especialidadId(@PathVariable Integer id){
 
         List<DoctorEspecialidadPorIdDTO> doctores = doctorServicio.listaDoctoresEspecialidadSeleccionada(id);
