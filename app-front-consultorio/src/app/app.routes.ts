@@ -23,6 +23,7 @@ export const routes: Routes = [
         redirectTo: 'inicio',
         pathMatch: 'full',
       },
+
       {
         path: 'inicio',
         loadComponent: () =>
@@ -30,6 +31,14 @@ export const routes: Routes = [
             (m) => m.InicioComponent,
           ),
       },
+      {
+        path: 'horario',
+        loadComponent: () =>
+          import('./features/dashboard/pages/horario/horario.component').then(
+            (m) => m.HorarioComponent,
+          ),
+      },
+
       {
         path: 'citas',
         children: [

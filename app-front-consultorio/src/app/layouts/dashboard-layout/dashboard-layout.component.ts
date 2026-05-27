@@ -21,6 +21,10 @@ interface NavItem {
 
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/inicio': { title: 'Inicio', subtitle: 'Resumen del consultorio' },
+  '/dashboard/horario': {
+    title: 'Horarios Médicos',
+    subtitle: 'Planificación de turnos y disponibilidad',
+  },
   '/dashboard/citas': { title: 'Citas médicas', subtitle: 'Agenda y consultas programadas' },
   '/dashboard/citas/nuevo': { title: 'Nueva cita', subtitle: 'Registrar cita médica' },
   '/dashboard/citas/por-doctor': {
@@ -76,7 +80,10 @@ export class DashboardLayoutComponent {
     {
       label: 'Inicio',
       icon: 'dashboard',
-      sub: [{ label: 'Resumen', route: '/dashboard/inicio' }],
+      sub: [
+        { label: 'Resumen', route: '/dashboard/inicio' },
+        { label: 'Horario', route: '/dashboard/horario' },
+      ],
     },
     {
       label: 'Citas',
