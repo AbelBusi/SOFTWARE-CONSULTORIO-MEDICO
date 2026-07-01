@@ -1,5 +1,9 @@
+@use './styles/variables' as *;
+@use './styles/mixins' as *;
+@use './styles/ui' as *;
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=Playfair+Display:wght@600;700&display=swap');
 @import 'tailwindcss';
+
 
 @theme {
   --color-primary-50: #ecfdf8;

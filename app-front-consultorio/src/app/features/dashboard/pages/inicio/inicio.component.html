@@ -1,4 +1,4 @@
-<div class="animate-fade-in flex flex-col gap-6">
+<div class="sass-dashboard-home animate-fade-in flex flex-col gap-6">
   <div>
     <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Panel de Control</h2>
     <p class="text-sm text-slate-500 mt-1">Resumen general del consultorio médico</p>
@@ -10,7 +10,7 @@
     </div>
   } @else {
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-      <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
+      <div class="sass-card sass-summary-card bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
         <div class="w-12 h-12 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">
           <span class="material-icons text-teal-700">groups</span>
         </div>
@@ -20,7 +20,7 @@
         </div>
       </div>
 
-      <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
+      <div class="sass-card sass-summary-card bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
         <div class="w-12 h-12 rounded-lg bg-sky-50 flex items-center justify-center shrink-0">
           <span class="material-icons text-sky-700">medical_services</span>
         </div>
@@ -30,7 +30,7 @@
         </div>
       </div>
 
-      <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
+      <div class="sass-card sass-summary-card bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
         <div class="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center shrink-0">
           <span class="material-icons text-amber-700">event</span>
         </div>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class="bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
+      <div class="sass-card sass-summary-card bg-white border border-slate-200 rounded-xl p-5 flex items-center gap-4">
         <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
           <span class="material-icons text-emerald-700">today</span>
         </div>
@@ -54,7 +54,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div class="lg:col-span-2 flex flex-col gap-6">
 
-        <div class="bg-white border border-slate-200 rounded-xl p-6">
+        <div class="sass-card sass-panel bg-white border border-slate-200 rounded-xl p-6">
           <div class="flex items-center justify-between mb-6">
             <div>
               <h3 class="text-base font-bold text-slate-900">Actividad de citas</h3>
@@ -85,13 +85,14 @@
           </div>
         </div>
 
-        <div class="bg-white border border-slate-200 rounded-xl p-6">
+        <div class="sass-card sass-panel bg-white border border-slate-200 rounded-xl p-6">
           <h3 class="text-base font-bold text-slate-900 mb-4">Accesos rápidos</h3>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             @for (item of accesosRapidos; track item.ruta) {
               <a
                 [routerLink]="item.ruta"
-                class="flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-transparent hover:bg-slate-100 transition-colors group"
+                class="sass-action sass-quick-link flex items-center gap-3 p-3 rounded-lg bg-slate-50 border border-transparent hover:bg-slate-100 transition-colors group"
+
               >
                 <div class="w-10 h-10 rounded text-white flex items-center justify-center shrink-0" [ngClass]="item.color">
                   <span class="material-icons text-[20px]">{{ item.icon }}</span>
@@ -106,7 +107,7 @@
         </div>
       </div>
 
-      <div class="bg-teal-900 rounded-xl p-6 text-white flex flex-col justify-between border border-teal-950">
+      <div class="sass-system-card bg-teal-900 rounded-xl p-6 text-white flex flex-col justify-between border border-teal-950">
         <div>
           <div class="flex items-center gap-2 mb-6">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>

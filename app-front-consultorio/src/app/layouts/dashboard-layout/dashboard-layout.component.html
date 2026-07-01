@@ -1,7 +1,7 @@
-<div class="flex h-screen w-screen bg-slate-50 overflow-hidden">
+<div class="sass-dashboard flex h-screen w-screen bg-slate-50 overflow-hidden">
 
   <aside
-    class="bg-white border-r border-slate-200 flex flex-col transition-all duration-300 shrink-0 h-full"
+    class="sass-dashboard__sidebar bg-white border-r border-slate-200 flex flex-col transition-all duration-300 shrink-0 h-full"
     [class.w-64]="open"
     [class.w-18]="!open"
   >
@@ -23,7 +23,7 @@
       }
       <button
         (click)="toggleSidebar()"
-        class="p-1.5 rounded text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+        class="sass-action p-1.5 rounded text-slate-400 hover:text-slate-900 hover:bg-slate-100 transition-colors"
       >
         <span class="material-icons text-xl">menu</span>
       </button>
@@ -75,7 +75,7 @@
         <div>
           <button
             (click)="toggleMenu(item.label)"
-            class="w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded transition-colors"
+            class="sass-nav-item w-full flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded transition-colors"
             [class.justify-center]="!open"
             [class.bg-slate-50]="expandedItem === item.label && open"
             [class.text-slate-900]="expandedItem === item.label && open"
@@ -101,7 +101,7 @@
                 <a
                   [routerLink]="sub.route"
                   routerLinkActive="text-teal-600 font-medium"
-                  class="block px-2 py-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors"
+                  class="sass-nav-item block px-2 py-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors"
                 >{{ sub.label }}</a>
               }
             </div>
@@ -113,7 +113,7 @@
     <div class="p-3 border-t border-slate-200 bg-slate-50/50">
       <button
         (click)="logout()"
-        class="w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-600 hover:text-white rounded border border-red-100 hover:border-red-600 transition-all duration-200 shadow-sm"
+        class="sass-action w-full flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-600 hover:text-white rounded border border-red-100 hover:border-red-600 transition-all duration-200 shadow-sm"
         [class.justify-center]="!open"
       >
         <span class="material-icons text-lg">logout</span>
@@ -129,14 +129,13 @@
         <p class="hidden sm:block text-xs text-slate-400 mt-0.5">{{ pageInfo().subtitle }}</p>
       </div>
       <div class="flex items-center gap-4">
-        <button class="relative p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded transition-colors">
-          <span class="material-icons text-xl">notifications</span>
+        <button class="sass-action relative p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded transition-colors">          <span class="material-icons text-xl">notifications</span>
           <span class="absolute top-1 right-1 w-2 h-2 bg-teal-600 rounded-full"></span>
         </button>
       </div>
     </header>
 
-    <main class="flex-1 p-6 overflow-y-auto">
+    <main class="sass-dashboard__content flex-1 p-6 overflow-y-auto">
       <router-outlet />
     </main>
   </div>

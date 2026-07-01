@@ -1,0 +1,161 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+/*
+  Estilos SASS aplicados al login.
+  No reemplazan Tailwind; complementan la interfaz existente.
+*/
+
+.sass-login {
+  &__content {
+    min-height: 100vh;
+  }
+
+  &__form-container {
+    width: 100%;
+  }
+
+  &__brand {
+    @include transition-soft;
+  }
+
+  &__brand-icon {
+    @include transition-soft;
+  }
+
+  &__image {
+    overflow: hidden;
+  }
+
+  &__info-card {
+    @include transition-soft;
+  }
+
+  &__stats {
+    border-color: rgba(20, 184, 166, 0.25);
+  }
+
+  &__stat {
+    @include transition-soft;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.sass-form {
+  label {
+    letter-spacing: 0.05em;
+  }
+}
+
+.sass-control {
+  @include transition-soft;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+  }
+}
+
+.sass-action {
+  @include transition-soft;
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    transform: none;
+  }
+}
+
+.sass-submit-button {
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.sass-alert {
+  @include transition-soft;
+
+  &--error {
+    border-radius: $radius-md;
+  }
+}
+
+.sass-status {
+  @include transition-soft;
+
+  &--active {
+    border-radius: $radius-sm;
+  }
+}
+
+/*
+  Estilos SASS aplicados al layout principal.
+  Complementan el diseño existente sin reemplazar Tailwind.
+*/
+
+.sass-dashboard {
+  min-height: 100vh;
+
+  &__sidebar {
+    @include transition-soft;
+  }
+
+  &__content {
+    @include transition-soft;
+  }
+}
+
+.sass-nav-item {
+  @include transition-soft;
+
+  &:hover {
+    transform: translateX(2px);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+  }
+}
+.sass-dashboard-home {
+  .sass-summary-card,
+  .sass-panel,
+  .sass-system-card {
+    @include transition-soft;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+.sass-card {
+  @include card-base;
+}
+
+.sass-summary-card {
+  min-height: 96px;
+}
+
+.sass-panel {
+  overflow: hidden;
+}
+
+.sass-quick-link {
+  @include transition-soft;
+}
+
+.sass-system-card {
+  @include transition-soft;
+}
+
+:root {
+  --sass-color-primary: #{$color-primary};
+  --sass-color-danger: #{$color-danger};
+  --sass-radius-md: #{$radius-md};
+}
