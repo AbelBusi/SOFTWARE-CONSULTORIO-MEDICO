@@ -174,7 +174,7 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "Doctor no encontrado")
     })
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('CITA_UPDATE')")
+    @PreAuthorize("hasAuthority('DOCTOR_UPDATE')")
     public ResponseEntity<MensajeResponse> actualizarDoctor(
             @PathVariable Integer id,
             @Valid @RequestBody DoctorActualizarDTO dto){
