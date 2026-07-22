@@ -52,11 +52,20 @@ public interface IUsuarioRepositorio extends JpaRepository<Usuario, Integer> {
             p.correo,
             u.usuario,
             r.nombre,
-            u.estado
+            u.estado,
+            CASE
+                WHEN d.id IS NOT NULL THEN 'DOCTOR'
+                WHEN pa.id IS NOT NULL THEN 'PACIENTE'
+                WHEN re.id IS NOT NULL THEN 'RECEPCIONISTA'
+                ELSE 'SIN TIPO'
+            END
     )
     FROM Usuario u
     JOIN u.persona p
     JOIN u.rol r
+    LEFT JOIN Doctor d ON d.persona = p
+    LEFT JOIN Paciente pa ON pa.persona = p
+    LEFT JOIN Recepcionista re ON re.persona = p
     """)
     List<UsuarioListaDTO> todosUsuarios();
 
@@ -67,11 +76,20 @@ public interface IUsuarioRepositorio extends JpaRepository<Usuario, Integer> {
             p.correo,
             u.usuario,
             r.nombre,
-            u.estado
+            u.estado,
+            CASE
+                WHEN d.id IS NOT NULL THEN 'DOCTOR'
+                WHEN pa.id IS NOT NULL THEN 'PACIENTE'
+                WHEN re.id IS NOT NULL THEN 'RECEPCIONISTA'
+                ELSE 'SIN TIPO'
+            END
     )
     FROM Usuario u
     JOIN u.persona p
     JOIN u.rol r
+    LEFT JOIN Doctor d ON d.persona = p
+    LEFT JOIN Paciente pa ON pa.persona = p
+    LEFT JOIN Recepcionista re ON re.persona = p
     WHERE u.estado=1
     """)
     List<UsuarioListaDTO> todosUsuariosActivos();
@@ -84,11 +102,20 @@ public interface IUsuarioRepositorio extends JpaRepository<Usuario, Integer> {
             p.correo,
             u.usuario,
             r.nombre,
-            u.estado
+            u.estado,
+            CASE
+                WHEN d.id IS NOT NULL THEN 'DOCTOR'
+                WHEN pa.id IS NOT NULL THEN 'PACIENTE'
+                WHEN re.id IS NOT NULL THEN 'RECEPCIONISTA'
+                ELSE 'SIN TIPO'
+            END
     )
     FROM Usuario u
     JOIN u.persona p
     JOIN u.rol r
+    LEFT JOIN Doctor d ON d.persona = p
+    LEFT JOIN Paciente pa ON pa.persona = p
+    LEFT JOIN Recepcionista re ON re.persona = p
     WHERE u.estado=0
     """)
     List<UsuarioListaDTO> todosUsuariosInactivos();

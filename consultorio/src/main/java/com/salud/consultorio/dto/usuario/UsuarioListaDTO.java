@@ -8,14 +8,16 @@ public class UsuarioListaDTO {
     private String usuario;
     private String nombreRol;
     private Integer estado;
+    private String tipo;
 
-    public UsuarioListaDTO(Integer id, String nombre, String correo, String usuario, String nombreRol, Integer estado) {
+    public UsuarioListaDTO(Integer id, String nombre, String correo, String usuario, String nombreRol, Integer estado, String tipo) {
         this.id = id;
         this.nombre = nombre;
         this.correo = correo;
         this.usuario = usuario;
         this.nombreRol = nombreRol;
         this.estado = estado;
+        this.tipo = tipo;
     }
 
     public Integer getId() {
@@ -64,5 +66,13 @@ public class UsuarioListaDTO {
 
     public void setEstado(Integer estado) {
         this.estado = estado;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }
