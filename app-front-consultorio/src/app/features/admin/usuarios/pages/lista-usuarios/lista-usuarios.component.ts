@@ -1,7 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { UsuarioService } from '../../services/usuario.service';
 import { UsuarioLeer } from '../../models/usuario.model';
 import { CustomTableComponent } from '../../../../../shared/components/custom-table/custom-table.component';
@@ -11,7 +10,7 @@ import { ToastService } from '../../../../../core/services/toast.service';
 @Component({
   selector: 'app-lista-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, CustomTableComponent],
+  imports: [CommonModule, FormsModule, CustomTableComponent],
   templateUrl: './lista-usuarios.component.html',
 })
 export class ListaUsuariosComponent implements OnInit {
@@ -21,6 +20,7 @@ export class ListaUsuariosComponent implements OnInit {
   usuarios = signal<UsuarioLeer[]>([]);
   cargando = signal(true);
   search = signal('');
+  filtroTipo = signal<string>('');
   sortField = signal<string>('usuario');
   sortAsc = signal<boolean>(true);
 
@@ -29,6 +29,7 @@ export class ListaUsuariosComponent implements OnInit {
     { header: 'Nombre', field: 'nombre', sortable: true, type: 'custom' },
     { header: 'Correo', field: 'correo', sortable: false, type: 'custom' },
     { header: 'Rol', field: 'nombreRol', sortable: false, type: 'custom' },
+    { header: 'Tipo', field: 'tipo', sortable: false, type: 'custom' },
     { header: 'Estado', field: 'estado', sortable: false, type: 'custom' },
     { header: 'Acciones', field: 'acciones', sortable: false, type: 'actions' },
   ];
@@ -48,23 +49,33 @@ export class ListaUsuariosComponent implements OnInit {
     });
   }
 
+  tipos = computed(() => {
+    return [...new Set(this.usuarios().map((u) => u.tipo))].filter(Boolean).sort();
+  });
+
   stats = computed(() => {
     const lista = this.usuarios();
-    const roles = new Set(lista.map((u) => u.nombreRol));
     return [
-      { title: 'Usuarios activos', value: lista.length, icon: 'manage_accounts', bg: 'bg-teal-50', color: 'text-teal-600' },
-      { title: 'Roles', value: roles.size, icon: 'badge', bg: 'bg-sky-50', color: 'text-sky-600' },
+      { title: 'Usuarios Activos', value: lista.length, icon: 'manage_accounts', bg: 'bg-teal-600' },
+      { title: 'Doctores', value: lista.filter((u) => u.tipo === 'DOCTOR').length, icon: 'medical_services', bg: 'bg-sky-600' },
+      { title: 'Pacientes', value: lista.filter((u) => u.tipo === 'PACIENTE').length, icon: 'groups', bg: 'bg-emerald-600' },
+      { title: 'Recepcionistas', value: lista.filter((u) => u.tipo === 'RECEPCIONISTA').length, icon: 'support_agent', bg: 'bg-amber-600' },
     ];
   });
 
   filtered = computed(() => {
     const q = this.search().trim().toLowerCase();
+    const tipo = this.filtroTipo();
     const campo = this.sortField() as keyof UsuarioLeer;
     const asc = this.sortAsc();
     return this.usuarios()
-      .filter((u) =>
-        `${u.usuario} ${u.nombre} ${u.correo} ${u.nombreRol}`.toLowerCase().includes(q),
-      )
+      .filter((u) => {
+        const matchSearch = `${u.usuario} ${u.nombre} ${u.correo} ${u.nombreRol}`
+          .toLowerCase()
+          .includes(q);
+        const matchTipo = tipo ? u.tipo === tipo : true;
+        return matchSearch && matchTipo;
+      })
       .sort((a, b) => {
         const av = String(a[campo] ?? '').toLowerCase();
         const bv = String(b[campo] ?? '').toLowerCase();
@@ -78,6 +89,19 @@ export class ListaUsuariosComponent implements OnInit {
     } else {
       this.sortField.set(field);
       this.sortAsc.set(true);
+    }
+  }
+
+  tipoClase(tipo: string): string {
+    switch (tipo) {
+      case 'DOCTOR':
+        return 'bg-sky-100 text-sky-700 border border-sky-200';
+      case 'PACIENTE':
+        return 'bg-emerald-100 text-emerald-700 border border-emerald-200';
+      case 'RECEPCIONISTA':
+        return 'bg-amber-100 text-amber-700 border border-amber-200';
+      default:
+        return 'bg-slate-100 text-slate-600 border border-slate-200';
     }
   }
 

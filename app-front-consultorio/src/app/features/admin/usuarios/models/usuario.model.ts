@@ -20,6 +20,7 @@ export interface UsuarioLeer {
   usuario: string;
   nombreRol: string;
   estado: number;
+  tipo: string;
 }
 
 export interface UsuarioCrearDTO {
