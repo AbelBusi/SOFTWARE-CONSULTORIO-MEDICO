@@ -1,6 +1,7 @@
 package com.salud.consultorio.repository;
 
 import com.salud.consultorio.dto.recepcionista.NombreRecepcionistaDTO;
+import com.salud.consultorio.dto.recepcionista.RecepcionistaDetalleLeerDTO;
 import com.salud.consultorio.dto.recepcionista.RecepcionistaLeerDTO;
 import com.salud.consultorio.model.entity.Recepcionista;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,29 @@ public interface IRecepcionistaRepositorio extends JpaRepository<Recepcionista,I
 
     @Query("SELECT r FROM Recepcionista r JOIN FETCH r.persona WHERE r.id = :id")
     Optional<Recepcionista> findByIdConRecepcionista(@Param("id") Integer id);
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.recepcionista.RecepcionistaDetalleLeerDTO(
+        r.id,
+        new com.salud.consultorio.dto.persona.PersonaLeerDTO(
+            p.id,
+            p.dni,
+            p.nombre,
+            p.apellidos,
+            p.fechaNacimiento,
+            p.genero,
+            p.telefono,
+            p.nacionalidad,
+            p.correo
+        ),
+        r.codigoEmpleado,
+        r.estado
+    )
+    FROM Recepcionista r
+    JOIN r.persona p
+    WHERE r.id = :id
+    """)
+    Optional<RecepcionistaDetalleLeerDTO> obtenerDetallePorId(@Param("id") Integer id);
 
     @Query("""
     SELECT new com.salud.consultorio.dto.recepcionista.RecepcionistaLeerDTO(

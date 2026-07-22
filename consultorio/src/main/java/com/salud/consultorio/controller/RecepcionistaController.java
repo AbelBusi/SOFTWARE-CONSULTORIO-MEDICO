@@ -124,7 +124,7 @@ public class RecepcionistaController {
     @GetMapping("/{id}")
     public ResponseEntity<MensajeResponse> leerRecepcionistaPorId(@PathVariable Integer id){
 
-        RecepcionistaLeerDTO leer = recepcionistaServicio.leerPorId(id);
+        RecepcionistaDetalleLeerDTO leer = recepcionistaServicio.obtenerDetallePorId(id);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Informacion del recepcionista solicitado")

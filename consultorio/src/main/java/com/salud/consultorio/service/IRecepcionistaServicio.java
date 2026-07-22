@@ -24,6 +24,8 @@ public interface IRecepcionistaServicio{
 
     RecepcionistaLeerDTO leerPorId(Integer id);
 
+    RecepcionistaDetalleLeerDTO obtenerDetallePorId(Integer id);
+
     List<RecepcionistaLeerDTO> listarRecepcionistasPersonas();
 
     List<RecepcionistaLeerDTO> listarRecepcionistasActivos();
