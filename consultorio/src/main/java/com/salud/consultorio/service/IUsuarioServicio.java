@@ -1,5 +1,6 @@
 package com.salud.consultorio.service;
 
+import com.salud.consultorio.dto.usuario.UsuarioListaDTO;
 import com.salud.consultorio.dto.usuario.UsuarioRespuestaDTO;
 import com.salud.consultorio.dto.usuario.UsuarioRolDTO;
 
@@ -15,4 +16,13 @@ public interface IUsuarioServicio {
     boolean existeUsuarioPersona(Integer id);
 
     Optional<UsuarioRolDTO> obtenerInformacionUsuarioYRol(Integer id);
+
+    List<UsuarioListaDTO> listaUsuarios();
+
+    List<UsuarioListaDTO> listaUsuariosActivos();
+
+    List<UsuarioListaDTO> listaUsuariosInactivos();
+
+    void eliminarPorId(Integer id);
+
 }

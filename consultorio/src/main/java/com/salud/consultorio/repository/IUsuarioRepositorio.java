@@ -1,14 +1,18 @@
 package com.salud.consultorio.repository;
 
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
+import com.salud.consultorio.dto.usuario.UsuarioListaDTO;
 import com.salud.consultorio.dto.usuario.UsuarioRolDTO;
 import com.salud.consultorio.model.entity.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -39,5 +43,58 @@ public interface IUsuarioRepositorio extends JpaRepository<Usuario, Integer> {
         WHERE u.id = :id
     """)
     Optional<UsuarioRolDTO> obtenerUsuarioYRolPorId(@Param("id") Integer id);
+
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.usuario.UsuarioListaDTO(
+            u.id,
+            p.nombre,
+            p.correo,
+            u.usuario,
+            r.nombre,
+            u.estado
+    )
+    FROM Usuario u
+    JOIN u.persona p
+    JOIN u.rol r
+    """)
+    List<UsuarioListaDTO> todosUsuarios();
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.usuario.UsuarioListaDTO(
+            u.id,
+            p.nombre,
+            p.correo,
+            u.usuario,
+            r.nombre,
+            u.estado
+    )
+    FROM Usuario u
+    JOIN u.persona p
+    JOIN u.rol r
+    WHERE u.estado=1
+    """)
+    List<UsuarioListaDTO> todosUsuariosActivos();
+
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.usuario.UsuarioListaDTO(
+            u.id,
+            p.nombre,
+            p.correo,
+            u.usuario,
+            r.nombre,
+            u.estado
+    )
+    FROM Usuario u
+    JOIN u.persona p
+    JOIN u.rol r
+    WHERE u.estado=0
+    """)
+    List<UsuarioListaDTO> todosUsuariosInactivos();
+
+    @Modifying
+    @Query("UPDATE Usuario u SET u.estado =:estado WHERE u.id=:id" )
+    void UsuarioCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
 
 }
