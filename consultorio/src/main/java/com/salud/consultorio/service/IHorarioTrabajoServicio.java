@@ -1,5 +1,6 @@
 package com.salud.consultorio.service;
 
+import com.salud.consultorio.dto.horario.AgendaDTO;
 import com.salud.consultorio.dto.horario.DisponibilidadDTO;
 import com.salud.consultorio.dto.horario.HorarioTrabajoActualizarDTO;
 import com.salud.consultorio.dto.horario.HorarioTrabajoCrearDTO;
@@ -10,6 +11,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 public interface IHorarioTrabajoServicio {
+
+    AgendaDTO agenda(String tipo, Integer referenciaId, LocalDate desde, LocalDate hasta);
 
     HorarioTrabajoLeerDTO crear(HorarioTrabajoCrearDTO dto);
 

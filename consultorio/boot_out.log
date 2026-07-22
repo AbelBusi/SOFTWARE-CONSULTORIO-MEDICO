@@ -8,24 +8,24 @@
 
  :: Spring Boot ::               (v3.5.13)
 
-2026-07-22T14:04:47.156-05:00  INFO 13072 --- [consultorio] [           main] c.s.consultorio.ConsultorioApplication   : Starting ConsultorioApplication using Java 21.0.10 with PID 13072 (C:\mis-proyectos\CONSULTORIO-CLINICO\SOFTWARE-CONSULTORIO-MEDICO\consultorio\target\classes started by Doki in C:\mis-proyectos\CONSULTORIO-CLINICO\SOFTWARE-CONSULTORIO-MEDICO\consultorio)
-2026-07-22T14:04:47.161-05:00  INFO 13072 --- [consultorio] [           main] c.s.consultorio.ConsultorioApplication   : No active profile set, falling back to 1 default profile: "default"
-2026-07-22T14:04:51.728-05:00  INFO 13072 --- [consultorio] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-07-22T14:04:52.341-05:00  INFO 13072 --- [consultorio] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 547 ms. Found 11 JPA repository interfaces.
-2026-07-22T14:04:54.591-05:00  INFO 13072 --- [consultorio] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8091 (http)
-2026-07-22T14:04:54.623-05:00  INFO 13072 --- [consultorio] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-07-22T14:04:54.623-05:00  INFO 13072 --- [consultorio] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.53]
-2026-07-22T14:04:54.741-05:00  INFO 13072 --- [consultorio] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
-2026-07-22T14:04:54.742-05:00  INFO 13072 --- [consultorio] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 7517 ms
-2026-07-22T14:04:55.190-05:00  INFO 13072 --- [consultorio] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-07-22T14:04:55.361-05:00  INFO 13072 --- [consultorio] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.45.Final
-2026-07-22T14:04:55.469-05:00  INFO 13072 --- [consultorio] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
-2026-07-22T14:04:56.023-05:00  INFO 13072 --- [consultorio] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-07-22T14:04:56.077-05:00  INFO 13072 --- [consultorio] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-07-22T14:04:56.328-05:00  INFO 13072 --- [consultorio] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@65ff4b8c
-2026-07-22T14:04:56.333-05:00  INFO 13072 --- [consultorio] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-07-22T14:04:56.378-05:00  WARN 13072 --- [consultorio] [           main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2026-07-22T14:04:56.413-05:00  INFO 13072 --- [consultorio] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+2026-07-22T14:37:59.032-05:00  INFO 10500 --- [consultorio] [           main] c.s.consultorio.ConsultorioApplication   : Starting ConsultorioApplication using Java 21.0.10 with PID 10500 (C:\mis-proyectos\CONSULTORIO-CLINICO\SOFTWARE-CONSULTORIO-MEDICO\consultorio\target\classes started by Doki in C:\mis-proyectos\CONSULTORIO-CLINICO\SOFTWARE-CONSULTORIO-MEDICO\consultorio)
+2026-07-22T14:37:59.038-05:00  INFO 10500 --- [consultorio] [           main] c.s.consultorio.ConsultorioApplication   : No active profile set, falling back to 1 default profile: "default"
+2026-07-22T14:38:01.134-05:00  INFO 10500 --- [consultorio] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-22T14:38:01.334-05:00  INFO 10500 --- [consultorio] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 179 ms. Found 11 JPA repository interfaces.
+2026-07-22T14:38:02.387-05:00  INFO 10500 --- [consultorio] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8091 (http)
+2026-07-22T14:38:02.422-05:00  INFO 10500 --- [consultorio] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-07-22T14:38:02.423-05:00  INFO 10500 --- [consultorio] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.53]
+2026-07-22T14:38:02.559-05:00  INFO 10500 --- [consultorio] [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-07-22T14:38:02.561-05:00  INFO 10500 --- [consultorio] [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3445 ms
+2026-07-22T14:38:02.891-05:00  INFO 10500 --- [consultorio] [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-07-22T14:38:02.975-05:00  INFO 10500 --- [consultorio] [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.45.Final
+2026-07-22T14:38:03.051-05:00  INFO 10500 --- [consultorio] [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-07-22T14:38:03.486-05:00  INFO 10500 --- [consultorio] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-22T14:38:03.523-05:00  INFO 10500 --- [consultorio] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-07-22T14:38:03.698-05:00  INFO 10500 --- [consultorio] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.mariadb.jdbc.Connection@6c6919ff
+2026-07-22T14:38:03.700-05:00  INFO 10500 --- [consultorio] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-07-22T14:38:03.734-05:00  WARN 10500 --- [consultorio] [           main] org.hibernate.orm.deprecation            : HHH90000025: MariaDBDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-07-22T14:38:03.752-05:00  INFO 10500 --- [consultorio] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 12.3.2
@@ -33,36 +33,17 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2026-07-22T14:04:58.686-05:00  INFO 13072 --- [consultorio] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-Hibernate: 
-    create table horario_trabajo (
-        id integer not null auto_increment,
-        dia_semana integer not null,
-        estado integer not null,
-        hora_fin time(6) not null,
-        hora_inicio time(6) not null,
-        tipo varchar(20) not null,
-        id_persona integer not null,
-        primary key (id)
-    ) engine=InnoDB
-Hibernate: 
-    alter table if exists horario_trabajo 
-       add constraint FKq3xvmiegeru8ie9hwj5e0qb2u 
-       foreign key (id_persona) 
-       references persona (id)
-2026-07-22T14:04:59.053-05:00  INFO 13072 --- [consultorio] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-07-22T14:04:59.822-05:00  INFO 13072 --- [consultorio] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-07-22T14:05:01.392-05:00  INFO 13072 --- [consultorio] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-07-22T14:05:01.393-05:00  WARN 13072 --- [consultorio] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2026-07-22T14:05:02.987-05:00  INFO 13072 --- [consultorio] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
-2026-07-22T14:05:03.152-05:00  WARN 13072 --- [consultorio] [           main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/swagger-ui/**, v3/api-docs/**] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
-2026-07-22T14:05:03.960-05:00  INFO 13072 --- [consultorio] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8091 (http) with context path '/'
-2026-07-22T14:05:03.977-05:00  INFO 13072 --- [consultorio] [           main] c.s.consultorio.ConsultorioApplication   : Started ConsultorioApplication in 17.585 seconds (process running for 18.493)
+2026-07-22T14:38:05.284-05:00  INFO 10500 --- [consultorio] [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-22T14:38:05.423-05:00  INFO 10500 --- [consultorio] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-22T14:38:06.099-05:00  INFO 10500 --- [consultorio] [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-22T14:38:07.359-05:00  INFO 10500 --- [consultorio] [           main] eAuthenticationProviderManagerConfigurer : Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-07-22T14:38:07.360-05:00  WARN 10500 --- [consultorio] [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2026-07-22T14:38:08.944-05:00  INFO 10500 --- [consultorio] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-07-22T14:38:09.169-05:00  WARN 10500 --- [consultorio] [           main] thorizationManagerRequestMatcherRegistry : One of the patterns in [/swagger-ui/**, v3/api-docs/**] is missing a leading slash. This is discouraged; please include the leading slash in all your request matcher patterns. In future versions of Spring Security, leaving out the leading slash will result in an exception.
+2026-07-22T14:38:10.079-05:00  INFO 10500 --- [consultorio] [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8091 (http) with context path '/'
+2026-07-22T14:38:10.099-05:00  INFO 10500 --- [consultorio] [           main] c.s.consultorio.ConsultorioApplication   : Started ConsultorioApplication in 11.872 seconds (process running for 12.482)
 --VERIFICANDO CCONEXION A LA BASE DE DATOS--
 CONEXION A LA BASE DE DATOS EXITOSA
 --VERIFICACION FINALIZADA--
-2026-07-22T14:05:04.143-05:00  WARN 13072 --- [consultorio] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
-2026-07-22T14:05:04.143-05:00  WARN 13072 --- [consultorio] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
-2026-07-22T14:05:28.403-05:00  INFO 13072 --- [consultorio] [nio-8091-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-07-22T14:05:28.403-05:00  INFO 13072 --- [consultorio] [nio-8091-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-07-22T14:05:28.405-05:00  INFO 13072 --- [consultorio] [nio-8091-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-07-22T14:38:10.215-05:00  WARN 10500 --- [consultorio] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-07-22T14:38:10.216-05:00  WARN 10500 --- [consultorio] [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'

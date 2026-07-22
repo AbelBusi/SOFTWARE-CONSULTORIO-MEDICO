@@ -3,6 +3,7 @@ package com.salud.consultorio.repository;
 import com.salud.consultorio.dto.citaMedica.CitaMedicaLeerDTO;
 import com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO;
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
+import com.salud.consultorio.dto.horario.AgendaCitaDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -157,6 +158,38 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
             @Param("recepcionistaId") Integer recepcionistaId,
             @Param("nuevaHoraSalida") LocalTime horaSalida,
             @Param("nuevaHoraEntrada") LocalTime horaEntrada
+    );
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.horario.AgendaCitaDTO(
+        c.fecha, c.horaInicio, c.horaSalida, CONCAT(pp.nombre, ' ', pp.apellidos)
+    )
+    FROM CitaMedica c
+    JOIN c.paciente pa
+    JOIN pa.persona pp
+    WHERE c.doctor.id = :doctorId
+    AND c.fecha BETWEEN :desde AND :hasta
+    """)
+    List<AgendaCitaDTO> citasDoctorRango(
+            @Param("doctorId") Integer doctorId,
+            @Param("desde") LocalDate desde,
+            @Param("hasta") LocalDate hasta
+    );
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.horario.AgendaCitaDTO(
+        c.fecha, c.horaInicio, c.horaSalida, CONCAT(pp.nombre, ' ', pp.apellidos)
+    )
+    FROM CitaMedica c
+    JOIN c.paciente pa
+    JOIN pa.persona pp
+    WHERE c.recepcionista.id = :recepcionistaId
+    AND c.fecha BETWEEN :desde AND :hasta
+    """)
+    List<AgendaCitaDTO> citasRecepcionistaRango(
+            @Param("recepcionistaId") Integer recepcionistaId,
+            @Param("desde") LocalDate desde,
+            @Param("hasta") LocalDate hasta
     );
 
     @Query("""

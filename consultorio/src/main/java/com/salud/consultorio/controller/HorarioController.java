@@ -1,5 +1,6 @@
 package com.salud.consultorio.controller;
 
+import com.salud.consultorio.dto.horario.AgendaDTO;
 import com.salud.consultorio.dto.horario.DisponibilidadDTO;
 import com.salud.consultorio.dto.horario.HorarioTrabajoActualizarDTO;
 import com.salud.consultorio.dto.horario.HorarioTrabajoCrearDTO;
@@ -87,6 +88,20 @@ public class HorarioController {
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("DOCTORES DISPONIBLES")
                 .object(doctores).build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Agenda (bloques laborales y citas) de un doctor o recepcionista en un rango de fechas")
+    @GetMapping("/agenda")
+    public ResponseEntity<MensajeResponse> agenda(
+            @RequestParam String tipo,
+            @RequestParam Integer referenciaId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta) {
+
+        AgendaDTO agenda = horarioServicio.agenda(tipo, referenciaId, desde, hasta);
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("AGENDA DEL TRABAJADOR")
+                .object(agenda).build(), HttpStatus.OK);
     }
 
     @Operation(summary = "Recepcionistas disponibles en una fecha y rango horario")

@@ -1,5 +1,6 @@
 package com.salud.consultorio.impl;
 
+import com.salud.consultorio.dto.horario.AgendaDTO;
 import com.salud.consultorio.dto.horario.DisponibilidadDTO;
 import com.salud.consultorio.dto.horario.HorarioTrabajoActualizarDTO;
 import com.salud.consultorio.dto.horario.HorarioTrabajoCrearDTO;
@@ -8,6 +9,7 @@ import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.entity.HorarioTrabajo;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.entity.Recepcionista;
+import com.salud.consultorio.repository.ICitaMedicaRepositorio;
 import com.salud.consultorio.repository.IDoctorRepositorio;
 import com.salud.consultorio.repository.IHorarioTrabajoRepositorio;
 import com.salud.consultorio.repository.IRecepcionistaRepositorio;
@@ -29,6 +31,7 @@ public class HorarioTrabajoServicioImpl implements IHorarioTrabajoServicio {
     private final IHorarioTrabajoRepositorio horarioTrabajoRepositorio;
     private final IDoctorRepositorio doctorRepositorio;
     private final IRecepcionistaRepositorio recepcionistaRepositorio;
+    private final ICitaMedicaRepositorio citaMedicaRepositorio;
 
     @Transactional
     @Override
@@ -103,6 +106,21 @@ public class HorarioTrabajoServicioImpl implements IHorarioTrabajoServicio {
     public HorarioTrabajoLeerDTO obtenerPorId(Integer id) {
         return horarioTrabajoRepositorio.obtenerDetallePorId(id).orElseThrow(
                 () -> new EntityNotFoundException("No existe el horario")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public AgendaDTO agenda(String tipo, Integer referenciaId, LocalDate desde, LocalDate hasta) {
+        if ("DOCTOR".equals(tipo)) {
+            return new AgendaDTO(
+                    horarioTrabajoRepositorio.bloquesDoctor(referenciaId),
+                    citaMedicaRepositorio.citasDoctorRango(referenciaId, desde, hasta)
+            );
+        }
+        return new AgendaDTO(
+                horarioTrabajoRepositorio.bloquesRecepcionista(referenciaId),
+                citaMedicaRepositorio.citasRecepcionistaRango(referenciaId, desde, hasta)
         );
     }
 

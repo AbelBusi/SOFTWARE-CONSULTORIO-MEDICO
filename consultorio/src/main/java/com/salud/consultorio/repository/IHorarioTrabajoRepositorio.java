@@ -1,5 +1,6 @@
 package com.salud.consultorio.repository;
 
+import com.salud.consultorio.dto.horario.AgendaBloqueDTO;
 import com.salud.consultorio.dto.horario.DisponibilidadDTO;
 import com.salud.consultorio.dto.horario.HorarioTrabajoLeerDTO;
 import com.salud.consultorio.model.entity.HorarioTrabajo;
@@ -72,6 +73,26 @@ public interface IHorarioTrabajoRepositorio extends JpaRepository<HorarioTrabajo
     @Modifying
     @Query("UPDATE HorarioTrabajo h SET h.estado = :estado WHERE h.id = :id")
     void cambiarEstado(@Param("estado") Integer estado, @Param("id") Integer id);
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.horario.AgendaBloqueDTO(
+        h.diaSemana, h.horaInicio, h.horaFin
+    )
+    FROM Doctor d
+    JOIN HorarioTrabajo h ON h.persona = d.persona
+    WHERE d.id = :doctorId AND h.estado = 1
+    """)
+    List<AgendaBloqueDTO> bloquesDoctor(@Param("doctorId") Integer doctorId);
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.horario.AgendaBloqueDTO(
+        h.diaSemana, h.horaInicio, h.horaFin
+    )
+    FROM Recepcionista r
+    JOIN HorarioTrabajo h ON h.persona = r.persona
+    WHERE r.id = :recepcionistaId AND h.estado = 1
+    """)
+    List<AgendaBloqueDTO> bloquesRecepcionista(@Param("recepcionistaId") Integer recepcionistaId);
 
     @Query("""
     SELECT CASE WHEN COUNT(h) > 0 THEN true ELSE false END
