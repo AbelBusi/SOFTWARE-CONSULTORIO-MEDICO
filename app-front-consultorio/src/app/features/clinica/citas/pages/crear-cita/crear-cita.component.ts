@@ -8,6 +8,9 @@ import { DoctorService } from '../../../doctores/services/doctor.service';
 import { EspecialidadService } from '../../../especialidad/services/especialidad.service';
 import { HorarioService } from '../../../horarios/services/horario.service';
 import { Disponibilidad } from '../../../horarios/models/horario.model';
+import { RecepcionistaService } from '../../../recepcionistas/services/recepcionista.service';
+import { RecepcionistaLeer } from '../../../recepcionistas/models/recepcionista.model';
+import { AuthService } from '../../../../auth/services/auth.service';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { PacienteResumenDTO } from '../../../pacientes/interface/paciente.interface';
 import { DoctorEspecialidadResumen } from '../../../doctores/interface/doctor.interface';
@@ -29,12 +32,16 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   private readonly doctorService = inject(DoctorService);
   private readonly especialidadService = inject(EspecialidadService);
   private readonly horarioService = inject(HorarioService);
+  private readonly recepcionistaService = inject(RecepcionistaService);
+  private readonly authService = inject(AuthService);
   private readonly toast = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup;
   isSaving = false;
+  esRecepcionista = false;
+  recepcionistaActual: RecepcionistaLeer | null = null;
 
   showModalPago = signal<boolean>(false);
   showCalendario = signal<boolean>(false);
@@ -48,6 +55,20 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initForm();
     this.cargarDatosIniciales();
+
+    this.esRecepcionista = this.authService.getRole() === 'RECEPCIONISTA';
+    if (this.esRecepcionista) {
+      this.recepcionistaService
+        .actual()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (r) => {
+            this.recepcionistaActual = r;
+            this.form.get('recepcionistaId')!.setValue(r.id, { emitEvent: false });
+            this.cdr.markForCheck();
+          },
+        });
+    }
   }
 
   ngOnDestroy(): void {
@@ -127,8 +148,10 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
 
   private limpiarFechaHora(): void {
     this.form.patchValue({ fecha: '', horaInicio: '', horaSalida: '' }, { emitEvent: false });
-    this.recepcionistas = [];
-    this.form.get('recepcionistaId')!.patchValue('', { emitEvent: false });
+    if (!this.esRecepcionista) {
+      this.recepcionistas = [];
+      this.form.get('recepcionistaId')!.patchValue('', { emitEvent: false });
+    }
   }
 
   get doctorSeleccionadoNombre(): string {
@@ -174,6 +197,7 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   }
 
   private actualizarRecepcionistas(): void {
+    if (this.esRecepcionista) return;
     const { fecha, horaInicio, horaSalida } = this.form.getRawValue();
     if (!fecha || !horaInicio || !horaSalida) return;
     this.horarioService
@@ -245,6 +269,9 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
           this.form.get('doctorId')!.disable({ emitEvent: false });
           this.doctores = [];
           this.recepcionistas = [];
+          if (this.esRecepcionista && this.recepcionistaActual) {
+            this.form.get('recepcionistaId')!.setValue(this.recepcionistaActual.id, { emitEvent: false });
+          }
           this.metodoSeleccionado.set('efectivo');
           this.toast.success(res?.mensaje || 'Cita médica registrada exitosamente');
         },

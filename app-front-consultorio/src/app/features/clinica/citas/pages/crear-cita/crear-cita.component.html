@@ -115,20 +115,33 @@
             <label class="block text-[10px] font-bold text-gray-500 uppercase tracking-widest">
               Recepcionista Encargado <span class="text-[#0d6b68] text-xs">*</span>
             </label>
-            <div class="relative">
-              <select formControlName="recepcionistaId"
-                      class="w-full appearance-none text-xs px-3 py-2.5 pr-8 rounded bg-white text-gray-800 font-medium transition-colors outline-none border hover:border-[#0d6b68] focus:border-[#0d6b68]"
-                      [class.border-red-400]="isInvalid('recepcionistaId')"
-                      [class.border-gray-200]="!isInvalid('recepcionistaId')">
-                <option value="" disabled hidden>SELECCIONE RECEPCIONISTA</option>
-                @for (rep of recepcionistas; track rep.id) {
-                  <option [value]="rep.id">{{ rep.nombre }}</option>
-                }
-              </select>
-              <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 material-icons text-[16px] text-gray-400">expand_more</span>
-            </div>
-            @if (!recepcionistas.length) {
-              <p class="text-[10px] text-gray-400">Seleccione fecha y horario para ver los recepcionistas disponibles.</p>
+
+            @if (esRecepcionista) {
+              <div class="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-teal-50 border border-teal-100">
+                <span class="material-icons text-teal-600 text-lg">badge</span>
+                <div>
+                  <p class="text-[10px] font-bold text-teal-700 uppercase tracking-widest">Agendando como</p>
+                  <p class="text-xs font-bold text-gray-800">
+                    {{ recepcionistaActual ? recepcionistaActual.nombre + ' ' + recepcionistaActual.apellidos : 'Cargando...' }}
+                  </p>
+                </div>
+              </div>
+            } @else {
+              <div class="relative">
+                <select formControlName="recepcionistaId"
+                        class="w-full appearance-none text-xs px-3 py-2.5 pr-8 rounded bg-white text-gray-800 font-medium transition-colors outline-none border hover:border-[#0d6b68] focus:border-[#0d6b68]"
+                        [class.border-red-400]="isInvalid('recepcionistaId')"
+                        [class.border-gray-200]="!isInvalid('recepcionistaId')">
+                  <option value="" disabled hidden>SELECCIONE RECEPCIONISTA</option>
+                  @for (rep of recepcionistas; track rep.id) {
+                    <option [value]="rep.id">{{ rep.nombre }}</option>
+                  }
+                </select>
+                <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 material-icons text-[16px] text-gray-400">expand_more</span>
+              </div>
+              @if (!recepcionistas.length) {
+                <p class="text-[10px] text-gray-400">Seleccione fecha y horario para ver los recepcionistas disponibles.</p>
+              }
             }
           </div>
 

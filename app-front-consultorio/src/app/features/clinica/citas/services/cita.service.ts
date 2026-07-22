@@ -18,6 +18,10 @@ export class CitaService {
     return this.http.get<MensajeResponse>(this.baseUrl, { params });
   }
 
+  mias(): Observable<MensajeResponse> {
+    return this.http.get<MensajeResponse>(`${this.baseUrl}/mias`);
+  }
+
   obtenerPorId(id: number): Observable<MensajeResponse> {
     return this.http.get<MensajeResponse>(`${this.baseUrl}/${id}`);
   }

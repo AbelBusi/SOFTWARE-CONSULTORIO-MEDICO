@@ -8,6 +8,7 @@ import { PacienteService } from '../../../clinica/pacientes/services/paciente.se
 import { EspecialidadService } from '../../../clinica/especialidad/services/especialidad.service';
 import { CitaMedica } from '../../../clinica/citas/models/cita.model';
 import { CitaMedicaLeer } from '../../../clinica/citas/interface/cita.interface';
+import { AuthService } from '../../../auth/services/auth.service';
 
 @Component({
   selector: 'app-inicio',
@@ -20,6 +21,9 @@ export class InicioComponent implements OnInit {
   private doctorService = inject(DoctorService);
   private pacienteService = inject(PacienteService);
   private especialidadService = inject(EspecialidadService);
+  private authService = inject(AuthService);
+
+  esRecepcionista = false;
 
   cargando = signal(true);
   totalPacientes = signal(0);
@@ -30,11 +34,28 @@ export class InicioComponent implements OnInit {
 
   accesosRapidos = [
     {
-      titulo: 'Nueva cita',
-      desc: 'Agendar consulta médica',
+      titulo: 'Agendar cita',
+      desc: 'Registrar consulta médica',
       icon: 'calendar_today',
       ruta: '/dashboard/citas/nuevo',
       color: 'bg-teal-600',
+      roles: ['ADMINISTRADOR', 'RECEPCIONISTA'],
+    },
+    {
+      titulo: 'Historial de citas',
+      desc: 'Ver tus citas registradas',
+      icon: 'event',
+      ruta: '/dashboard/historial-citas',
+      color: 'bg-amber-600',
+      roles: ['RECEPCIONISTA'],
+    },
+    {
+      titulo: 'Mi horario',
+      desc: 'Consultar tu horario',
+      icon: 'schedule',
+      ruta: '/dashboard/horario',
+      color: 'bg-sky-600',
+      roles: ['RECEPCIONISTA'],
     },
     {
       titulo: 'Nuevo paciente',
@@ -42,13 +63,15 @@ export class InicioComponent implements OnInit {
       icon: 'person_add',
       ruta: '/dashboard/pacientes/nuevo',
       color: 'bg-sky-600',
+      roles: ['ADMINISTRADOR'],
     },
     {
-      titulo: 'Nuevo doctor xd',
+      titulo: 'Nuevo doctor',
       desc: 'Alta de especialista',
       icon: 'medical_services',
       ruta: '/dashboard/doctores/nuevo',
       color: 'bg-emerald-600',
+      roles: ['ADMINISTRADOR'],
     },
     {
       titulo: 'Especialidades',
@@ -56,10 +79,33 @@ export class InicioComponent implements OnInit {
       icon: 'local_hospital',
       ruta: '/dashboard/especialidades',
       color: 'bg-cyan-700',
+      roles: ['ADMINISTRADOR'],
     },
   ];
 
+  get accesosVisibles() {
+    const rol = this.authService.getRole();
+    return this.accesosRapidos.filter((a) => !a.roles || a.roles.includes(rol));
+  }
+
   ngOnInit(): void {
+    this.esRecepcionista = this.authService.getRole() === 'RECEPCIONISTA';
+
+    if (this.esRecepcionista) {
+      this.citaService.mias().subscribe({
+        next: (res) => {
+          const data = res.object;
+          const citas: any[] = Array.isArray(data) ? data : data ? [data] : [];
+          this.totalCitas.set(citas.length);
+          const hoy = new Date().toISOString().slice(0, 10);
+          this.citasHoy.set(citas.filter((c) => c.diaConsulta === hoy).length);
+          this.cargando.set(false);
+        },
+        error: () => this.cargando.set(false),
+      });
+      return;
+    }
+
     forkJoin({
       pacientes: this.pacienteService.listarPacientes(),
       doctores: this.doctorService.listar(),

@@ -104,6 +104,7 @@ export class DashboardLayoutComponent implements OnInit {
       sub: [
         { label: 'Mis citas', route: '/dashboard/citas', roles: ['ADMINISTRADOR', 'DOCTOR', 'PACIENTE'] },
         { label: 'Agendar cita', route: '/dashboard/citas/nuevo', roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
+        { label: 'Historial de citas', route: '/dashboard/historial-citas', roles: ['RECEPCIONISTA'] },
         { label: 'Citas por doctor', route: '/dashboard/citas/por-doctor', roles: ['ADMINISTRADOR', 'DOCTOR'] },
       ],
     },

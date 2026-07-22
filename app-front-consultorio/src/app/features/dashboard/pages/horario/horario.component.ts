@@ -5,6 +5,8 @@ import { HorarioService } from '../../../clinica/horarios/services/horario.servi
 import { Agenda, Disponibilidad, nombreDia } from '../../../clinica/horarios/models/horario.model';
 import { CatalogoService, ResumenItem } from '../../../../core/services/catalogo.service';
 import { ToastService } from '../../../../core/services/toast.service';
+import { AuthService } from '../../../auth/services/auth.service';
+import { RecepcionistaService } from '../../../clinica/recepcionistas/services/recepcionista.service';
 
 interface CeldaEstado {
   estado: 'cita' | 'disponible' | 'libre';
@@ -21,6 +23,10 @@ export class HorarioComponent {
   private horarioService = inject(HorarioService);
   private catalogoService = inject(CatalogoService);
   private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  private recepcionistaService = inject(RecepcionistaService);
+
+  esRecepcionista = false;
 
   fecha = signal<string>('');
   horaInicio = signal<string>('');
@@ -42,8 +48,19 @@ export class HorarioComponent {
   horas = Array.from({ length: 14 }, (_, i) => i + 7);
 
   constructor() {
-    this.catalogoService.doctoresResumen().subscribe({ next: (d) => this.doctores.set(d) });
-    this.catalogoService.recepcionistasResumen().subscribe({ next: (r) => this.recepcionistas.set(r) });
+    this.esRecepcionista = this.authService.getRole() === 'RECEPCIONISTA';
+
+    if (this.esRecepcionista) {
+      this.recepcionistaService.actual().subscribe({
+        next: (r) => {
+          this.tipo.set('RECEPCIONISTA');
+          this.personaId.set(r.id);
+        },
+      });
+    } else {
+      this.catalogoService.doctoresResumen().subscribe({ next: (d) => this.doctores.set(d) });
+      this.catalogoService.recepcionistasResumen().subscribe({ next: (r) => this.recepcionistas.set(r) });
+    }
 
     effect(() => {
       const id = this.personaId();

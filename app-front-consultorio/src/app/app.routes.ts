@@ -74,6 +74,15 @@ export const routes: Routes = [
         ],
       },
       {
+        path: 'historial-citas',
+        canActivate: [authGuard],
+        data: { roles: ['RECEPCIONISTA'] },
+        loadComponent: () =>
+          import('./features/clinica/citas/pages/historial-citas/historial-citas.component').then(
+            (m) => m.HistorialCitasComponent,
+          ),
+      },
+      {
         path: 'pacientes',
         children: [
           {

@@ -36,6 +36,12 @@ export class RecepcionistaService {
       .pipe(map((r) => r.object));
   }
 
+  actual(): Observable<RecepcionistaLeer> {
+    return this.http
+      .get<MensajeResponse<RecepcionistaLeer>>(`${this.baseUrl}/actual`)
+      .pipe(map((r) => r.object));
+  }
+
   crear(dto: RecepcionistaCrearDTO): Observable<unknown> {
     return this.http
       .post<MensajeResponse>(this.baseUrl, dto)

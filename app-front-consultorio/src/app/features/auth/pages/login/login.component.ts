@@ -60,7 +60,9 @@ export class LoginComponent {
       error: (err: HttpErrorResponse) => {
         this.cargando.set(false);
 
-        if (err.status === 401 || err.status === 403) {
+        if (err.error?.mensaje) {
+          this.serverError.set(err.error.mensaje);
+        } else if (err.status === 401 || err.status === 403) {
           this.serverError.set('Usuario o contraseña incorrectos.');
         } else if (err.status === 0) {
           this.serverError.set('No hay conexión con el servidor del backend.');
