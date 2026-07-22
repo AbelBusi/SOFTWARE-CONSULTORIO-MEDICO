@@ -50,6 +50,29 @@ public class UsuarioController {
     }
 
 
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "Obtener el detalle de un usuario",
+            description = "Devuelve la información completa del usuario (persona, rol, estado y tipo) envuelta en un MensajeResponse."
+    )
+    @ApiResponse(responseCode = "200", description = "Usuario encontrado con éxito")
+    @ApiResponse(responseCode = "404", description = "Usuario no encontrado")
+    public ResponseEntity<MensajeResponse> leerUsuarioPorId(@PathVariable Integer id) {
+        return usuarioServicio.obtenerDetallePorId(id)
+                .map(dto -> ResponseEntity.ok(
+                        MensajeResponse.builder()
+                                .mensaje("Detalle del usuario obtenido correctamente.")
+                                .object(dto)
+                                .build()
+                ))
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                        MensajeResponse.builder()
+                                .mensaje("El usuario con el ID proporcionado no existe.")
+                                .object(null)
+                                .build()
+                ));
+    }
+
     @Operation(summary = "Listar usuarios")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Lista de usuarios obtenida correctamente")

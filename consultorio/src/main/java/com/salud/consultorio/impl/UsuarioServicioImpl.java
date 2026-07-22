@@ -1,5 +1,6 @@
 package com.salud.consultorio.impl;
 
+import com.salud.consultorio.dto.usuario.UsuarioDetalleLeerDTO;
 import com.salud.consultorio.dto.usuario.UsuarioListaDTO;
 import com.salud.consultorio.dto.usuario.UsuarioRespuestaDTO;
 import com.salud.consultorio.dto.usuario.UsuarioRolDTO;
@@ -40,6 +41,12 @@ public class UsuarioServicioImpl implements IUsuarioServicio {
     @Override
     public Optional<UsuarioRolDTO> obtenerInformacionUsuarioYRol(Integer id) {
         return usuarioRepositorio.obtenerUsuarioYRolPorId(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<UsuarioDetalleLeerDTO> obtenerDetallePorId(Integer id) {
+        return usuarioRepositorio.obtenerDetallePorId(id);
     }
 
     @Transactional(readOnly = true)
