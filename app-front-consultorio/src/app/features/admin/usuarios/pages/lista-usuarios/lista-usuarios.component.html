@@ -57,6 +57,7 @@
     [loading]="cargando()"
     [sortField]="sortField()"
     (sort)="handleSort($event)"
+    (rowClick)="abrirDetalle($event)"
     (deleteAction)="desactivar($event)">
 
     <ng-template #customColumn let-row let-field="field">
@@ -101,3 +102,10 @@
     </ng-template>
   </app-custom-table>
 </div>
+
+@if (isDetalleOpen() && selectedUsuarioId()) {
+  <app-detalle-usuario-modal
+    [usuarioId]="selectedUsuarioId()!"
+    (close)="cerrarDetalle()">
+  </app-detalle-usuario-modal>
+}

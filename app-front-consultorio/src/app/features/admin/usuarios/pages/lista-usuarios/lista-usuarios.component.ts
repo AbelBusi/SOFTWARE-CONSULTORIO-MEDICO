@@ -6,11 +6,12 @@ import { UsuarioLeer } from '../../models/usuario.model';
 import { CustomTableComponent } from '../../../../../shared/components/custom-table/custom-table.component';
 import { TableColumn } from '../../../../../shared/components/custom-table/table-column.interface';
 import { ToastService } from '../../../../../core/services/toast.service';
+import { DetalleUsuarioModalComponent } from '../../components/detalle-usuario-modal/detalle-usuario-modal.component';
 
 @Component({
   selector: 'app-lista-usuarios',
   standalone: true,
-  imports: [CommonModule, FormsModule, CustomTableComponent],
+  imports: [CommonModule, FormsModule, CustomTableComponent, DetalleUsuarioModalComponent],
   templateUrl: './lista-usuarios.component.html',
 })
 export class ListaUsuariosComponent implements OnInit {
@@ -23,6 +24,9 @@ export class ListaUsuariosComponent implements OnInit {
   filtroTipo = signal<string>('');
   sortField = signal<string>('usuario');
   sortAsc = signal<boolean>(true);
+
+  selectedUsuarioId = signal<number | null>(null);
+  isDetalleOpen = signal<boolean>(false);
 
   columnas: TableColumn<UsuarioLeer>[] = [
     { header: 'Usuario', field: 'usuario', sortable: true, type: 'custom' },
@@ -90,6 +94,18 @@ export class ListaUsuariosComponent implements OnInit {
       this.sortField.set(field);
       this.sortAsc.set(true);
     }
+  }
+
+  abrirDetalle(row: UsuarioLeer): void {
+    if (row && row.id) {
+      this.selectedUsuarioId.set(row.id);
+      this.isDetalleOpen.set(true);
+    }
+  }
+
+  cerrarDetalle(): void {
+    this.isDetalleOpen.set(false);
+    this.selectedUsuarioId.set(null);
   }
 
   tipoClase(tipo: string): string {

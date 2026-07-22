@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../../../../environments/environment';
 import { MensajeResponse } from '../../../../shared/models/mensaje-response.model';
-import { UsuarioLeer, UsuarioCrearDTO } from '../models/usuario.model';
+import { UsuarioLeer, UsuarioCrearDTO, UsuarioDetalle } from '../models/usuario.model';
 import { AuthService } from '../../../auth/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
@@ -19,6 +19,12 @@ export class UsuarioService {
     return this.http
       .get<MensajeResponse<UsuarioLeer[]>>(this.baseUrl, { params })
       .pipe(map((r) => r.object ?? []));
+  }
+
+  obtenerPorId(id: number): Observable<UsuarioDetalle> {
+    return this.http
+      .get<MensajeResponse<UsuarioDetalle>>(`${this.baseUrl}/${id}`)
+      .pipe(map((r) => r.object));
   }
 
   crear(dto: UsuarioCrearDTO): Observable<unknown> {

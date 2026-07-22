@@ -30,3 +30,24 @@ export interface UsuarioCrearDTO {
   claveAcceso: string;
   estado: number;
 }
+
+export interface PersonaDetalle {
+  id: number;
+  dni: string;
+  nombre: string;
+  apellidos: string;
+  fechaNacimiento: string;
+  genero: string;
+  telefono: string;
+  nacionalidad: string;
+  correo: string;
+}
+
+export interface UsuarioDetalle {
+  id: number;
+  persona: PersonaDetalle;
+  usuario: string;
+  nombreRol: string;
+  estado: number;
+  tipo: string;
+}
