@@ -10,6 +10,13 @@ export interface PersonaRef {
   id: number;
 }
 
+export interface PersonaSinCuenta {
+  id: number;
+  dni: string;
+  nombre: string;
+  apellidos: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class PersonaService {
   private readonly http = inject(HttpClient);
@@ -18,5 +25,11 @@ export class PersonaService {
     return this.http
       .post<MensajeResponse<PersonaRef>>(`${environment.apiUrl}/personas`, dto)
       .pipe(map((r) => r.object));
+  }
+
+  sinCuenta(): Observable<PersonaSinCuenta[]> {
+    return this.http
+      .get<MensajeResponse<PersonaSinCuenta[]>>(`${environment.apiUrl}/personas/sin-cuenta`)
+      .pipe(map((r) => r.object ?? []));
   }
 }

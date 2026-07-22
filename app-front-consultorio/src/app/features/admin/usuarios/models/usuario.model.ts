@@ -1,5 +1,3 @@
-import { PersonaCrearDTO } from '../../../clinica/pacientes/interface/paciente.interface';
-
 export interface PersonaRef {
   id: number;
 }
@@ -17,23 +15,16 @@ export interface Rol {
 
 export interface UsuarioLeer {
   id: number;
-  persona: PersonaRef;
-  rol: RolRef;
+  nombre: string;
+  correo: string;
   usuario: string;
+  nombreRol: string;
   estado: number;
 }
 
 export interface UsuarioCrearDTO {
   persona: PersonaRef;
   rol: RolRef;
-  usuario: string;
-  claveAcceso: string;
-  estado: number;
-}
-
-export interface UsuarioCrearCompleto {
-  persona: PersonaCrearDTO;
-  rolId: number;
   usuario: string;
   claveAcceso: string;
   estado: number;
