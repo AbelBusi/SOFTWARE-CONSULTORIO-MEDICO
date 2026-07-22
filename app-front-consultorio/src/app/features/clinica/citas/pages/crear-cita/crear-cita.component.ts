@@ -4,25 +4,29 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Subject, takeUntil } from 'rxjs';
 import { CitaService } from '../../services/cita.service';
 import { PacienteService } from '../../../pacientes/services/paciente.service';
+import { DoctorService } from '../../../doctores/services/doctor.service';
 import { EspecialidadService } from '../../../especialidad/services/especialidad.service';
 import { HorarioService } from '../../../horarios/services/horario.service';
 import { Disponibilidad } from '../../../horarios/models/horario.model';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { PacienteResumenDTO } from '../../../pacientes/interface/paciente.interface';
+import { DoctorEspecialidadResumen } from '../../../doctores/interface/doctor.interface';
 import { NombreEspecialidadDTO } from '../../../especialidad/interface/especialidad.interface';
 import { CitaMedicaCrearDTO } from '../../interface/cita.interface';
 import { PagoModalComponent } from '../../components/pago-modal/pago-modal.component';
+import { CitaCalendarioModalComponent } from '../../components/cita-calendario-modal/cita-calendario-modal.component';
 
 @Component({
   selector: 'app-crear-cita',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PagoModalComponent],
+  imports: [CommonModule, ReactiveFormsModule, PagoModalComponent, CitaCalendarioModalComponent],
   templateUrl: './crear-cita.component.html',
 })
 export class CrearCitaComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly citaService = inject(CitaService);
   private readonly pacienteService = inject(PacienteService);
+  private readonly doctorService = inject(DoctorService);
   private readonly especialidadService = inject(EspecialidadService);
   private readonly horarioService = inject(HorarioService);
   private readonly toast = inject(ToastService);
@@ -33,19 +37,17 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   isSaving = false;
 
   showModalPago = signal<boolean>(false);
+  showCalendario = signal<boolean>(false);
   metodoSeleccionado = signal<string>('efectivo');
 
   pacientes: PacienteResumenDTO[] = [];
   recepcionistas: Disponibilidad[] = [];
   especialidades: NombreEspecialidadDTO[] = [];
-  doctores: Disponibilidad[] = [];
-
-  readonly today: string = new Date().toISOString().split('T')[0];
+  doctores: DoctorEspecialidadResumen[] = [];
 
   ngOnInit(): void {
     this.initForm();
     this.cargarDatosIniciales();
-    this.escucharDisponibilidad();
   }
 
   ngOnDestroy(): void {
@@ -93,25 +95,87 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
       });
   }
 
-  private escucharDisponibilidad(): void {
-    ['fecha', 'horaInicio', 'horaSalida'].forEach((campo) => {
-      this.form
-        .get(campo)!
-        .valueChanges.pipe(takeUntil(this.destroy$))
-        .subscribe(() => this.actualizarDisponibilidad());
-    });
+  onEspecialidadChange(event: Event): void {
+    const especialidadId = (event.target as HTMLSelectElement).value;
+    this.doctores = [];
+    this.form.get('doctorId')!.patchValue('', { emitEvent: false });
+    this.limpiarFechaHora();
+
+    if (especialidadId) {
+      this.form.get('doctorId')!.enable({ emitEvent: false });
+      this.doctorService
+        .listarPorEspecialidad(Number(especialidadId))
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res: any) => {
+            this.doctores = [...(Array.isArray(res) ? res : res?.object || [])];
+            this.cdr.markForCheck();
+            if (this.doctores.length === 0) {
+              this.toast.info('No hay doctores registrados para esta especialidad');
+            }
+          },
+          error: () => this.toast.error('Error al cargar los doctores de la especialidad'),
+        });
+    } else {
+      this.form.get('doctorId')!.disable({ emitEvent: false });
+    }
   }
 
-  private actualizarDisponibilidad(): void {
-    const { fecha, horaInicio, horaSalida, especialidadId } = this.form.getRawValue();
+  onDoctorChange(): void {
+    this.limpiarFechaHora();
+  }
 
-    if (!fecha || !horaInicio || !horaSalida || horaInicio >= horaSalida) {
-      this.recepcionistas = [];
-      this.doctores = [];
-      this.cdr.markForCheck();
+  private limpiarFechaHora(): void {
+    this.form.patchValue({ fecha: '', horaInicio: '', horaSalida: '' }, { emitEvent: false });
+    this.recepcionistas = [];
+    this.form.get('recepcionistaId')!.patchValue('', { emitEvent: false });
+  }
+
+  get doctorSeleccionadoNombre(): string {
+    const id = Number(this.form?.get('doctorId')?.value);
+    return this.doctores.find((d) => d.id === id)?.nombres ?? '';
+  }
+
+  get especialidadSeleccionadaNombre(): string {
+    const id = Number(this.form?.get('especialidadId')?.value);
+    return this.especialidades.find((e) => e.idEspecialidad === id)?.nombreEspecialidad ?? '';
+  }
+
+  get doctorIdActual(): number {
+    return Number(this.form?.get('doctorId')?.value) || 0;
+  }
+
+  get fechaSeleccionada(): string {
+    return this.form?.get('fecha')?.value || '';
+  }
+
+  get horaInicioSeleccionada(): string {
+    return this.form?.get('horaInicio')?.value || '';
+  }
+
+  get horaSalidaSeleccionada(): string {
+    return this.form?.get('horaSalida')?.value || '';
+  }
+
+  abrirCalendario(): void {
+    if (!this.doctorIdActual) {
+      this.toast.warning('Seleccione primero una especialidad y un doctor.');
       return;
     }
+    this.showCalendario.set(true);
+  }
 
+  onFechaHoraSeleccionada(sel: { fecha: string; horaInicio: string; horaFin: string }): void {
+    this.form.patchValue(
+      { fecha: sel.fecha, horaInicio: sel.horaInicio, horaSalida: sel.horaFin },
+      { emitEvent: false },
+    );
+    this.actualizarRecepcionistas();
+  }
+
+  private actualizarRecepcionistas(): void {
+    const { fecha, horaInicio, horaSalida } = this.form.getRawValue();
+    if (!fecha || !horaInicio || !horaSalida) return;
     this.horarioService
       .recepcionistasDisponibles(fecha, horaInicio, horaSalida)
       .pipe(takeUntil(this.destroy$))
@@ -125,38 +189,6 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
         },
         error: () => this.toast.error('Error al cargar los recepcionistas disponibles'),
       });
-
-    if (especialidadId) {
-      this.horarioService
-        .doctoresDisponibles(fecha, horaInicio, horaSalida, Number(especialidadId))
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (res) => {
-            this.doctores = res;
-            if (!res.some((d) => d.id === Number(this.form.get('doctorId')!.value))) {
-              this.form.get('doctorId')!.patchValue('', { emitEvent: false });
-            }
-            this.cdr.markForCheck();
-          },
-          error: () => this.toast.error('Error al cargar los doctores disponibles'),
-        });
-    } else {
-      this.doctores = [];
-      this.cdr.markForCheck();
-    }
-  }
-
-  onEspecialidadChange(event: Event): void {
-    const especialidadId = (event.target as HTMLSelectElement).value;
-    this.doctores = [];
-    this.form.get('doctorId')!.patchValue('', { emitEvent: false });
-
-    if (especialidadId) {
-      this.form.get('doctorId')!.enable({ emitEvent: false });
-      this.actualizarDisponibilidad();
-    } else {
-      this.form.get('doctorId')!.disable({ emitEvent: false });
-    }
   }
 
   isInvalid(campo: string): boolean {

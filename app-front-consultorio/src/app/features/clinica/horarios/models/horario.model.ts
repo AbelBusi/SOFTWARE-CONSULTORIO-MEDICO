@@ -32,6 +32,24 @@ export interface Disponibilidad {
   nombre: string;
 }
 
+export interface AgendaBloque {
+  diaSemana: number;
+  horaInicio: string;
+  horaFin: string;
+}
+
+export interface AgendaCita {
+  fecha: string;
+  horaInicio: string;
+  horaFin: string;
+  descripcion: string;
+}
+
+export interface Agenda {
+  bloques: AgendaBloque[];
+  citas: AgendaCita[];
+}
+
 export const DIAS_SEMANA: { valor: number; nombre: string }[] = [
   { valor: 1, nombre: 'Lunes' },
   { valor: 2, nombre: 'Martes' },

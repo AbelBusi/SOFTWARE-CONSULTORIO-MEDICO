@@ -9,6 +9,7 @@ import {
   HorarioCrearDTO,
   HorarioActualizarDTO,
   Disponibilidad,
+  Agenda,
 } from '../models/horario.model';
 
 @Injectable({ providedIn: 'root' })
@@ -64,5 +65,21 @@ export class HorarioService {
         params,
       })
       .pipe(map((r) => r.object ?? []));
+  }
+
+  agenda(
+    tipo: 'DOCTOR' | 'RECEPCIONISTA',
+    referenciaId: number,
+    desde: string,
+    hasta: string,
+  ): Observable<Agenda> {
+    const params = new HttpParams()
+      .set('tipo', tipo)
+      .set('referenciaId', String(referenciaId))
+      .set('desde', desde)
+      .set('hasta', hasta);
+    return this.http
+      .get<MensajeResponse<Agenda>>(`${this.baseUrl}/agenda`, { params })
+      .pipe(map((r) => r.object ?? { bloques: [], citas: [] }));
   }
 }
