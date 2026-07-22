@@ -76,6 +76,19 @@ export class AuthService {
     }
   }
 
+  getRole(): string {
+    const token = this.getAccessToken();
+    if (!token) return '';
+
+    try {
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = JSON.parse(atob(payloadBase64));
+      return (payloadJson.role || '').toUpperCase();
+    } catch (e) {
+      return '';
+    }
+  }
+
   logout(): void {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');

@@ -10,13 +10,13 @@ import { environment } from '../../../environments/environment';
 interface SubNavItem {
   label: string;
   route: string;
-  permiso?: string;
+  roles?: string[];
 }
 
 interface NavItem {
   label: string;
   icon: string;
-  permiso?: string;
+  roles?: string[];
   sub?: SubNavItem[];
 }
 
@@ -93,97 +93,79 @@ export class DashboardLayoutComponent implements OnInit {
       icon: 'dashboard',
       sub: [
         { label: 'Resumen', route: '/dashboard/inicio' },
-        { label: 'Horario', route: '/dashboard/horario' },
-        { label: 'Gestión de horarios', route: '/dashboard/horarios' },
+        { label: 'Mi horario', route: '/dashboard/horario' },
+        { label: 'Gestión de horarios', route: '/dashboard/horarios', roles: ['ADMINISTRADOR'] },
       ],
     },
     {
       label: 'Citas',
       icon: 'calendar_today',
+      roles: ['ADMINISTRADOR', 'DOCTOR', 'RECEPCIONISTA', 'PACIENTE'],
       sub: [
-        { label: 'Ver citas', route: '/dashboard/citas' },
-        { label: 'Nueva cita', route: '/dashboard/citas/nuevo', permiso:'CITA_CREATE' },
-        { label: 'Citas por doctor', route: '/dashboard/citas/por-doctor', permiso: 'CITA_READ' },
+        { label: 'Mis citas', route: '/dashboard/citas', roles: ['ADMINISTRADOR', 'DOCTOR', 'PACIENTE'] },
+        { label: 'Agendar cita', route: '/dashboard/citas/nuevo', roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
+        { label: 'Citas por doctor', route: '/dashboard/citas/por-doctor', roles: ['ADMINISTRADOR', 'DOCTOR'] },
       ],
     },
     {
       label: 'Pacientes',
-      permiso: 'PACIENTE_GESTIONAR',
+      roles: ['ADMINISTRADOR', 'DOCTOR'],
       icon: 'groups',
       sub: [
-        { label: 'Ver pacientes', route: '/dashboard/pacientes', permiso: 'PACIENTE_READ' },
-        {
-          label: 'Nuevo paciente',
-          route: '/dashboard/pacientes/nuevo',
-          permiso: 'PACIENTE_CREATE',
-        },
+        { label: 'Ver pacientes', route: '/dashboard/pacientes', roles: ['ADMINISTRADOR', 'DOCTOR'] },
+        { label: 'Nuevo paciente', route: '/dashboard/pacientes/nuevo', roles: ['ADMINISTRADOR'] },
       ],
     },
     {
       label: 'Doctores',
-      permiso: 'DOCTOR_GESTIONAR',
+      roles: ['ADMINISTRADOR'],
       icon: 'medical_services',
       sub: [
-        { label: 'Ver doctores', route: '/dashboard/doctores', permiso: 'DOCTOR_READ' },
-        { label: 'Agregar doctor', route: '/dashboard/doctores/nuevo', permiso: 'DOCTOR_CREATE' },
+        { label: 'Ver doctores', route: '/dashboard/doctores', roles: ['ADMINISTRADOR'] },
+        { label: 'Agregar doctor', route: '/dashboard/doctores/nuevo', roles: ['ADMINISTRADOR'] },
       ],
     },
     {
       label: 'Especialidades',
-      permiso: 'ESPECIALIDAD_GESTIONAR',
+      roles: ['ADMINISTRADOR'],
       icon: 'local_hospital',
       sub: [
-        {
-          label: 'Ver especialidades',
-          route: '/dashboard/especialidades',
-          permiso: 'ESPECIALIDAD_READ',
-        },
+        { label: 'Ver especialidades', route: '/dashboard/especialidades', roles: ['ADMINISTRADOR'] },
       ],
     },
     {
       label: 'Recepcionistas',
-      permiso: 'RECEPCIONISTA_GESTIONAR',
+      roles: ['ADMINISTRADOR'],
       icon: 'support_agent',
       sub: [
-        {
-          label: 'Ver recepcionistas',
-          route: '/dashboard/recepcionistas',
-          permiso: 'RECEPCIONISTA_READ',
-        },
-        {
-          label: 'Nuevo recepcionista',
-          route: '/dashboard/recepcionistas/nuevo',
-          permiso: 'RECEPCIONISTA_CREATE',
-        },
+        { label: 'Ver recepcionistas', route: '/dashboard/recepcionistas', roles: ['ADMINISTRADOR'] },
+        { label: 'Nuevo recepcionista', route: '/dashboard/recepcionistas/nuevo', roles: ['ADMINISTRADOR'] },
       ],
     },
     {
       label: 'Usuarios',
-      permiso: 'USUARIO_GESTIONAR',
+      roles: ['ADMINISTRADOR'],
       icon: 'manage_accounts',
       sub: [
-        { label: 'Ver usuarios', route: '/dashboard/usuarios', permiso: 'USUARIO_READ' },
-        { label: 'Nuevo usuario', route: '/dashboard/usuarios/nuevo', permiso: 'USUARIO_CREATE' },
-        { label: 'Roles', route: '/dashboard/roles', permiso: 'ROLES_CRUD' },
+        { label: 'Ver usuarios', route: '/dashboard/usuarios', roles: ['ADMINISTRADOR'] },
+        { label: 'Nuevo usuario', route: '/dashboard/usuarios/nuevo', roles: ['ADMINISTRADOR'] },
+        { label: 'Roles', route: '/dashboard/roles', roles: ['ADMINISTRADOR'] },
       ],
     },
   ];
 
   navItems = computed(() => {
-    const permisosUsuario = this.authService.getAuthorities();
+    const rol = this.authService.getRole();
 
     return this.menuBase
-      .filter((item) => !item.permiso || permisosUsuario.includes(item.permiso))
-      .map((item) => {
-        if (item.sub) {
-          return {
-            ...item,
-            sub: item.sub.filter(
-              (subItem) => !subItem.permiso || permisosUsuario.includes(subItem.permiso),
-            ),
-          };
-        }
-        return item;
+      .map((item) => ({
+        ...item,
+        sub: item.sub?.filter((subItem) => !subItem.roles || subItem.roles.includes(rol)),
+      }))
+      .filter((item) => {
+        if (item.roles && !item.roles.includes(rol)) return false;
+        if (item.sub && item.sub.length === 0) return false;
+        return true;
       });
   });
 

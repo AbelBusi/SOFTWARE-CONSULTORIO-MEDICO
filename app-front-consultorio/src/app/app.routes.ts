@@ -34,6 +34,8 @@ export const routes: Routes = [
       },
       {
         path: 'horarios',
+        canActivate: [authGuard],
+        data: { roles: ['ADMINISTRADOR'] },
         loadComponent: () =>
           import('./features/clinica/horarios/pages/lista-horarios/lista-horarios.component').then(
             (m) => m.ListaHorariosComponent,
@@ -44,6 +46,8 @@ export const routes: Routes = [
         children: [
           {
             path: '',
+            canActivate: [authGuard],
+            data: { roles: ['ADMINISTRADOR', 'DOCTOR', 'PACIENTE'] },
             loadComponent: () =>
               import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
                 (m) => m.ListaCitaComponent,
@@ -52,7 +56,7 @@ export const routes: Routes = [
           {
             path: 'nuevo',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'CITA_CREATE' },
+            data: { roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
             loadComponent: () =>
               import('./features/clinica/citas/pages/crear-cita/crear-cita.component').then(
                 (m) => m.CrearCitaComponent,
@@ -61,7 +65,7 @@ export const routes: Routes = [
           {
             path: 'por-doctor',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'CITA_READ' },
+            data: { roles: ['ADMINISTRADOR', 'DOCTOR'] },
             loadComponent: () =>
               import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
                 (m) => m.ListaCitaComponent,
@@ -74,6 +78,8 @@ export const routes: Routes = [
         children: [
           {
             path: '',
+            canActivate: [authGuard],
+            data: { roles: ['ADMINISTRADOR', 'DOCTOR'] },
             loadComponent: () =>
               import('./features/clinica/pacientes/pages/lista-pacientes/lista-pacientes.component').then(
                 (m) => m.ListaPacientesComponent,
@@ -81,6 +87,8 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
+            canActivate: [authGuard],
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/pacientes/pages/crear-paciente/crear-paciente.component').then(
                 (m) => m.CrearPacienteComponent,
@@ -94,7 +102,7 @@ export const routes: Routes = [
           {
             path: '',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'DOCTOR_READ' },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/doctores/pages/lista-doctores/lista-doctores.component').then(
                 (m) => m.ListaDoctoresComponent,
@@ -103,7 +111,7 @@ export const routes: Routes = [
           {
             path: 'nuevo',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'DOCTOR_CREATE' },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/doctores/pages/crear-doctor/crear-doctor.component').then(
                 (m) => m.CrearDoctorComponent,
@@ -114,7 +122,7 @@ export const routes: Routes = [
       {
         path: 'especialidades',
         canActivate: [authGuard],
-        data: { permisoRequerido: 'ESPECIALIDAD_GESTIONAR' },
+        data: { roles: ['ADMINISTRADOR'] },
         loadComponent: () =>
           import('./features/clinica/especialidad/pages/lista-especialidad/lista-especialidad.component').then(
             (m) => m.ListaEspecialidadComponent,
@@ -126,7 +134,7 @@ export const routes: Routes = [
           {
             path: '',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'RECEPCIONISTA_READ' },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/recepcionistas/pages/lista-recepcionistas/lista-recepcionistas.component').then(
                 (m) => m.ListaRecepcionistasComponent,
@@ -135,7 +143,7 @@ export const routes: Routes = [
           {
             path: 'nuevo',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'RECEPCIONISTA_CREATE' },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/recepcionistas/pages/crear-recepcionista/crear-recepcionista.component').then(
                 (m) => m.CrearRecepcionistaComponent,
@@ -146,7 +154,7 @@ export const routes: Routes = [
       {
         path: 'roles',
         canActivate: [authGuard],
-        data: { permisoRequerido: 'ROLES_CRUD' },
+        data: { roles: ['ADMINISTRADOR'] },
         loadComponent: () =>
           import('./features/admin/roles/pages/lista-roles/lista-roles.component').then(
             (m) => m.ListaRolesComponent,
@@ -158,7 +166,7 @@ export const routes: Routes = [
           {
             path: '',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'USUARIO_READ' },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/admin/usuarios/pages/lista-usuarios/lista-usuarios.component').then(
                 (m) => m.ListaUsuariosComponent,
@@ -167,7 +175,7 @@ export const routes: Routes = [
           {
             path: 'nuevo',
             canActivate: [authGuard],
-            data: { permisoRequerido: 'USUARIO_CREATE' },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/admin/usuarios/pages/crear-usuario/crear-usuario.component').then(
                 (m) => m.CrearUsuarioComponent,

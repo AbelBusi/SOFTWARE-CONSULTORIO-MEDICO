@@ -11,15 +11,13 @@ export const authGuard: CanActivateFn = (route, state) => {
     return false;
   }
 
-  const requiredPermission = route.data['permisoRequerido'];
+  const rolesPermitidos = route.data['roles'] as string[] | undefined;
 
-  if (!requiredPermission) {
+  if (!rolesPermitidos || rolesPermitidos.length === 0) {
     return true;
   }
 
-  const userAuthorities = authService.getAuthorities();
-
-  if (userAuthorities.includes(requiredPermission)) {
+  if (rolesPermitidos.includes(authService.getRole())) {
     return true;
   }
 

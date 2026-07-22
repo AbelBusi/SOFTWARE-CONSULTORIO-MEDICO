@@ -52,13 +52,13 @@ export class CatalogoService {
 
   recepcionistasResumen(): Observable<ResumenItem[]> {
     return this.http
-      .get<MensajeResponse<{ idRecepcionista: number; nombreRecepcionista: string }[]>>(
+      .get<MensajeResponse<{ id: number; nombreRecepcionista: string }[]>>(
         `${environment.apiUrl}/recepcionistas/resumen`,
       )
       .pipe(
         map((r) =>
           (r.object ?? []).map((rec) => ({
-            id: rec.idRecepcionista,
+            id: rec.id,
             nombre: rec.nombreRecepcionista,
           })),
         ),
