@@ -8,6 +8,7 @@ import { ToastService } from '../../../../core/services/toast.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RecepcionistaService } from '../../../clinica/recepcionistas/services/recepcionista.service';
 import { DoctorPortalService } from '../../../doctor/services/doctor-portal.service';
+import { PacientePortalService } from '../../../paciente/services/paciente-portal.service';
 
 interface CeldaEstado {
   estado: 'cita' | 'disponible' | 'libre';
@@ -27,9 +28,11 @@ export class HorarioComponent {
   private authService = inject(AuthService);
   private recepcionistaService = inject(RecepcionistaService);
   private doctorPortalService = inject(DoctorPortalService);
+  private pacientePortalService = inject(PacientePortalService);
 
   esRecepcionista = false;
   esDoctor = false;
+  esPaciente = false;
   esTrabajador = false;
 
   fecha = signal<string>('');
@@ -55,7 +58,8 @@ export class HorarioComponent {
     const rol = this.authService.getRole();
     this.esRecepcionista = rol === 'RECEPCIONISTA';
     this.esDoctor = rol === 'DOCTOR';
-    this.esTrabajador = this.esRecepcionista || this.esDoctor;
+    this.esPaciente = rol === 'PACIENTE';
+    this.esTrabajador = this.esRecepcionista || this.esDoctor || this.esPaciente;
 
     if (this.esRecepcionista) {
       this.recepcionistaService.actual().subscribe({
@@ -71,6 +75,20 @@ export class HorarioComponent {
           this.personaId.set(d.id);
         },
       });
+    } else if (this.esPaciente) {
+      this.pacientePortalService.misCitas().subscribe({
+        next: (citas) => {
+          this.agenda.set({
+            bloques: [],
+            citas: citas.map((c) => ({
+              fecha: c.fecha,
+              horaInicio: c.horaInicio,
+              horaFin: c.horaSalida,
+              descripcion: `${c.doctor} · ${c.especialidad}`,
+            })),
+          });
+        },
+      });
     } else {
       this.catalogoService.doctoresResumen().subscribe({ next: (d) => this.doctores.set(d) });
       this.catalogoService.recepcionistasResumen().subscribe({ next: (r) => this.recepcionistas.set(r) });
@@ -80,6 +98,7 @@ export class HorarioComponent {
       const id = this.personaId();
       const tipo = this.tipo();
       const dias = this.diasSemana();
+      if (this.esPaciente) return;
       if (id && dias.length) {
         this.horarioService.agenda(tipo, id, dias[0].fecha, dias[dias.length - 1].fecha).subscribe({
           next: (a) => this.agenda.set(a),

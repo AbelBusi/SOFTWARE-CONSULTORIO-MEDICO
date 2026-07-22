@@ -47,7 +47,7 @@ export const routes: Routes = [
           {
             path: '',
             canActivate: [authGuard],
-            data: { roles: ['ADMINISTRADOR', 'PACIENTE'] },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
                 (m) => m.ListaCitaComponent,
@@ -98,6 +98,24 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/doctor/pages/mis-pacientes/mis-pacientes.component').then(
             (m) => m.MisPacientesComponent,
+          ),
+      },
+      {
+        path: 'mis-citas-paciente',
+        canActivate: [authGuard],
+        data: { roles: ['PACIENTE'] },
+        loadComponent: () =>
+          import('./features/paciente/pages/mis-citas/mis-citas.component').then(
+            (m) => m.MisCitasPacienteComponent,
+          ),
+      },
+      {
+        path: 'mi-historia',
+        canActivate: [authGuard],
+        data: { roles: ['PACIENTE'] },
+        loadComponent: () =>
+          import('./features/paciente/pages/mi-historia/mi-historia.component').then(
+            (m) => m.MiHistoriaComponent,
           ),
       },
       {

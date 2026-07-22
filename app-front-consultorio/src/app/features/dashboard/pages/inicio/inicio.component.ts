@@ -10,6 +10,8 @@ import { CitaMedica } from '../../../clinica/citas/models/cita.model';
 import { CitaMedicaLeer } from '../../../clinica/citas/interface/cita.interface';
 import { AuthService } from '../../../auth/services/auth.service';
 import { DoctorPortalService } from '../../../doctor/services/doctor-portal.service';
+import { PacientePortalService } from '../../../paciente/services/paciente-portal.service';
+import { PacienteCita } from '../../../paciente/models/paciente-portal.model';
 import { ComunicadoService, Comunicado } from '../../../../core/services/comunicado.service';
 
 @Component({
@@ -25,11 +27,14 @@ export class InicioComponent implements OnInit {
   private especialidadService = inject(EspecialidadService);
   private authService = inject(AuthService);
   private doctorPortalService = inject(DoctorPortalService);
+  private pacientePortalService = inject(PacientePortalService);
   private comunicadoService = inject(ComunicadoService);
 
   esRecepcionista = false;
   esDoctor = false;
   esAdmin = false;
+  esPaciente = false;
+  proximaCita = signal<PacienteCita | null>(null);
 
   cargando = signal(true);
   totalPacientes = signal(0);
@@ -78,7 +83,23 @@ export class InicioComponent implements OnInit {
       icon: 'schedule',
       ruta: '/dashboard/horario',
       color: 'bg-sky-600',
-      roles: ['RECEPCIONISTA', 'DOCTOR'],
+      roles: ['RECEPCIONISTA', 'DOCTOR', 'PACIENTE'],
+    },
+    {
+      titulo: 'Mis citas',
+      desc: 'Estado de tus citas',
+      icon: 'event',
+      ruta: '/dashboard/mis-citas-paciente',
+      color: 'bg-teal-600',
+      roles: ['PACIENTE'],
+    },
+    {
+      titulo: 'Mi historia clínica',
+      desc: 'Tu historial médico',
+      icon: 'history_edu',
+      ruta: '/dashboard/mi-historia',
+      color: 'bg-emerald-600',
+      roles: ['PACIENTE'],
     },
     {
       titulo: 'Nuevo paciente',
@@ -116,8 +137,26 @@ export class InicioComponent implements OnInit {
     this.esRecepcionista = rol === 'RECEPCIONISTA';
     this.esDoctor = rol === 'DOCTOR';
     this.esAdmin = rol === 'ADMINISTRADOR';
+    this.esPaciente = rol === 'PACIENTE';
 
     this.comunicadoService.listar().subscribe({ next: (c) => this.comunicados.set(c) });
+
+    if (this.esPaciente) {
+      this.pacientePortalService.misCitas().subscribe({
+        next: (citas) => {
+          this.totalCitas.set(citas.length);
+          const hoy = new Date().toISOString().slice(0, 10);
+          this.citasHoy.set(citas.filter((c) => c.estado === 1 && c.fecha === hoy).length);
+          const proximas = citas
+            .filter((c) => c.estado === 1 && c.fecha >= hoy)
+            .sort((a, b) => a.fecha.localeCompare(b.fecha));
+          this.proximaCita.set(proximas[0] ?? null);
+          this.cargando.set(false);
+        },
+        error: () => this.cargando.set(false),
+      });
+      return;
+    }
 
     if (this.esRecepcionista) {
       this.citaService.mias().subscribe({

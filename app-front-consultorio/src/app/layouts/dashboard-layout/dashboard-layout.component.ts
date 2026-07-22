@@ -49,6 +49,8 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/roles': { title: 'Roles', subtitle: 'Perfiles de acceso del sistema' },
   '/dashboard/mis-citas': { title: 'Mis Citas', subtitle: 'Consulta y atiende tus citas' },
   '/dashboard/mis-pacientes': { title: 'Mis Pacientes', subtitle: 'Pacientes relacionados con tu actividad' },
+  '/dashboard/mis-citas-paciente': { title: 'Mis Citas', subtitle: 'Consulta el estado de tus citas médicas' },
+  '/dashboard/mi-historia': { title: 'Mi Historia Clínica', subtitle: 'Tu historial de atenciones médicas' },
 };
 
 @Component({
@@ -102,9 +104,9 @@ export class DashboardLayoutComponent implements OnInit {
     {
       label: 'Citas',
       icon: 'calendar_today',
-      roles: ['ADMINISTRADOR', 'RECEPCIONISTA', 'PACIENTE'],
+      roles: ['ADMINISTRADOR', 'RECEPCIONISTA'],
       sub: [
-        { label: 'Ver citas', route: '/dashboard/citas', roles: ['ADMINISTRADOR', 'PACIENTE'] },
+        { label: 'Ver citas', route: '/dashboard/citas', roles: ['ADMINISTRADOR'] },
         { label: 'Agendar cita', route: '/dashboard/citas/nuevo', roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
         { label: 'Historial de citas', route: '/dashboard/historial-citas', roles: ['RECEPCIONISTA'] },
         { label: 'Citas por doctor', route: '/dashboard/citas/por-doctor', roles: ['ADMINISTRADOR'] },
@@ -117,6 +119,15 @@ export class DashboardLayoutComponent implements OnInit {
       sub: [
         { label: 'Mis citas', route: '/dashboard/mis-citas', roles: ['DOCTOR'] },
         { label: 'Mis pacientes', route: '/dashboard/mis-pacientes', roles: ['DOCTOR'] },
+      ],
+    },
+    {
+      label: 'Mi Salud',
+      icon: 'health_and_safety',
+      roles: ['PACIENTE'],
+      sub: [
+        { label: 'Mis citas', route: '/dashboard/mis-citas-paciente', roles: ['PACIENTE'] },
+        { label: 'Mi historia clínica', route: '/dashboard/mi-historia', roles: ['PACIENTE'] },
       ],
     },
     {
