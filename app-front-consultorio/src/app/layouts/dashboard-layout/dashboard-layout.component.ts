@@ -33,6 +33,7 @@ interface MensajeResponse {
 const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/inicio': { title: 'Inicio', subtitle: 'Resumen del consultorio' },
   '/dashboard/horario': { title: 'Horarios Médicos', subtitle: 'Planificación de turnos y disponibilidad' },
+  '/dashboard/horarios': { title: 'Gestión de Horarios', subtitle: 'Horarios de trabajo de doctores y recepcionistas' },
   '/dashboard/citas': { title: 'Citas médicas', subtitle: 'Agenda y consultas programadas' },
   '/dashboard/citas/nuevo': { title: 'Nueva cita', subtitle: 'Registrar cita médica' },
   '/dashboard/citas/por-doctor': { title: 'Citas por doctor', subtitle: 'Panel de consultas asignadas al médico' },
@@ -93,6 +94,7 @@ export class DashboardLayoutComponent implements OnInit {
       sub: [
         { label: 'Resumen', route: '/dashboard/inicio' },
         { label: 'Horario', route: '/dashboard/horario' },
+        { label: 'Gestión de horarios', route: '/dashboard/horarios' },
       ],
     },
     {

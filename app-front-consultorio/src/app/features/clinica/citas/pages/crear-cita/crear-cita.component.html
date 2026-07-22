@@ -41,11 +41,14 @@
               <!-- hidden elimina el bug de doble click al no ocupar espacio en el dropdown -->
               <option value="" disabled hidden>SELECCIONE RECEPCIONISTA</option>
               @for (rep of recepcionistas; track rep.id) {
-                <option [value]="rep.id">{{ rep.nombreRecepcionista }}</option>
+                <option [value]="rep.id">{{ rep.nombre }}</option>
               }
             </select>
             <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 material-icons text-[16px] text-gray-400">expand_more</span>
           </div>
+          @if (!recepcionistas.length) {
+            <p class="text-[10px] text-gray-400 mt-1">Seleccione fecha y horario para ver los recepcionistas disponibles.</p>
+          }
         </div>
 
         <div class="space-y-2">
@@ -110,11 +113,14 @@
                 {{ form.get('especialidadId')?.value ? 'SELECCIONE MÉDICO' : 'REQUIERE ESPECIALIDAD' }}
               </option>
               @for (doc of doctores; track doc.id) {
-                <option [value]="doc.id">{{ doc.nombres }}</option>
+                <option [value]="doc.id">{{ doc.nombre }}</option>
               }
             </select>
             <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 material-icons text-[16px] text-gray-400">expand_more</span>
           </div>
+          @if (form.get('especialidadId')?.value && !doctores.length) {
+            <p class="text-[10px] text-gray-400 mt-1">Seleccione fecha y horario para ver los doctores disponibles.</p>
+          }
         </div>
 
       </div>

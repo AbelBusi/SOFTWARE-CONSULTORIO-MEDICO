@@ -33,6 +33,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'horarios',
+        loadComponent: () =>
+          import('./features/clinica/horarios/pages/lista-horarios/lista-horarios.component').then(
+            (m) => m.ListaHorariosComponent,
+          ),
+      },
+      {
         path: 'citas',
         children: [
           {

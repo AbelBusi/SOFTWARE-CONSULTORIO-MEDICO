@@ -1,161 +1,119 @@
-<div class="animate-fade-in flex flex-col gap-6 h-full">
+<div class="animate-fade-in space-y-6">
 
-  <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 shrink-0">
-    <div>
-      <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Agenda de Turnos</h2>
-      <p class="text-xs text-slate-500 mt-0.5">Control operativo del equipo médico y flujos de atención</p>
+  <div class="bg-white rounded border border-slate-200 p-6 shadow-sm space-y-4">
+    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+      <span class="material-icons text-[#0d6b68] text-base">event_available</span>
+      <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Consultar disponibilidad</h3>
     </div>
 
-    <div class="flex flex-wrap items-center gap-3 bg-white border border-slate-200 rounded-xl p-1.5 shadow-sm">
-      <button
-        (click)="irHoy()"
-        class="px-3 py-1.5 text-xs font-bold bg-slate-50 border border-slate-200 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
-      >
-        Hoy
-      </button>
-
-      <div class="flex items-center border-r border-slate-200 pr-2 gap-0.5">
-        <button (click)="navegarSemana(-1)" class="p-1.5 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors">
-          <span class="material-icons text-base block">chevron_left</span>
-        </button>
-        <span class="text-xs font-bold text-slate-800 px-2 min-w-[140px] text-center">
-          {{ rangoSemana() }}
-        </span>
-        <button (click)="navegarSemana(1)" class="p-1.5 rounded-lg hover:bg-slate-50 text-slate-600 transition-colors">
-          <span class="material-icons text-base block">chevron_right</span>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Fecha</label>
+        <input type="date" [min]="today" [ngModel]="fecha()" (ngModelChange)="fecha.set($event)"
+               class="w-full text-xs px-3 py-2 border border-slate-200 rounded bg-white hover:border-[#0d6b68] focus:outline-none focus:border-[#0d6b68] text-slate-800 font-medium transition-colors" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Hora inicio</label>
+        <input type="time" [ngModel]="horaInicio()" (ngModelChange)="horaInicio.set($event)"
+               class="w-full text-xs px-3 py-2 border border-slate-200 rounded bg-white hover:border-[#0d6b68] focus:outline-none focus:border-[#0d6b68] text-slate-800 font-medium transition-colors" />
+      </div>
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Hora fin</label>
+        <input type="time" [ngModel]="horaFin()" (ngModelChange)="horaFin.set($event)"
+               class="w-full text-xs px-3 py-2 border border-slate-200 rounded bg-white hover:border-[#0d6b68] focus:outline-none focus:border-[#0d6b68] text-slate-800 font-medium transition-colors" />
+      </div>
+      <div class="flex items-end">
+        <button type="button" (click)="consultar()" [disabled]="consultando()"
+                class="w-full flex items-center justify-center gap-2 px-5 py-2 bg-[#0d6b68] text-white text-xs font-bold rounded hover:bg-[#0a5452] shadow-sm transition-colors uppercase tracking-wider disabled:opacity-40">
+          <span class="material-icons text-sm">{{ consultando() ? 'sync' : 'search' }}</span>
+          Consultar
         </button>
       </div>
+    </div>
 
-      <select
-        (change)="doctorSeleccionado.set($any($event.target).value)"
-        class="text-xs font-semibold text-slate-600 bg-transparent border-0 focus:ring-0 cursor-pointer pl-2 pr-8 py-1"
-      >
-        <option value="todos">Todos los especialistas</option>
-        <option value="Dr. Carlos Mendoza">Dr. Carlos Mendoza</option>
-        <option value="Dra. Ana Silva">Dra. Ana Silva</option>
-        <option value="Dr. Luis Torres">Dr. Luis Torres</option>
+    <div class="flex items-center gap-2">
+      <select class="input-field w-auto py-2 rounded" [ngModel]="filtroTipo()" (ngModelChange)="filtroTipo.set($event)">
+        <option value="todos">Doctores y recepcionistas</option>
+        <option value="DOCTOR">Solo doctores</option>
+        <option value="RECEPCIONISTA">Solo recepcionistas</option>
       </select>
     </div>
-  </div>
 
-  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 shrink-0">
-    <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5">
-      <div class="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center shrink-0">
-        <span class="material-icons text-emerald-600 text-xl">event_available</span>
-      </div>
-      <div>
-        <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Turnos Asignados</p>
-        <p class="text-xl font-bold text-slate-900 mt-0.5">{{ totalTurnos() }}</p>
-      </div>
-    </div>
-
-    <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5">
-      <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
-        <span class="material-icons text-slate-600 text-xl">history_toggle_off</span>
-      </div>
-      <div>
-        <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Horas Médicas</p>
-        <p class="text-xl font-bold text-slate-900 mt-0.5">{{ horasAsignadas() }}h</p>
-      </div>
-    </div>
-
-    <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5">
-      <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
-        <span class="material-icons text-slate-600 text-xl">badge</span>
-      </div>
-      <div>
-        <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Doctores en Planta</p>
-        <p class="text-xl font-bold text-slate-900 mt-0.5">{{ doctoresActivos() }}</p>
-      </div>
-    </div>
-
-    <div class="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-3.5">
-      <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center shrink-0">
-        <span class="material-icons text-slate-600 text-xl">notifications_none</span>
-      </div>
-      <div>
-        <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Incidencias</p>
-        <p class="text-xl font-bold text-slate-900 mt-0.5">{{ alertas() }}</p>
-      </div>
-    </div>
-  </div>
-
-  <div class="bg-white border border-slate-200 rounded-2xl flex flex-col flex-1 overflow-hidden shadow-sm">
-
-    <div class="flex flex-wrap items-center justify-between gap-4 px-6 py-3 border-b border-slate-100 bg-slate-50/50 text-[11px] font-bold text-slate-400 tracking-wider uppercase">
-      <span>Vista Semanal Operativa</span>
-      <div class="flex flex-wrap items-center gap-4 normal-case font-medium text-slate-500">
-        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Ocupado</div>
-        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span> Disponible</div>
-        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Emergencia</div>
-        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span> Receso</div>
-      </div>
-    </div>
-
-    <div class="overflow-auto max-h-[calc(100vh-320px)] flex-1 relative">
-      <table class="w-full border-separate border-spacing-0 table-fixed min-w-[900px]">
-        <thead>
-        <tr class="bg-white sticky top-0 z-20 shadow-[0_1px_0_0_rgba(226,232,240,1)]">
-          <th class="w-20 bg-slate-50/90 backdrop-blur-md p-4 sticky left-0 z-30 border-r border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">
-            Hora
-          </th>
-          @for (dia of diasSemana(); track dia.llave) {
-            <th class="p-3 bg-white/95 backdrop-blur-md border-r border-slate-100 text-left">
-              <div class="flex items-baseline gap-2 pl-2">
-                <span class="text-sm font-black text-slate-800">{{ dia.numero }}</span>
-                <span class="text-[11px] font-bold text-slate-400 uppercase tracking-tight">{{ dia.nombre }}</span>
+    @if (yaConsultado()) {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        @if (filtroTipo() !== 'RECEPCIONISTA') {
+          <div class="border border-slate-200 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-icons text-sky-600 text-lg">medical_services</span>
+              <h4 class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Doctores disponibles ({{ doctores().length }})</h4>
+            </div>
+            @if (doctores().length) {
+              <div class="flex flex-wrap gap-2">
+                @for (d of doctores(); track d.id) {
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-700 border border-sky-200">
+                    <span class="material-icons text-[14px]">person</span>{{ d.nombre }}
+                  </span>
+                }
               </div>
-            </th>
-          }
-        </tr>
-        </thead>
+            } @else {
+              <p class="text-xs text-slate-400">No hay doctores disponibles en ese horario.</p>
+            }
+          </div>
+        }
 
-        <tbody class="divide-y divide-slate-100/70">
-          @for (hora of horas; track hora) {
-            <tr class="h-20">
-              <td class="sticky left-0 bg-slate-50/90 backdrop-blur-md font-bold text-xs text-slate-500 text-center border-r border-slate-100 z-10 shadow-[1px_0_0_0_rgba(226,232,240,1)]">
-                {{ hora }}
-              </td>
+        @if (filtroTipo() !== 'DOCTOR') {
+          <div class="border border-slate-200 rounded-lg p-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="material-icons text-amber-600 text-lg">support_agent</span>
+              <h4 class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Recepcionistas disponibles ({{ recepcionistas().length }})</h4>
+            </div>
+            @if (recepcionistas().length) {
+              <div class="flex flex-wrap gap-2">
+                @for (r of recepcionistas(); track r.id) {
+                  <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200">
+                    <span class="material-icons text-[14px]">person</span>{{ r.nombre }}
+                  </span>
+                }
+              </div>
+            } @else {
+              <p class="text-xs text-slate-400">No hay recepcionistas disponibles en ese horario.</p>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="text-xs text-slate-400 pt-2">Seleccione una fecha y un rango horario y presione «Consultar» para ver la disponibilidad.</p>
+    }
+  </div>
 
-              @for (dia of diasSemana(); track dia.llave) {
-                <td class="p-1 border-r border-slate-100 bg-white relative hover:bg-slate-50/40 transition-colors">
-                  @if (getTurno(dia.llave, hora); as turno) {
-
-                    <div class="h-full w-full rounded-xl border p-2.5 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:scale-[1.01]"
-                         [ngClass]="{
-                        'bg-emerald-50/60 border-emerald-100 text-emerald-950 shadow-[inset_4px_0_0_0_#10b981]': turno.estado === 'ocupado',
-                        'bg-sky-50/60 border-sky-100 text-sky-950 shadow-[inset_4px_0_0_0_#06b6d4]': turno.estado === 'disponible',
-                        'bg-rose-50/60 border-rose-100 text-rose-950 shadow-[inset_4px_0_0_0_#f43f5e]': turno.estado === 'emergencia',
-                        'bg-slate-50 border-slate-200/60 text-slate-700 shadow-[inset_4px_0_0_0_#94a3b8]': turno.estado === 'receso'
-                      }"
-                    >
-                      <div class="min-w-0">
-                        <p class="text-xs font-bold truncate tracking-tight leading-none text-slate-900">{{ turno.doctor }}</p>
-                        <p class="text-[10px] font-medium opacity-75 truncate mt-1">{{ turno.especialidad }}</p>
-                      </div>
-
-                      <div class="flex items-center justify-between gap-1 border-t border-black/5 pt-1.5 mt-1">
-                        @if (turno.paciente) {
-                          <span class="text-[10px] font-semibold truncate text-slate-700 flex items-center gap-1">
-                            <span class="material-icons text-xs opacity-60">person</span>
-                            {{ turno.paciente }}
-                          </span>
-                        } @else {
-                          <span class="text-[9px] uppercase tracking-wider font-extrabold opacity-60">Disponible</span>
-                        }
-                        <span class="text-[9px] font-bold px-1 rounded bg-white/80 border border-black/5 text-slate-600 shadow-2xs">
-                          {{ hora }}
-                        </span>
-                      </div>
-                    </div>
-
-                  }
-                </td>
-              }
-            </tr>
-          }
-        </tbody>
-      </table>
+  <div class="bg-white rounded border border-slate-200 p-6 shadow-sm space-y-4">
+    <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
+      <span class="material-icons text-[#0d6b68] text-base">schedule</span>
+      <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Horario de trabajo por persona</h3>
     </div>
+
+    <div class="w-full md:w-80">
+      <select class="input-field py-2 rounded w-full" [ngModel]="personaSeleccionada()" (ngModelChange)="personaSeleccionada.set($event)">
+        <option value="">Seleccione una persona</option>
+        @for (p of personas(); track p.nombre) {
+          <option [value]="p.nombre">{{ p.nombre }} ({{ p.tipo }})</option>
+        }
+      </select>
+    </div>
+
+    @if (personaSeleccionada()) {
+      @if (horarioPersona().length) {
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          @for (h of horarioPersona(); track h.id) {
+            <div class="border border-slate-200 rounded-lg p-3 flex items-center justify-between">
+              <span class="text-sm font-semibold text-slate-700">{{ nombreDia(h.diaSemana) }}</span>
+              <span class="font-mono text-xs font-bold text-[#0d6b68]">{{ hora(h.horaInicio) }} - {{ hora(h.horaFin) }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <p class="text-xs text-slate-400">Esta persona no tiene horarios configurados.</p>
+      }
+    }
   </div>
 </div>

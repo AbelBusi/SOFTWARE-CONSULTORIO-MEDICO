@@ -4,13 +4,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Subject, takeUntil } from 'rxjs';
 import { CitaService } from '../../services/cita.service';
 import { PacienteService } from '../../../pacientes/services/paciente.service';
-import { DoctorService } from '../../../doctores/services/doctor.service';
-import { RecepcionistaService } from '../../../recepcionistas/services/recepcionista.service';
 import { EspecialidadService } from '../../../especialidad/services/especialidad.service';
+import { HorarioService } from '../../../horarios/services/horario.service';
+import { Disponibilidad } from '../../../horarios/models/horario.model';
 import { ToastService } from '../../../../../core/services/toast.service';
 import { PacienteResumenDTO } from '../../../pacientes/interface/paciente.interface';
-import { DoctorEspecialidadResumen } from '../../../doctores/interface/doctor.interface';
-import { NombreRecepcionistaDTO } from '../../../recepcionistas/interface/recepcionista.interface';
 import { NombreEspecialidadDTO } from '../../../especialidad/interface/especialidad.interface';
 import { CitaMedicaCrearDTO } from '../../interface/cita.interface';
 import { PagoModalComponent } from '../../components/pago-modal/pago-modal.component';
@@ -25,9 +23,8 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   private readonly fb = inject(FormBuilder);
   private readonly citaService = inject(CitaService);
   private readonly pacienteService = inject(PacienteService);
-  private readonly doctorService = inject(DoctorService);
-  private readonly recepcionistaService = inject(RecepcionistaService);
   private readonly especialidadService = inject(EspecialidadService);
+  private readonly horarioService = inject(HorarioService);
   private readonly toast = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly destroy$ = new Subject<void>();
@@ -39,15 +36,16 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   metodoSeleccionado = signal<string>('efectivo');
 
   pacientes: PacienteResumenDTO[] = [];
-  recepcionistas: NombreRecepcionistaDTO[] = [];
+  recepcionistas: Disponibilidad[] = [];
   especialidades: NombreEspecialidadDTO[] = [];
-  doctores: DoctorEspecialidadResumen[] = [];
+  doctores: Disponibilidad[] = [];
 
   readonly today: string = new Date().toISOString().split('T')[0];
 
   ngOnInit(): void {
     this.initForm();
     this.cargarDatosIniciales();
+    this.escucharDisponibilidad();
   }
 
   ngOnDestroy(): void {
@@ -72,17 +70,6 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
   }
 
   private cargarDatosIniciales(): void {
-    this.recepcionistaService
-      .resumen()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res: any) => {
-          this.recepcionistas = [...(Array.isArray(res) ? res : res?.object || [])];
-          this.cdr.markForCheck();
-        },
-        error: () => this.toast.error('Error al cargar la lista de recepcionistas'),
-      });
-
     this.pacienteService
       .resumen()
       .pipe(takeUntil(this.destroy$))
@@ -106,7 +93,59 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
       });
   }
 
-  // FIX BUG SELECT: usar (change) del template en lugar de valueChanges
+  private escucharDisponibilidad(): void {
+    ['fecha', 'horaInicio', 'horaSalida'].forEach((campo) => {
+      this.form
+        .get(campo)!
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe(() => this.actualizarDisponibilidad());
+    });
+  }
+
+  private actualizarDisponibilidad(): void {
+    const { fecha, horaInicio, horaSalida, especialidadId } = this.form.getRawValue();
+
+    if (!fecha || !horaInicio || !horaSalida || horaInicio >= horaSalida) {
+      this.recepcionistas = [];
+      this.doctores = [];
+      this.cdr.markForCheck();
+      return;
+    }
+
+    this.horarioService
+      .recepcionistasDisponibles(fecha, horaInicio, horaSalida)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.recepcionistas = res;
+          if (!res.some((r) => r.id === Number(this.form.get('recepcionistaId')!.value))) {
+            this.form.get('recepcionistaId')!.patchValue('', { emitEvent: false });
+          }
+          this.cdr.markForCheck();
+        },
+        error: () => this.toast.error('Error al cargar los recepcionistas disponibles'),
+      });
+
+    if (especialidadId) {
+      this.horarioService
+        .doctoresDisponibles(fecha, horaInicio, horaSalida, Number(especialidadId))
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            this.doctores = res;
+            if (!res.some((d) => d.id === Number(this.form.get('doctorId')!.value))) {
+              this.form.get('doctorId')!.patchValue('', { emitEvent: false });
+            }
+            this.cdr.markForCheck();
+          },
+          error: () => this.toast.error('Error al cargar los doctores disponibles'),
+        });
+    } else {
+      this.doctores = [];
+      this.cdr.markForCheck();
+    }
+  }
+
   onEspecialidadChange(event: Event): void {
     const especialidadId = (event.target as HTMLSelectElement).value;
     this.doctores = [];
@@ -114,19 +153,7 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
 
     if (especialidadId) {
       this.form.get('doctorId')!.enable({ emitEvent: false });
-      this.doctorService
-        .listarPorEspecialidad(Number(especialidadId))
-        .pipe(takeUntil(this.destroy$))
-        .subscribe({
-          next: (res: any) => {
-            this.doctores = [...(Array.isArray(res) ? res : res?.object || [])];
-            this.cdr.markForCheck();
-            if (this.doctores.length === 0) {
-              this.toast.info('No hay doctores disponibles para esta especialidad');
-            }
-          },
-          error: () => this.toast.error('Error al cargar los doctores de la especialidad'),
-        });
+      this.actualizarDisponibilidad();
     } else {
       this.form.get('doctorId')!.disable({ emitEvent: false });
     }
@@ -185,6 +212,7 @@ export class CrearCitaComponent implements OnInit, OnDestroy {
           this.form.reset({ estado: 1 });
           this.form.get('doctorId')!.disable({ emitEvent: false });
           this.doctores = [];
+          this.recepcionistas = [];
           this.metodoSeleccionado.set('efectivo');
           this.toast.success(res?.mensaje || 'Cita médica registrada exitosamente');
         },
