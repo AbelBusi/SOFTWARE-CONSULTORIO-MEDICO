@@ -145,6 +145,21 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
     );
 
     @Query("""
+    SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END
+    FROM CitaMedica c
+    WHERE c.fecha = :fechaCita
+    AND c.recepcionista.id = :recepcionistaId
+    AND c.horaInicio < :nuevaHoraSalida
+    AND c.horaSalida > :nuevaHoraEntrada
+""")
+    boolean cruceHorasCitasRecepcionista(
+            @Param("fechaCita") LocalDate fecha,
+            @Param("recepcionistaId") Integer recepcionistaId,
+            @Param("nuevaHoraSalida") LocalTime horaSalida,
+            @Param("nuevaHoraEntrada") LocalTime horaEntrada
+    );
+
+    @Query("""
         SELECT new com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO(
                c.id,
                pe.dni,

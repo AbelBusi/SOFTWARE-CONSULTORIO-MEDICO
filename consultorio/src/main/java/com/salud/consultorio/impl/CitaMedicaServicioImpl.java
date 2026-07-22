@@ -25,6 +25,7 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     private final IEspecialidadServicio especialidadServicio;
     private final IPacienteServicio pacienteServicio;
     private final IRecepcionistaServicio recepcionistaServicio;
+    private final IHorarioTrabajoServicio horarioTrabajoServicio;
     private final ReferenciaServicio referenciaServicio;
     private final ICitaMedicaMapper citaMedicaMapper;
     private final IPacienteMapper pacienteMapper;
@@ -92,6 +93,33 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         ) {
             throw new DataIntegrityViolationException(
                     "Existe cruce de horario en la cita"
+            );
+        }
+
+        int diaSemana = dto.getFecha().getDayOfWeek().getValue();
+
+        if (!horarioTrabajoServicio.doctorTrabajaEn(dto.getDoctor().getId(), diaSemana, dto.getHoraInicio(), dto.getHoraSalida())) {
+            throw new DataIntegrityViolationException(
+                    "El doctor no tiene un horario de trabajo configurado para la fecha y hora seleccionadas"
+            );
+        }
+
+        if (!horarioTrabajoServicio.recepcionistaTrabajaEn(dto.getRecepcionista().getId(), diaSemana, dto.getHoraInicio(), dto.getHoraSalida())) {
+            throw new DataIntegrityViolationException(
+                    "El recepcionista no tiene un horario de trabajo configurado para la fecha y hora seleccionadas"
+            );
+        }
+
+        if (
+                citaMedicaRepositorio.cruceHorasCitasRecepcionista(
+                        dto.getFecha(),
+                        dto.getRecepcionista().getId(),
+                        dto.getHoraSalida(),
+                        dto.getHoraInicio()
+                )
+        ) {
+            throw new DataIntegrityViolationException(
+                    "El recepcionista ya tiene una cita que se cruza con ese horario"
             );
         }
 
