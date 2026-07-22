@@ -4,6 +4,7 @@ import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.ICitaMedicaServicio;
+import com.salud.consultorio.service.IRecepcionistaServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -12,6 +13,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,7 @@ import java.util.List;
 public class CitaMedicaController {
 
     private final ICitaMedicaServicio citaMedicaServicio;
+    private final IRecepcionistaServicio recepcionistaServicio;
 
     @Operation(summary = "Registrar una nueva cita médica")
     @ApiResponses(value = {
@@ -33,13 +36,28 @@ public class CitaMedicaController {
             @ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
     @PostMapping
-    public ResponseEntity<MensajeResponse> crear(@Valid @RequestBody CitaMedicaCrearDTO dto){
+    public ResponseEntity<MensajeResponse> crear(@Valid @RequestBody CitaMedicaCrearDTO dto, Authentication authentication){
+
+        recepcionistaServicio.obtenerPorUsuario(authentication.getName())
+                .ifPresent(recepcionista -> dto.getRecepcionista().setId(recepcionista.getId()));
 
         CitaMedicaRespuestaDTO citaMedica =citaMedicaServicio.crearCita(dto);
 
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("Cita Medica agregada con exito")
                 .object(citaMedica).build(), HttpStatus.CREATED);
+
+    }
+
+    @Operation(summary = "Listar las citas registradas por el recepcionista autenticado")
+    @GetMapping("/mias")
+    public ResponseEntity<MensajeResponse> misCitas(Authentication authentication){
+
+        List<CitaMedicaLeerDTO> citas = citaMedicaServicio.leerCitasPorRecepcionista(authentication.getName());
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("HISTORIAL DE CITAS DEL RECEPCIONISTA")
+                .object(citas).build(), HttpStatus.OK);
 
     }
 

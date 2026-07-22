@@ -126,6 +126,29 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
     """)
     Optional<CitaMedicaLeerDTO> traerCitaMedicaId(@Param("id") Integer id);
 
+    @Query("""
+    SELECT NEW com.salud.consultorio.dto.citaMedica.CitaMedicaLeerDTO(
+           c.id,
+           p.nombre,
+           p.apellidos,
+           c.motivo,
+           e.nombre,
+           c.fecha,
+           c.horaInicio,
+           c.horaSalida,
+           pd.nombre,
+           c.estado
+    )
+    FROM CitaMedica c
+    JOIN c.especialidad e
+    JOIN c.paciente pa
+    JOIN pa.persona p
+    JOIN c.doctor d
+    JOIN d.persona pd
+    WHERE c.recepcionista.id = :recepcionistaId
+    """)
+    List<CitaMedicaLeerDTO> leerCitasPorRecepcionista(@Param("recepcionistaId") Integer recepcionistaId);
+
     @Modifying
     @Query("UPDATE CitaMedica c SET c.estado =:estado WHERE c.id=:id" )
     void CitaCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);

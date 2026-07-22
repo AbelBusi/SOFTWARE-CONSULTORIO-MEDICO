@@ -119,6 +119,12 @@ public class RecepcionistaServicioImpl implements IRecepcionistaServicio {
 
     @Transactional(readOnly = true)
     @Override
+    public Optional<Recepcionista> obtenerPorUsuario(String usuario) {
+        return recepcionistaRepositorio.findByUsuario(usuario);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<RecepcionistaLeerDTO> listarRecepcionistasPersonas() {
         return recepcionistaRepositorio.leerRecepcionistas();
     }

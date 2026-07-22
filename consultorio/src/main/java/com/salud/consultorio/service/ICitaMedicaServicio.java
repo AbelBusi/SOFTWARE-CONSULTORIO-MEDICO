@@ -18,6 +18,8 @@ public interface ICitaMedicaServicio{
 
     List<CitaMedicaLeerDTO> leerCitasMedicasInactivas();
 
+    List<CitaMedicaLeerDTO> leerCitasPorRecepcionista(String usuario);
+
     CitaMedicaActualizarRespuestaDTO actualizar(CitaMedicaActualizarDTO citaMedicaActualizarDTO, Integer id);
 
     List<CitaMedica> listarTodos();

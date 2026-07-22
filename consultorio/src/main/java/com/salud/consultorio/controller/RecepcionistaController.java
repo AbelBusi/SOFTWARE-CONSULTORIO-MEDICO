@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -113,6 +115,21 @@ public class RecepcionistaController {
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE RECEPCIONISTAS")
                 .object(recepcionistas).build(),HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Obtener el recepcionista del usuario autenticado")
+    @GetMapping("/actual")
+    public ResponseEntity<MensajeResponse> recepcionistaActual(Authentication authentication){
+
+        Recepcionista recepcionista = recepcionistaServicio.obtenerPorUsuario(authentication.getName())
+                .orElseThrow(() -> new EntityNotFoundException("El usuario autenticado no es un recepcionista"));
+
+        RecepcionistaLeerDTO leer = recepcionistaServicio.leerPorId(recepcionista.getId());
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Recepcionista autenticado")
+                .object(leer).build(), HttpStatus.OK);
 
     }
 

@@ -209,7 +209,6 @@ public class DoctorController {
             @ApiResponse(responseCode = "404", description = "Especialidad no encontrada")
     })
     @GetMapping("/especialidad/{id}")
-    @PreAuthorize("hasAuthority('CITA_READ')")
     public ResponseEntity<MensajeResponse> especialidadId(@PathVariable Integer id){
 
         List<DoctorEspecialidadPorIdDTO> doctores = doctorServicio.listaDoctoresEspecialidadSeleccionada(id);

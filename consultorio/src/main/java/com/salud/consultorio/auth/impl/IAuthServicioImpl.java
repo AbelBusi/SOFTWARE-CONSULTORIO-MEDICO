@@ -12,13 +12,19 @@ import com.salud.consultorio.model.entity.Usuario;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.model.mapper.IRolMapper;
 import com.salud.consultorio.model.mapper.IUsuarioMapper;
+import com.salud.consultorio.auth.exception.AccesoFueraHorarioException;
+import com.salud.consultorio.repository.IRecepcionistaRepositorio;
 import com.salud.consultorio.repository.ITokenRepositorio;
 import com.salud.consultorio.repository.IUsuarioRepositorio;
+import com.salud.consultorio.service.IHorarioTrabajoServicio;
 import com.salud.consultorio.service.IRolServicio;
 import com.salud.consultorio.service.IUsuarioServicio;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,6 +51,8 @@ public class IAuthServicioImpl implements IAuthServicio {
     private final IRolMapper rolMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final IRecepcionistaRepositorio recepcionistaRepositorio;
+    private final IHorarioTrabajoServicio horarioTrabajoServicio;
 
     @Transactional
     @Override
@@ -93,6 +101,14 @@ public class IAuthServicioImpl implements IAuthServicio {
 
         Usuario guardado = usuarioRepositorio.findByUsuario(request.usuario())
                 .orElseThrow(() -> new UsernameNotFoundException("No existe el usuario"));
+
+        recepcionistaRepositorio.findByUsuario(guardado.getUsuario()).ifPresent(recepcionista -> {
+            LocalDate hoy = LocalDate.now();
+            LocalTime ahora = LocalTime.now();
+            if (!horarioTrabajoServicio.recepcionistaTrabajaEn(recepcionista.getId(), hoy.getDayOfWeek().getValue(), ahora, ahora)) {
+                throw new AccesoFueraHorarioException("Acceso denegado: te encuentras fuera de tu horario de trabajo.");
+            }
+        });
 
         String jwtToken = jwtServicio.generarToken(guardado);
         String refreshToken = jwtServicio.generarTokenRefrescado(guardado);

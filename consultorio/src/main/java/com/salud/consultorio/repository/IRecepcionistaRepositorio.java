@@ -32,6 +32,9 @@ public interface IRecepcionistaRepositorio extends JpaRepository<Recepcionista,I
     @Query("SELECT r FROM Recepcionista r JOIN FETCH r.persona WHERE r.id = :id")
     Optional<Recepcionista> findByIdConRecepcionista(@Param("id") Integer id);
 
+    @Query("SELECT r FROM Recepcionista r JOIN Usuario u ON u.persona = r.persona WHERE u.usuario = :usuario")
+    Optional<Recepcionista> findByUsuario(@Param("usuario") String usuario);
+
     @Query("""
     SELECT new com.salud.consultorio.dto.recepcionista.RecepcionistaDetalleLeerDTO(
         r.id,

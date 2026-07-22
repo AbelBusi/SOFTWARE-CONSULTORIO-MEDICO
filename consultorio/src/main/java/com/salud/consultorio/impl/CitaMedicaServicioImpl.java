@@ -237,4 +237,12 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     public List<CitaMedicaLeerDTO> leerCitasMedicasInactivas() {
         return citaMedicaRepositorio.leerCitasMedicasInactivas();
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CitaMedicaLeerDTO> leerCitasPorRecepcionista(String usuario) {
+        return recepcionistaServicio.obtenerPorUsuario(usuario)
+                .map(recepcionista -> citaMedicaRepositorio.leerCitasPorRecepcionista(recepcionista.getId()))
+                .orElseGet(List::of);
+    }
 }
