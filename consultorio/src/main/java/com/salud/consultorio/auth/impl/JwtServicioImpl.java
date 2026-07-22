@@ -60,9 +60,14 @@ public class JwtServicioImpl implements IJwtServicio {
                 .map(rolPermiso -> rolPermiso.getPermiso().getNombre())
                 .toList();
 
+        String rolNombre = usuario.getRol() != null && usuario.getRol().getNombre() != null
+                ? usuario.getRol().getNombre()
+                : "";
+
         Map<String, Object> extraClaims = Map.of(
                 "name", usuario.getUsuario(),
-                "authorities",permisos
+                "authorities",permisos,
+                "role", rolNombre
         );
 
         return Jwts.builder()
