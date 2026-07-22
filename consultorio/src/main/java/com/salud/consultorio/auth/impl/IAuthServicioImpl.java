@@ -13,6 +13,7 @@ import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.model.mapper.IRolMapper;
 import com.salud.consultorio.model.mapper.IUsuarioMapper;
 import com.salud.consultorio.auth.exception.AccesoFueraHorarioException;
+import com.salud.consultorio.repository.IDoctorRepositorio;
 import com.salud.consultorio.repository.IRecepcionistaRepositorio;
 import com.salud.consultorio.repository.ITokenRepositorio;
 import com.salud.consultorio.repository.IUsuarioRepositorio;
@@ -52,6 +53,7 @@ public class IAuthServicioImpl implements IAuthServicio {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final IRecepcionistaRepositorio recepcionistaRepositorio;
+    private final IDoctorRepositorio doctorRepositorio;
     private final IHorarioTrabajoServicio horarioTrabajoServicio;
 
     @Transactional
@@ -106,6 +108,14 @@ public class IAuthServicioImpl implements IAuthServicio {
             LocalDate hoy = LocalDate.now();
             LocalTime ahora = LocalTime.now();
             if (!horarioTrabajoServicio.recepcionistaTrabajaEn(recepcionista.getId(), hoy.getDayOfWeek().getValue(), ahora, ahora)) {
+                throw new AccesoFueraHorarioException("Acceso denegado: te encuentras fuera de tu horario de trabajo.");
+            }
+        });
+
+        doctorRepositorio.findByUsuario(guardado.getUsuario()).ifPresent(doctor -> {
+            LocalDate hoy = LocalDate.now();
+            LocalTime ahora = LocalTime.now();
+            if (!horarioTrabajoServicio.doctorTrabajaEn(doctor.getId(), hoy.getDayOfWeek().getValue(), ahora, ahora)) {
                 throw new AccesoFueraHorarioException("Acceso denegado: te encuentras fuera de tu horario de trabajo.");
             }
         });

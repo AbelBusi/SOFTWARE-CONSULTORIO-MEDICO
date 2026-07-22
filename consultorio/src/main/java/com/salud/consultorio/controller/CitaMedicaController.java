@@ -1,8 +1,10 @@
 package com.salud.consultorio.controller;
 
+import com.salud.consultorio.dto.atencion.AtencionCrearDTO;
 import com.salud.consultorio.dto.citaMedica.*;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
+import com.salud.consultorio.service.IAtencionMedicaServicio;
 import com.salud.consultorio.service.ICitaMedicaServicio;
 import com.salud.consultorio.service.IRecepcionistaServicio;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +31,7 @@ public class CitaMedicaController {
 
     private final ICitaMedicaServicio citaMedicaServicio;
     private final IRecepcionistaServicio recepcionistaServicio;
+    private final IAtencionMedicaServicio atencionMedicaServicio;
 
     @Operation(summary = "Registrar una nueva cita médica")
     @ApiResponses(value = {
@@ -58,6 +61,35 @@ public class CitaMedicaController {
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("HISTORIAL DE CITAS DEL RECEPCIONISTA")
                 .object(citas).build(), HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Listar las citas del doctor autenticado por estado")
+    @GetMapping("/doctor/mias")
+    public ResponseEntity<MensajeResponse> misCitasDoctor(
+            @RequestParam Integer estado,
+            Authentication authentication){
+
+        List<DoctorCitaDTO> citas = citaMedicaServicio.citasDoctor(authentication.getName(), estado);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("CITAS DEL DOCTOR")
+                .object(citas).build(), HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Atender y cerrar una cita registrando la información clínica")
+    @PostMapping("/{id}/atender")
+    public ResponseEntity<MensajeResponse> atenderCita(
+            @PathVariable Integer id,
+            @Valid @RequestBody AtencionCrearDTO dto,
+            Authentication authentication){
+
+        atencionMedicaServicio.atenderCita(id, authentication.getName(), dto);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("La cita fue atendida y registrada en la historia clínica")
+                .object(null).build(), HttpStatus.OK);
 
     }
 

@@ -47,6 +47,12 @@ public class DoctorServicioImpl implements IDoctorServicio {
         return doctorRepositorio.findById(integer);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Doctor> obtenerPorUsuario(String usuario) {
+        return doctorRepositorio.findByUsuario(usuario);
+    }
+
     @Transactional
     @Override
     public DoctorRespuestaDTO crear(DoctorCrearDTO dto) {

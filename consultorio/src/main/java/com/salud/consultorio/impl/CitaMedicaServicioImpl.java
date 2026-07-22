@@ -245,4 +245,16 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
                 .map(recepcionista -> citaMedicaRepositorio.leerCitasPorRecepcionista(recepcionista.getId()))
                 .orElseGet(List::of);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DoctorCitaDTO> citasDoctor(String usuario, Integer estado) {
+        return citaMedicaRepositorio.citasDoctorPorUsuarioYEstado(usuario, estado);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctor(String usuario, Integer estado) {
+        return citaMedicaRepositorio.pacientesDoctorPorUsuarioYEstado(usuario, estado);
+    }
 }

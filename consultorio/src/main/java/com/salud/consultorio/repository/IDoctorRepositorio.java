@@ -99,6 +99,9 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
     @Query("SELECT d FROM Doctor d  JOIN FETCH d.persona JOIN FETCH d.especialidad WHERE d.id = :id")
     Optional<Doctor> findByIdConPersona(@Param("id") Integer id);
 
+    @Query("SELECT d FROM Doctor d JOIN Usuario u ON u.persona = d.persona WHERE u.usuario = :usuario")
+    Optional<Doctor> findByUsuario(@Param("usuario") String usuario);
+
     @Modifying
     @Query("UPDATE Doctor d SET d.estado =:estado WHERE d.id=:id" )
     void DoctorCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);

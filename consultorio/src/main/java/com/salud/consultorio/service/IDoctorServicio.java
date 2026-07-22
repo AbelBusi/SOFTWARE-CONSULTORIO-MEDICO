@@ -16,6 +16,8 @@ public interface IDoctorServicio {
 
     Optional<Doctor> obtenerPorId(Integer id);
 
+    Optional<Doctor> obtenerPorUsuario(String usuario);
+
     DoctorRespuestaDTO crear(DoctorCrearDTO dto);
 
     DoctorRespuestaDTO actualizar(DoctorActualizarDTO dto, Integer id);

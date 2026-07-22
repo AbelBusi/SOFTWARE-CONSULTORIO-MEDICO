@@ -20,6 +20,10 @@ public interface ICitaMedicaServicio{
 
     List<CitaMedicaLeerDTO> leerCitasPorRecepcionista(String usuario);
 
+    List<DoctorCitaDTO> citasDoctor(String usuario, Integer estado);
+
+    List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctor(String usuario, Integer estado);
+
     CitaMedicaActualizarRespuestaDTO actualizar(CitaMedicaActualizarDTO citaMedicaActualizarDTO, Integer id);
 
     List<CitaMedica> listarTodos();

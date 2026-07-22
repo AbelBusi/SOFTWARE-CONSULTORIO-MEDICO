@@ -2,10 +2,12 @@ package com.salud.consultorio.controller;
 
 import com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO;
 import com.salud.consultorio.dto.doctor.*;
+import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
 import com.salud.consultorio.service.ICitaMedicaServicio;
 import com.salud.consultorio.service.IDoctorServicio;
+import jakarta.persistence.EntityNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -16,6 +18,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +52,35 @@ public class DoctorController {
 
     }
 
+
+    @Operation(summary = "Obtener el doctor del usuario autenticado")
+    @GetMapping("/actual")
+    public ResponseEntity<MensajeResponse> doctorActual(Authentication authentication){
+
+        Doctor doctor = doctorServicio.obtenerPorUsuario(authentication.getName())
+                .orElseThrow(() -> new EntityNotFoundException("El usuario autenticado no es un doctor"));
+
+        DoctorEspecialidadLeerDTO leer = doctorServicio.leerPorId(doctor.getId());
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("Doctor autenticado")
+                .object(leer).build(), HttpStatus.OK);
+
+    }
+
+    @Operation(summary = "Listar los pacientes del doctor autenticado por estado de cita")
+    @GetMapping("/mis-pacientes")
+    public ResponseEntity<MensajeResponse> misPacientes(
+            @RequestParam Integer estado,
+            Authentication authentication){
+
+        List<PacienteDoctorDTO> pacientes = citaMedicaServicio.pacientesDoctor(authentication.getName(), estado);
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("PACIENTES DEL DOCTOR")
+                .object(pacientes).build(), HttpStatus.OK);
+
+    }
 
     @GetMapping("/{id}/citas-medicas")
     @PreAuthorize("hasAuthority('CITA_READ')")

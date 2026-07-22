@@ -2,6 +2,7 @@ package com.salud.consultorio.repository;
 
 import com.salud.consultorio.dto.citaMedica.CitaMedicaLeerDTO;
 import com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO;
+import com.salud.consultorio.dto.citaMedica.DoctorCitaDTO;
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
 import com.salud.consultorio.dto.horario.AgendaCitaDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
@@ -148,6 +149,45 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
     WHERE c.recepcionista.id = :recepcionistaId
     """)
     List<CitaMedicaLeerDTO> leerCitasPorRecepcionista(@Param("recepcionistaId") Integer recepcionistaId);
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.citaMedica.DoctorCitaDTO(
+        c.id,
+        pa.id,
+        pe.dni,
+        CONCAT(pe.nombre, ' ', pe.apellidos),
+        c.motivo,
+        e.nombre,
+        c.fecha,
+        c.horaInicio,
+        c.horaSalida,
+        c.estado
+    )
+    FROM CitaMedica c
+    JOIN c.doctor d
+    JOIN d.persona pd
+    JOIN Usuario u ON u.persona = pd
+    JOIN c.paciente pa
+    JOIN pa.persona pe
+    JOIN c.especialidad e
+    WHERE u.usuario = :usuario AND c.estado = :estado
+    ORDER BY c.fecha DESC, c.horaInicio DESC
+    """)
+    List<DoctorCitaDTO> citasDoctorPorUsuarioYEstado(@Param("usuario") String usuario, @Param("estado") Integer estado);
+
+    @Query("""
+    SELECT DISTINCT new com.salud.consultorio.dto.doctor.PacienteDoctorDTO(
+        pa.id, pe.dni, pe.nombre, pe.apellidos
+    )
+    FROM CitaMedica c
+    JOIN c.doctor d
+    JOIN d.persona pd
+    JOIN Usuario u ON u.persona = pd
+    JOIN c.paciente pa
+    JOIN pa.persona pe
+    WHERE u.usuario = :usuario AND c.estado = :estado
+    """)
+    List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctorPorUsuarioYEstado(@Param("usuario") String usuario, @Param("estado") Integer estado);
 
     @Modifying
     @Query("UPDATE CitaMedica c SET c.estado =:estado WHERE c.id=:id" )
