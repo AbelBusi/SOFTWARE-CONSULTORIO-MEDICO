@@ -86,7 +86,7 @@ export class InicioComponent implements OnInit {
       icon: 'person_add',
       ruta: '/dashboard/pacientes/nuevo',
       color: 'bg-sky-600',
-      roles: ['ADMINISTRADOR'],
+      roles: ['ADMINISTRADOR', 'RECEPCIONISTA'],
     },
     {
       titulo: 'Nuevo doctor',

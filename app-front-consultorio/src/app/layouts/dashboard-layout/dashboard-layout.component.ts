@@ -121,11 +121,11 @@ export class DashboardLayoutComponent implements OnInit {
     },
     {
       label: 'Pacientes',
-      roles: ['ADMINISTRADOR'],
+      roles: ['ADMINISTRADOR', 'RECEPCIONISTA'],
       icon: 'groups',
       sub: [
         { label: 'Ver pacientes', route: '/dashboard/pacientes', roles: ['ADMINISTRADOR'] },
-        { label: 'Nuevo paciente', route: '/dashboard/pacientes/nuevo', roles: ['ADMINISTRADOR'] },
+        { label: 'Nuevo paciente', route: '/dashboard/pacientes/nuevo', roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
       ],
     },
     {
