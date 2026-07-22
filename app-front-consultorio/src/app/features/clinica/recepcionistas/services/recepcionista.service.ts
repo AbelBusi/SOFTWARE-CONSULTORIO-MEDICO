@@ -9,6 +9,7 @@ import {
   RecepcionistaCrearDTO,
   RecepcionistaLeer,
   RecepcionistaActualizarDTO,
+  RecepcionistaDetalle,
 } from '../models/recepcionista.model';
 
 @Injectable({ providedIn: 'root' })
@@ -29,9 +30,9 @@ export class RecepcionistaService {
       .pipe(map((r) => r.object ?? []));
   }
 
-  obtenerPorId(id: number): Observable<RecepcionistaLeer> {
+  obtenerPorId(id: number): Observable<RecepcionistaDetalle> {
     return this.http
-      .get<MensajeResponse<RecepcionistaLeer>>(`${this.baseUrl}/${id}`)
+      .get<MensajeResponse<RecepcionistaDetalle>>(`${this.baseUrl}/${id}`)
       .pipe(map((r) => r.object));
   }
 
@@ -41,10 +42,8 @@ export class RecepcionistaService {
       .pipe(map((r) => r.object));
   }
 
-  actualizar(id: number, dto: RecepcionistaActualizarDTO): Observable<unknown> {
-    return this.http
-      .put<MensajeResponse>(`${this.baseUrl}/${id}`, dto)
-      .pipe(map((r) => r.object));
+  actualizar(id: number, dto: RecepcionistaActualizarDTO): Observable<MensajeResponse<unknown>> {
+    return this.http.put<MensajeResponse<unknown>>(`${this.baseUrl}/${id}`, dto);
   }
 
   eliminar(id: number): Observable<void> {
