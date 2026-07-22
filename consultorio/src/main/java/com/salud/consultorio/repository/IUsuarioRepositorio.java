@@ -26,7 +26,7 @@ public interface IUsuarioRepositorio extends JpaRepository<Usuario, Integer> {
             THEN true 
             ELSE false END
         FROM Usuario u
-        WHERE u.id=:id
+        WHERE u.persona.id=:id
     """)
     boolean existeUsuarioPersona(
             @Param("id") Integer id

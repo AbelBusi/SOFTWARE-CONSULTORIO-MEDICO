@@ -1,6 +1,7 @@
 package com.salud.consultorio.impl;
 
 import com.salud.consultorio.dto.persona.PersonaCrearDTO;
+import com.salud.consultorio.dto.persona.PersonaLeerDTO;
 import com.salud.consultorio.model.entity.Persona;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.repository.IPersonaRepositorio;
@@ -23,6 +24,12 @@ public class PersonaServicioImpl implements IPersonaServicio {
     @Override
     public List<Persona> listarTodos() {
         return personaRepositorio.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PersonaLeerDTO> listarPersonasSinCuenta() {
+        return personaRepositorio.listarPersonasSinCuenta();
     }
 
     @Override
