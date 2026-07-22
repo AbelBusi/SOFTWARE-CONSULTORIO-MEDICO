@@ -9,6 +9,8 @@ import { EspecialidadService } from '../../../clinica/especialidad/services/espe
 import { CitaMedica } from '../../../clinica/citas/models/cita.model';
 import { CitaMedicaLeer } from '../../../clinica/citas/interface/cita.interface';
 import { AuthService } from '../../../auth/services/auth.service';
+import { DoctorPortalService } from '../../../doctor/services/doctor-portal.service';
+import { ComunicadoService, Comunicado } from '../../../../core/services/comunicado.service';
 
 @Component({
   selector: 'app-inicio',
@@ -22,8 +24,12 @@ export class InicioComponent implements OnInit {
   private pacienteService = inject(PacienteService);
   private especialidadService = inject(EspecialidadService);
   private authService = inject(AuthService);
+  private doctorPortalService = inject(DoctorPortalService);
+  private comunicadoService = inject(ComunicadoService);
 
   esRecepcionista = false;
+  esDoctor = false;
+  esAdmin = false;
 
   cargando = signal(true);
   totalPacientes = signal(0);
@@ -31,6 +37,7 @@ export class InicioComponent implements OnInit {
   totalCitas = signal(0);
   citasHoy = signal(0);
   totalEspecialidades = signal(0);
+  comunicados = signal<Comunicado[]>([]);
 
   accesosRapidos = [
     {
@@ -50,12 +57,28 @@ export class InicioComponent implements OnInit {
       roles: ['RECEPCIONISTA'],
     },
     {
+      titulo: 'Mis citas',
+      desc: 'Consulta y atiende tus citas',
+      icon: 'event',
+      ruta: '/dashboard/mis-citas',
+      color: 'bg-teal-600',
+      roles: ['DOCTOR'],
+    },
+    {
+      titulo: 'Mis pacientes',
+      desc: 'Tus pacientes',
+      icon: 'groups',
+      ruta: '/dashboard/mis-pacientes',
+      color: 'bg-emerald-600',
+      roles: ['DOCTOR'],
+    },
+    {
       titulo: 'Mi horario',
       desc: 'Consultar tu horario',
       icon: 'schedule',
       ruta: '/dashboard/horario',
       color: 'bg-sky-600',
-      roles: ['RECEPCIONISTA'],
+      roles: ['RECEPCIONISTA', 'DOCTOR'],
     },
     {
       titulo: 'Nuevo paciente',
@@ -89,7 +112,12 @@ export class InicioComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.esRecepcionista = this.authService.getRole() === 'RECEPCIONISTA';
+    const rol = this.authService.getRole();
+    this.esRecepcionista = rol === 'RECEPCIONISTA';
+    this.esDoctor = rol === 'DOCTOR';
+    this.esAdmin = rol === 'ADMINISTRADOR';
+
+    this.comunicadoService.listar().subscribe({ next: (c) => this.comunicados.set(c) });
 
     if (this.esRecepcionista) {
       this.citaService.mias().subscribe({
@@ -99,6 +127,22 @@ export class InicioComponent implements OnInit {
           this.totalCitas.set(citas.length);
           const hoy = new Date().toISOString().slice(0, 10);
           this.citasHoy.set(citas.filter((c) => c.diaConsulta === hoy).length);
+          this.cargando.set(false);
+        },
+        error: () => this.cargando.set(false),
+      });
+      return;
+    }
+
+    if (this.esDoctor) {
+      forkJoin({
+        pendientes: this.doctorPortalService.misCitas(1),
+        atendidas: this.doctorPortalService.misCitas(2),
+      }).subscribe({
+        next: ({ pendientes, atendidas }) => {
+          this.totalCitas.set(pendientes.length + atendidas.length);
+          const hoy = new Date().toISOString().slice(0, 10);
+          this.citasHoy.set(pendientes.filter((c) => c.fecha === hoy).length);
           this.cargando.set(false);
         },
         error: () => this.cargando.set(false),

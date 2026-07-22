@@ -7,6 +7,7 @@ import { CatalogoService, ResumenItem } from '../../../../core/services/catalogo
 import { ToastService } from '../../../../core/services/toast.service';
 import { AuthService } from '../../../auth/services/auth.service';
 import { RecepcionistaService } from '../../../clinica/recepcionistas/services/recepcionista.service';
+import { DoctorPortalService } from '../../../doctor/services/doctor-portal.service';
 
 interface CeldaEstado {
   estado: 'cita' | 'disponible' | 'libre';
@@ -25,8 +26,11 @@ export class HorarioComponent {
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
   private recepcionistaService = inject(RecepcionistaService);
+  private doctorPortalService = inject(DoctorPortalService);
 
   esRecepcionista = false;
+  esDoctor = false;
+  esTrabajador = false;
 
   fecha = signal<string>('');
   horaInicio = signal<string>('');
@@ -48,13 +52,23 @@ export class HorarioComponent {
   horas = Array.from({ length: 14 }, (_, i) => i + 7);
 
   constructor() {
-    this.esRecepcionista = this.authService.getRole() === 'RECEPCIONISTA';
+    const rol = this.authService.getRole();
+    this.esRecepcionista = rol === 'RECEPCIONISTA';
+    this.esDoctor = rol === 'DOCTOR';
+    this.esTrabajador = this.esRecepcionista || this.esDoctor;
 
     if (this.esRecepcionista) {
       this.recepcionistaService.actual().subscribe({
         next: (r) => {
           this.tipo.set('RECEPCIONISTA');
           this.personaId.set(r.id);
+        },
+      });
+    } else if (this.esDoctor) {
+      this.doctorPortalService.actual().subscribe({
+        next: (d) => {
+          this.tipo.set('DOCTOR');
+          this.personaId.set(d.id);
         },
       });
     } else {

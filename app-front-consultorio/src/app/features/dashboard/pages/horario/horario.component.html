@@ -1,6 +1,6 @@
 <div class="animate-fade-in space-y-6">
 
-  @if (!esRecepcionista) {
+  @if (!esTrabajador) {
   <div class="bg-white rounded border border-slate-200 p-6 shadow-sm space-y-4">
     <div class="flex items-center gap-2 border-b border-slate-100 pb-3">
       <span class="material-icons text-[#0d6b68] text-base">event_available</span>
@@ -77,9 +77,9 @@
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3">
       <div class="flex items-center gap-2">
         <span class="material-icons text-[#0d6b68] text-base">calendar_month</span>
-        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ esRecepcionista ? 'Mi Horario' : 'Calendario de trabajo' }}</h3>
+        <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">{{ esTrabajador ? 'Mi Horario' : 'Calendario de trabajo' }}</h3>
       </div>
-      @if (!esRecepcionista) {
+      @if (!esTrabajador) {
         <div class="flex items-center gap-2">
           <select class="input-field w-auto py-2 rounded text-xs" [ngModel]="tipo()" (ngModelChange)="onTipoChange($event)">
             <option value="DOCTOR">Doctor</option>
@@ -152,7 +152,7 @@
       </div>
     } @else {
       <p class="text-xs text-slate-400">
-        {{ esRecepcionista ? 'Cargando tu horario...' : 'Seleccione un tipo y una persona para ver su calendario de trabajo.' }}
+        {{ esTrabajador ? 'Cargando tu horario...' : 'Seleccione un tipo y una persona para ver su calendario de trabajo.' }}
       </p>
     }
   </div>

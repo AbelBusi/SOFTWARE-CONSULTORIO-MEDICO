@@ -47,6 +47,8 @@ const PAGE_TITLES: Record<string, { title: string; subtitle: string }> = {
   '/dashboard/usuarios': { title: 'Usuarios', subtitle: 'Cuentas del sistema' },
   '/dashboard/usuarios/nuevo': { title: 'Nuevo usuario', subtitle: 'Crear cuenta de acceso' },
   '/dashboard/roles': { title: 'Roles', subtitle: 'Perfiles de acceso del sistema' },
+  '/dashboard/mis-citas': { title: 'Mis Citas', subtitle: 'Consulta y atiende tus citas' },
+  '/dashboard/mis-pacientes': { title: 'Mis Pacientes', subtitle: 'Pacientes relacionados con tu actividad' },
 };
 
 @Component({
@@ -100,20 +102,29 @@ export class DashboardLayoutComponent implements OnInit {
     {
       label: 'Citas',
       icon: 'calendar_today',
-      roles: ['ADMINISTRADOR', 'DOCTOR', 'RECEPCIONISTA', 'PACIENTE'],
+      roles: ['ADMINISTRADOR', 'RECEPCIONISTA', 'PACIENTE'],
       sub: [
-        { label: 'Mis citas', route: '/dashboard/citas', roles: ['ADMINISTRADOR', 'DOCTOR', 'PACIENTE'] },
+        { label: 'Ver citas', route: '/dashboard/citas', roles: ['ADMINISTRADOR', 'PACIENTE'] },
         { label: 'Agendar cita', route: '/dashboard/citas/nuevo', roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
         { label: 'Historial de citas', route: '/dashboard/historial-citas', roles: ['RECEPCIONISTA'] },
-        { label: 'Citas por doctor', route: '/dashboard/citas/por-doctor', roles: ['ADMINISTRADOR', 'DOCTOR'] },
+        { label: 'Citas por doctor', route: '/dashboard/citas/por-doctor', roles: ['ADMINISTRADOR'] },
+      ],
+    },
+    {
+      label: 'Mi Consultorio',
+      icon: 'medical_services',
+      roles: ['DOCTOR'],
+      sub: [
+        { label: 'Mis citas', route: '/dashboard/mis-citas', roles: ['DOCTOR'] },
+        { label: 'Mis pacientes', route: '/dashboard/mis-pacientes', roles: ['DOCTOR'] },
       ],
     },
     {
       label: 'Pacientes',
-      roles: ['ADMINISTRADOR', 'DOCTOR'],
+      roles: ['ADMINISTRADOR'],
       icon: 'groups',
       sub: [
-        { label: 'Ver pacientes', route: '/dashboard/pacientes', roles: ['ADMINISTRADOR', 'DOCTOR'] },
+        { label: 'Ver pacientes', route: '/dashboard/pacientes', roles: ['ADMINISTRADOR'] },
         { label: 'Nuevo paciente', route: '/dashboard/pacientes/nuevo', roles: ['ADMINISTRADOR'] },
       ],
     },

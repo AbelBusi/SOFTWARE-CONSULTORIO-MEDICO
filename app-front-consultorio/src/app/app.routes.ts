@@ -47,7 +47,7 @@ export const routes: Routes = [
           {
             path: '',
             canActivate: [authGuard],
-            data: { roles: ['ADMINISTRADOR', 'DOCTOR', 'PACIENTE'] },
+            data: { roles: ['ADMINISTRADOR', 'PACIENTE'] },
             loadComponent: () =>
               import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
                 (m) => m.ListaCitaComponent,
@@ -65,7 +65,7 @@ export const routes: Routes = [
           {
             path: 'por-doctor',
             canActivate: [authGuard],
-            data: { roles: ['ADMINISTRADOR', 'DOCTOR'] },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
                 (m) => m.ListaCitaComponent,
@@ -83,12 +83,30 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'mis-citas',
+        canActivate: [authGuard],
+        data: { roles: ['DOCTOR'] },
+        loadComponent: () =>
+          import('./features/doctor/pages/mis-citas/mis-citas.component').then(
+            (m) => m.MisCitasComponent,
+          ),
+      },
+      {
+        path: 'mis-pacientes',
+        canActivate: [authGuard],
+        data: { roles: ['DOCTOR'] },
+        loadComponent: () =>
+          import('./features/doctor/pages/mis-pacientes/mis-pacientes.component').then(
+            (m) => m.MisPacientesComponent,
+          ),
+      },
+      {
         path: 'pacientes',
         children: [
           {
             path: '',
             canActivate: [authGuard],
-            data: { roles: ['ADMINISTRADOR', 'DOCTOR'] },
+            data: { roles: ['ADMINISTRADOR'] },
             loadComponent: () =>
               import('./features/clinica/pacientes/pages/lista-pacientes/lista-pacientes.component').then(
                 (m) => m.ListaPacientesComponent,
@@ -97,7 +115,7 @@ export const routes: Routes = [
           {
             path: 'nuevo',
             canActivate: [authGuard],
-            data: { roles: ['ADMINISTRADOR'] },
+            data: { roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
             loadComponent: () =>
               import('./features/clinica/pacientes/pages/crear-paciente/crear-paciente.component').then(
                 (m) => m.CrearPacienteComponent,
