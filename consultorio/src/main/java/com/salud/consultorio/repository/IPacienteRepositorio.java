@@ -14,14 +14,18 @@ import java.util.Optional;
 
 public interface IPacienteRepositorio extends JpaRepository<Paciente,Integer> {
 
-    @Query(value = """
-                SELECT 
-                    p.id AS idPaciente,
-                    CONCAT(pe.nombre, ' ', pe.apellidos) AS nombrePaciente
-                FROM paciente p
-                INNER JOIN persona pe ON p.id_persona = pe.id
-        """, nativeQuery = true)
+    @Query("""
+    SELECT new com.salud.consultorio.dto.paciente.NombrePacientesDTO(  
+        p.id,
+        CONCAT(pe.nombre, ' ', pe.apellidos)
+    )
+    FROM Paciente p
+    JOIN p.persona pe
+    WHERE p.estado = 1
+    """)
     List<NombrePacientesDTO> listarPacientesResumen();
+
+    boolean existsByCodigoAseguradora(String codigo);
 
     @Query("""
     SELECT new com.salud.consultorio.dto.paciente.PacienteLeerDTO(
@@ -68,6 +72,9 @@ SELECT new com.salud.consultorio.dto.paciente.PacienteDetalleLeerDTO(
 
     @Query("SELECT p FROM Paciente p JOIN FETCH p.persona WHERE p.id = :id")
     Optional<Paciente> findByIdConPersona(@Param("id") Integer id);
+
+    @Query("SELECT p FROM Paciente p JOIN Usuario u ON u.persona = p.persona WHERE u.usuario = :usuario")
+    Optional<Paciente> findByUsuario(@Param("usuario") String usuario);
 
     @Modifying
     @Query("UPDATE Paciente p SET p.estado =:estado WHERE p.id=:id" )

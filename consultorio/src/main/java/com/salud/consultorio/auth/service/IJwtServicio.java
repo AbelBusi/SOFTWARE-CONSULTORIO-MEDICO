@@ -1,6 +1,9 @@
 package com.salud.consultorio.auth.service;
 
 import com.salud.consultorio.model.entity.Usuario;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.List;
 
 public interface IJwtServicio {
 
@@ -12,8 +15,9 @@ public interface IJwtServicio {
 
     String construirToken(Usuario usuario, Integer expiration);
 
-    boolean tokenValido(final String token, Usuario usuario);
+    boolean tokenValido(final String token, UserDetails usuario);
 
     boolean tokenExpirado(String token);
 
+    List<String> extraerPermisos(final String token);
 }

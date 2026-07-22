@@ -111,6 +111,20 @@ public class RecepcionistaServicioImpl implements IRecepcionistaServicio {
 
     @Transactional(readOnly = true)
     @Override
+    public RecepcionistaDetalleLeerDTO obtenerDetallePorId(Integer id) {
+        return recepcionistaRepositorio.obtenerDetallePorId(id).orElseThrow(
+                () -> new EntityNotFoundException("No existe el recepcionista en la entidad")
+        );
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<Recepcionista> obtenerPorUsuario(String usuario) {
+        return recepcionistaRepositorio.findByUsuario(usuario);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public List<RecepcionistaLeerDTO> listarRecepcionistasPersonas() {
         return recepcionistaRepositorio.leerRecepcionistas();
     }

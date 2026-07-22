@@ -25,6 +25,7 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     private final IEspecialidadServicio especialidadServicio;
     private final IPacienteServicio pacienteServicio;
     private final IRecepcionistaServicio recepcionistaServicio;
+    private final IHorarioTrabajoServicio horarioTrabajoServicio;
     private final ReferenciaServicio referenciaServicio;
     private final ICitaMedicaMapper citaMedicaMapper;
     private final IPacienteMapper pacienteMapper;
@@ -36,39 +37,118 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         return citaMedicaRepositorio.findAll();
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Optional<CitaMedica> obtenerPorId(Integer integer) {
+        return citaMedicaRepositorio.findById(integer);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public boolean cruceHorarios(LocalDate fecha, LocalTime horaSalida, LocalTime horaEntrada,Integer id) {
+        return citaMedicaRepositorio.cruceHorasCitas(fecha,id,horaSalida,horaEntrada);
+    }
+
+    @Override
+    public CitaMedica crear(CitaMedicaDTO dto) {
+        return null;
+    }
+
     @Transactional
     @Override
     public CitaMedicaRespuestaDTO crearCita(CitaMedicaCrearDTO dto) {
 
-        if (!doctorServicio.existeDoctor(dto.getDoctor().getId())){
+        if (!doctorServicio.existeDoctor(dto.getDoctor().getId())) {
             throw new EntityNotFoundException("El doctor no existe en la entidad");
         }
 
-        if (!pacienteServicio.existePaciente(dto.getPaciente().getId())){
+        if (!pacienteServicio.existePaciente(dto.getPaciente().getId())) {
             throw new EntityNotFoundException("El paciente no existe en la entidad");
         }
 
-        if (!recepcionistaServicio.existeRecepcionista(dto.getRecepcionista().getId())){
-            throw new EntityNotFoundException("Recepcionista no existe en la entidad");
+        if (!recepcionistaServicio.existeRecepcionista(dto.getRecepcionista().getId())) {
+            throw new EntityNotFoundException("El recepcionista no existe en la entidad");
         }
 
-        if (!especialidadServicio.existeEspecialidad(dto.getEspecialidad().getId())){
+        if (!especialidadServicio.existeEspecialidad(dto.getEspecialidad().getId())) {
             throw new EntityNotFoundException("La especialidad no existe en la entidad");
         }
 
-        if (cruceHorarios(dto.getFecha(),dto.getHoraSalida(),dto.getHoraInicio())){
-            throw new DataIntegrityViolationException("Existe cruce de horario en la cita");
+        if (
+                dto.getHoraInicio().isAfter(dto.getHoraSalida())
+                        || dto.getHoraInicio().equals(dto.getHoraSalida())
+        ) {
+            throw new DataIntegrityViolationException(
+                    "La hora de inicio debe ser menor a la hora de salida"
+            );
         }
 
-        CitaMedica citaMedica=citaMedicaMapper.citaMedicaCrearDtoToCitaMedica(dto);
+        if (
+                citaMedicaRepositorio.cruceHorasCitas(
+                        dto.getFecha(),
+                        dto.getDoctor().getId(),
+                        dto.getHoraSalida(),
+                        dto.getHoraInicio()
+                )
+        ) {
+            throw new DataIntegrityViolationException(
+                    "Existe cruce de horario en la cita"
+            );
+        }
 
-        Especialidad especialidad = referenciaServicio.getRef(Especialidad.class,dto.getEspecialidad().getId());
+        int diaSemana = dto.getFecha().getDayOfWeek().getValue();
 
-        Doctor doctor = referenciaServicio.getRef(Doctor.class,dto.getDoctor().getId());
+        if (!horarioTrabajoServicio.doctorTrabajaEn(dto.getDoctor().getId(), diaSemana, dto.getHoraInicio(), dto.getHoraSalida())) {
+            throw new DataIntegrityViolationException(
+                    "El doctor no tiene un horario de trabajo configurado para la fecha y hora seleccionadas"
+            );
+        }
 
-        Paciente paciente = referenciaServicio.getRef(Paciente.class,dto.getPaciente().getId());
+        if (!horarioTrabajoServicio.recepcionistaTrabajaEn(dto.getRecepcionista().getId(), diaSemana, dto.getHoraInicio(), dto.getHoraSalida())) {
+            throw new DataIntegrityViolationException(
+                    "El recepcionista no tiene un horario de trabajo configurado para la fecha y hora seleccionadas"
+            );
+        }
 
-        Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class,dto.getRecepcionista().getId());
+        if (
+                citaMedicaRepositorio.cruceHorasCitasRecepcionista(
+                        dto.getFecha(),
+                        dto.getRecepcionista().getId(),
+                        dto.getHoraSalida(),
+                        dto.getHoraInicio()
+                )
+        ) {
+            throw new DataIntegrityViolationException(
+                    "El recepcionista ya tiene una cita que se cruza con ese horario"
+            );
+        }
+
+        CitaMedica citaMedica =
+                citaMedicaMapper.citaMedicaCrearDtoToCitaMedica(dto);
+
+        Especialidad especialidad =
+                referenciaServicio.getRef(
+                        Especialidad.class,
+                        dto.getEspecialidad().getId()
+                );
+
+        Doctor doctor =
+                referenciaServicio.getRef(
+                        Doctor.class,
+                        dto.getDoctor().getId()
+                );
+
+        Paciente paciente =
+                referenciaServicio.getRef(
+                        Paciente.class,
+                        dto.getPaciente().getId()
+                );
+
+        Recepcionista recepcionista =
+                referenciaServicio.getRef(
+                        Recepcionista.class,
+                        dto.getRecepcionista().getId()
+                );
 
         citaMedica.setDoctor(doctor);
         citaMedica.setEspecialidad(especialidad);
@@ -78,42 +158,6 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
         CitaMedica guardado = citaMedicaRepositorio.save(citaMedica);
 
         return citaMedicaMapper.toDto(guardado);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Optional<CitaMedica> obtenerPorId(Integer integer) {
-        return citaMedicaRepositorio.findById(integer);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public boolean cruceHorarios(LocalDate fecha, LocalTime horaSalida, LocalTime horaEntrada) {
-        return citaMedicaRepositorio.cruceHorasCitas(fecha,horaSalida,horaEntrada);
-    }
-
-    @Transactional
-    @Override
-    public CitaMedica crear(CitaMedicaDTO citaMedicaDTO) {
-
-        Doctor doctor = referenciaServicio.getRef(Doctor.class,citaMedicaDTO.getDoctor().getId());
-
-        Especialidad especialidad = referenciaServicio.getRef(Especialidad.class, citaMedicaDTO.getEspecialidad().getId());
-        Recepcionista recepcionista = referenciaServicio.getRef(Recepcionista.class, citaMedicaDTO.getRecepcionista().getId());
-
-        Persona persona = personaMapper.personaDtoToPersona(citaMedicaDTO.getPaciente().getPersona());
-        Paciente paciente = pacienteMapper.pacienteDtoToPaciente(citaMedicaDTO.getPaciente());
-
-        CitaMedica citaMedica = citaMedicaMapper.citaMedicaDtoToCitaMedica(citaMedicaDTO);
-
-        citaMedica.setDoctor(doctor);
-        citaMedica.setEspecialidad(especialidad);
-        citaMedica.setRecepcionista(recepcionista);
-        citaMedica.setPaciente(paciente);
-
-        paciente.setPersona(persona);
-
-        return citaMedicaRepositorio.save(citaMedica);
     }
 
     @Transactional
@@ -158,6 +202,18 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
 
     @Transactional(readOnly = true)
     @Override
+    public List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctor(Integer idUsuario, Integer idEstado) {
+        return citaMedicaRepositorio.listarCitasAtendidasPorDoctor(idUsuario,idEstado);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctorHistorial(Integer idUsuario) {
+        return citaMedicaRepositorio.listarCitasAtendidasPorDoctorHistorial(idUsuario);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public CitaMedicaLeerDTO mostrarCitaMedicaPorId(Integer id) {
         return citaMedicaRepositorio.traerCitaMedicaId(id).orElseThrow(
                 () -> new EntityNotFoundException("La cita medica no existe en la entidad")
@@ -180,5 +236,31 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     @Override
     public List<CitaMedicaLeerDTO> leerCitasMedicasInactivas() {
         return citaMedicaRepositorio.leerCitasMedicasInactivas();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CitaMedicaLeerDTO> leerCitasPorRecepcionista(String usuario) {
+        return recepcionistaServicio.obtenerPorUsuario(usuario)
+                .map(recepcionista -> citaMedicaRepositorio.leerCitasPorRecepcionista(recepcionista.getId()))
+                .orElseGet(List::of);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<DoctorCitaDTO> citasDoctor(String usuario, Integer estado) {
+        return citaMedicaRepositorio.citasDoctorPorUsuarioYEstado(usuario, estado);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctor(String usuario, Integer estado) {
+        return citaMedicaRepositorio.pacientesDoctorPorUsuarioYEstado(usuario, estado);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PacienteCitaDTO> citasPaciente(String usuario) {
+        return citaMedicaRepositorio.citasPacientePorUsuario(usuario);
     }
 }

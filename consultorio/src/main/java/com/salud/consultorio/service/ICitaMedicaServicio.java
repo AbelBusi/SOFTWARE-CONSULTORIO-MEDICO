@@ -18,6 +18,14 @@ public interface ICitaMedicaServicio{
 
     List<CitaMedicaLeerDTO> leerCitasMedicasInactivas();
 
+    List<CitaMedicaLeerDTO> leerCitasPorRecepcionista(String usuario);
+
+    List<DoctorCitaDTO> citasDoctor(String usuario, Integer estado);
+
+    List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctor(String usuario, Integer estado);
+
+    List<PacienteCitaDTO> citasPaciente(String usuario);
+
     CitaMedicaActualizarRespuestaDTO actualizar(CitaMedicaActualizarDTO citaMedicaActualizarDTO, Integer id);
 
     List<CitaMedica> listarTodos();
@@ -26,9 +34,12 @@ public interface ICitaMedicaServicio{
 
     Optional<CitaMedica> obtenerPorId(Integer id);
 
-    boolean cruceHorarios(LocalDate fecha, LocalTime horaSalida, LocalTime horaEntrada);
+    boolean cruceHorarios(LocalDate fecha,LocalTime horaSalida, LocalTime horaEntrada, Integer id);
 
     CitaMedica crear(CitaMedicaDTO dto);
 
     void eliminarPorId(Integer id);
+
+    List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctor(Integer idUsuario, Integer idEstado);
+    List<DoctorCitaAtendidaDTO> listarCitasAtendidasPorDoctorHistorial(Integer idUsuario);
 }

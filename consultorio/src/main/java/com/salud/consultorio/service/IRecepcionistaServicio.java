@@ -24,6 +24,10 @@ public interface IRecepcionistaServicio{
 
     RecepcionistaLeerDTO leerPorId(Integer id);
 
+    RecepcionistaDetalleLeerDTO obtenerDetallePorId(Integer id);
+
+    java.util.Optional<com.salud.consultorio.model.entity.Recepcionista> obtenerPorUsuario(String usuario);
+
     List<RecepcionistaLeerDTO> listarRecepcionistasPersonas();
 
     List<RecepcionistaLeerDTO> listarRecepcionistasActivos();

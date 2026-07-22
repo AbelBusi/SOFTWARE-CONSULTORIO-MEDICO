@@ -16,6 +16,8 @@ public interface IDoctorServicio {
 
     Optional<Doctor> obtenerPorId(Integer id);
 
+    Optional<Doctor> obtenerPorUsuario(String usuario);
+
     DoctorRespuestaDTO crear(DoctorCrearDTO dto);
 
     DoctorRespuestaDTO actualizar(DoctorActualizarDTO dto, Integer id);
@@ -30,6 +32,11 @@ public interface IDoctorServicio {
 
     List<DoctorEspecialidadLeerDTO> todosDoctoresEspecialidadInactivos();
 
-    List<DoctorEspecialidadPorIdDT> listaDoctoresEspecialidadSeleccionada(Integer id);
+    List<DoctorEspecialidadPorIdDTO> listaDoctoresEspecialidadSeleccionada(Integer id);
+
+    DoctorDetalleLeerDTO obtenerDatosPersonales(Integer id);
+
+    boolean existeCpm(String cpm);
+    boolean existeRne(String rne);
 
 }

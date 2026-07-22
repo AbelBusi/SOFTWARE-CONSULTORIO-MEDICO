@@ -1,9 +1,11 @@
 package com.salud.consultorio.repository;
 
+import com.salud.consultorio.dto.doctor.DoctorDetalleLeerDTO;
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
-import com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT;
+import com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDTO;
 import com.salud.consultorio.dto.doctor.NombreDoctoresDTO;
 import com.salud.consultorio.model.entity.Doctor;
+import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -16,14 +18,15 @@ import java.util.Optional;
 @Repository
 public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
 
-
-    @Query(value = """
-    SELECT 
-        d.id AS idDoctor,
-        CONCAT(pe.nombre, ' ', pe.apellidos) AS nombreDoctor
-    FROM doctor d
-    INNER JOIN persona pe ON d.id_persona = pe.id
-""", nativeQuery = true)
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.NombreDoctoresDTO(
+            d.id,
+            CONCAT(pe.nombre, ' ', pe.apellidos)
+    )    
+    FROM Doctor d
+    JOIN d.persona pe
+    WHERE d.estado = 1
+    """)
     List<NombreDoctoresDTO> listarDoctoresResumen();
 
     @Query("""
@@ -96,12 +99,15 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
     @Query("SELECT d FROM Doctor d  JOIN FETCH d.persona JOIN FETCH d.especialidad WHERE d.id = :id")
     Optional<Doctor> findByIdConPersona(@Param("id") Integer id);
 
+    @Query("SELECT d FROM Doctor d JOIN Usuario u ON u.persona = d.persona WHERE u.usuario = :usuario")
+    Optional<Doctor> findByUsuario(@Param("usuario") String usuario);
+
     @Modifying
     @Query("UPDATE Doctor d SET d.estado =:estado WHERE d.id=:id" )
     void DoctorCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);
 
     @Query("""
-   SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDT(
+   SELECT new com.salud.consultorio.dto.doctor.DoctorEspecialidadPorIdDTO(
       d.id,
       CONCAT(p.nombre, ' ', p.apellidos) AS nombre
    )
@@ -110,6 +116,38 @@ public interface IDoctorRepositorio extends JpaRepository<Doctor, Integer> {
    WHERE d.especialidad.id=:id
    AND d.estado=1
     """)
-    List<DoctorEspecialidadPorIdDT> listaDoctoresEspecialidadSeleccionada(@Param("id") Integer id);
+    List<DoctorEspecialidadPorIdDTO> listaDoctoresEspecialidadSeleccionada(@Param("id") Integer id);
 
+    @Query("""
+    SELECT new com.salud.consultorio.dto.doctor.DoctorDetalleLeerDTO(
+        d.id,
+        new com.salud.consultorio.dto.persona.PersonaLeerDTO(
+            p.id,
+            p.dni,
+            p.nombre,
+            p.apellidos,
+            p.fechaNacimiento,
+            p.genero,
+            p.telefono,
+            p.nacionalidad,
+            p.correo
+        ),
+        d.cpm,
+        d.rne,
+        d.consejoRegional,
+        new com.salud.consultorio.dto.especialidad.EspecialidadDoctorLeerDTO(
+            e.nombre
+        ),
+        d.estado
+    )
+    FROM Doctor d
+    JOIN d.persona p
+    JOIN d.especialidad e
+    WHERE d.id = :id
+""")
+    Optional<DoctorDetalleLeerDTO> obtenerDetallePorId(@Param("id") Integer id);
+
+    boolean existsByCpm(String cpm);
+
+    boolean existsByRne(String rne);
 }

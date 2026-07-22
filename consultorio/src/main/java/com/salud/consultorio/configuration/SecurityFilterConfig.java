@@ -32,8 +32,12 @@ public class SecurityFilterConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->auth
-                        .requestMatchers("/api/v1/pacientes/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
+                        .requestMatchers("/api/v1/pacientes/**").authenticated()
+                        .requestMatchers("/api/v1/recepcionistas/**").authenticated()
+                        .requestMatchers("/api/v1/doctores/**").authenticated()
+                        .requestMatchers("/api/v1/usuarios").authenticated()
+                        .requestMatchers("/api/v1/citas-medicas/**").authenticated()
                         .requestMatchers("/swagger-ui/**","v3/api-docs/**").permitAll()
                         .anyRequest().authenticated()
                 ).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

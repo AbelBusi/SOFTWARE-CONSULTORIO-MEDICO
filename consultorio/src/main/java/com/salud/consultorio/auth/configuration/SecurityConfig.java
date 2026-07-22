@@ -9,14 +9,19 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final IUsuarioRepositorio usuarioRepositorio;
@@ -27,9 +32,21 @@ public class SecurityConfig {
             final Usuario usuario = usuarioRepositorio.findByUsuario(username)
                     .orElseThrow(()-> new UsernameNotFoundException("El usuario no existe en la base de datos"));
 
+            List<SimpleGrantedAuthority> permisos =
+                    usuario.getRol()
+                            .getRolPermisos()
+                            .stream()
+                            .map(rolPermiso ->
+                                    new SimpleGrantedAuthority(
+                                            rolPermiso.getPermiso().getNombre()
+                                    )
+                            )
+                            .toList();
+
             return User.builder()
                     .username(usuario.getUsuario())
                     .password(usuario.getClaveAcceso())
+                    .authorities(permisos)
                     .build();
         };
     }

@@ -12,15 +12,25 @@ import com.salud.consultorio.model.entity.Usuario;
 import com.salud.consultorio.model.mapper.IPersonaMapper;
 import com.salud.consultorio.model.mapper.IRolMapper;
 import com.salud.consultorio.model.mapper.IUsuarioMapper;
+import com.salud.consultorio.auth.exception.AccesoFueraHorarioException;
+import com.salud.consultorio.repository.IDoctorRepositorio;
+import com.salud.consultorio.repository.IRecepcionistaRepositorio;
 import com.salud.consultorio.repository.ITokenRepositorio;
 import com.salud.consultorio.repository.IUsuarioRepositorio;
+import com.salud.consultorio.service.IHorarioTrabajoServicio;
 import com.salud.consultorio.service.IRolServicio;
 import com.salud.consultorio.service.IUsuarioServicio;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -42,6 +52,9 @@ public class IAuthServicioImpl implements IAuthServicio {
     private final IRolMapper rolMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final IRecepcionistaRepositorio recepcionistaRepositorio;
+    private final IDoctorRepositorio doctorRepositorio;
+    private final IHorarioTrabajoServicio horarioTrabajoServicio;
 
     @Transactional
     @Override
@@ -73,9 +86,9 @@ public class IAuthServicioImpl implements IAuthServicio {
         String jwtToken = jwtServicio.generarToken(usuario);
         String refreshToken = jwtServicio.generarTokenRefrescado(usuario);
 
-        saveUserToken(guardado,jwtToken);
+        saveUserToken(guardado, jwtToken);
 
-        return new TokenResponse(jwtToken,refreshToken);
+        return new TokenResponse(jwtToken, refreshToken);
     }
 
     @Transactional
@@ -89,20 +102,34 @@ public class IAuthServicioImpl implements IAuthServicio {
         );
 
         Usuario guardado = usuarioRepositorio.findByUsuario(request.usuario())
-                .orElseThrow(()-> new UsernameNotFoundException("No existe el usuario"));
+                .orElseThrow(() -> new UsernameNotFoundException("No existe el usuario"));
+
+        recepcionistaRepositorio.findByUsuario(guardado.getUsuario()).ifPresent(recepcionista -> {
+            LocalDate hoy = LocalDate.now();
+            LocalTime ahora = LocalTime.now();
+            if (!horarioTrabajoServicio.recepcionistaTrabajaEn(recepcionista.getId(), hoy.getDayOfWeek().getValue(), ahora, ahora)) {
+                throw new AccesoFueraHorarioException("Acceso denegado: te encuentras fuera de tu horario de trabajo.");
+            }
+        });
+
+        doctorRepositorio.findByUsuario(guardado.getUsuario()).ifPresent(doctor -> {
+            LocalDate hoy = LocalDate.now();
+            LocalTime ahora = LocalTime.now();
+            if (!horarioTrabajoServicio.doctorTrabajaEn(doctor.getId(), hoy.getDayOfWeek().getValue(), ahora, ahora)) {
+                throw new AccesoFueraHorarioException("Acceso denegado: te encuentras fuera de tu horario de trabajo.");
+            }
+        });
 
         String jwtToken = jwtServicio.generarToken(guardado);
-
         String refreshToken = jwtServicio.generarTokenRefrescado(guardado);
 
         revokeAllUserToken(guardado);
+        saveUserToken(guardado, jwtToken);
 
-        saveUserToken(guardado,jwtToken);
-
-        return new TokenResponse(jwtToken,refreshToken);
-
+        return new TokenResponse(jwtToken, refreshToken);
     }
 
+    @Transactional
     @Override
     public TokenResponse refrescarToken(final String authHeder) {
 
@@ -113,29 +140,33 @@ public class IAuthServicioImpl implements IAuthServicio {
         final String refreshToken = authHeder.substring(7);
         final String user = jwtServicio.extraerUsuario(refreshToken);
 
-        if (user== null){
+        if (user == null){
             throw new IllegalArgumentException("Token Bearer Invalido2");
         }
 
         final Usuario usuario = usuarioRepositorio.findByUsuario(user).orElseThrow(
-                ()-> new UsernameNotFoundException(user)
+                () -> new UsernameNotFoundException(user)
         );
 
-        if(!jwtServicio.tokenValido(refreshToken,usuario)){
+        List<SimpleGrantedAuthority> authorities = usuario.getRol()
+                .getRolPermisos()
+                .stream()
+                .map(rolPermiso -> new SimpleGrantedAuthority(rolPermiso.getPermiso().getNombre()))
+                .toList();
 
+        UserDetails userDetails = new User(usuario.getUsuario(), usuario.getClaveAcceso(), authorities);
+
+        if (!jwtServicio.tokenValido(refreshToken, userDetails)){
             throw new IllegalArgumentException("Token Bearer Invalido3");
-
         }
 
         final String accesoToken = jwtServicio.generarToken(usuario);
 
         revokeAllUserToken(usuario);
-        saveUserToken(usuario,accesoToken);
+        saveUserToken(usuario, accesoToken);
 
-        return new TokenResponse(accesoToken,refreshToken);
-
+        return new TokenResponse(accesoToken, refreshToken);
     }
-
 
     private void saveUserToken(Usuario usuario, String jwtToken){
 
@@ -148,7 +179,6 @@ public class IAuthServicioImpl implements IAuthServicio {
                 .build();
 
         tokenRepositorio.save(token);
-
     }
 
     private void revokeAllUserToken(final Usuario usuario){
@@ -156,12 +186,11 @@ public class IAuthServicioImpl implements IAuthServicio {
                 .findAllByUsuarioIdAndExpiredFalseAndRevokedFalse(usuario.getId());
 
         if (!validUserTokens.isEmpty()){
-            for (final Token token:validUserTokens){
+            for (final Token token : validUserTokens){
                 token.setExpired(true);
                 token.setRevoked(true);
             }
             tokenRepositorio.saveAll(validUserTokens);
         }
     }
-
 }
