@@ -35,6 +35,12 @@ public class PacienteServicioImpl implements IPacienteServicio {
 
     @Transactional(readOnly = true)
     @Override
+    public Optional<Paciente> obtenerPorUsuario(String usuario) {
+        return pacienteRepositorio.findByUsuario(usuario);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public Boolean existePaciente(Integer id) {
         return pacienteRepositorio.existsById(id);
     }

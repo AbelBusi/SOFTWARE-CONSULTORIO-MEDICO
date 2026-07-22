@@ -11,4 +11,6 @@ public interface IAtencionMedicaServicio {
 
     List<AtencionLeerDTO> historiaPorPaciente(Integer pacienteId);
 
+    List<AtencionLeerDTO> historiaPorUsuario(String usuario);
+
 }

@@ -24,6 +24,8 @@ public interface ICitaMedicaServicio{
 
     List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctor(String usuario, Integer estado);
 
+    List<PacienteCitaDTO> citasPaciente(String usuario);
+
     CitaMedicaActualizarRespuestaDTO actualizar(CitaMedicaActualizarDTO citaMedicaActualizarDTO, Integer id);
 
     List<CitaMedica> listarTodos();

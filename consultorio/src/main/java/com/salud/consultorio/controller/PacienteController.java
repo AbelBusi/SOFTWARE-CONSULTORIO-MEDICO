@@ -4,15 +4,18 @@ import com.salud.consultorio.dto.paciente.*;
 import com.salud.consultorio.dto.paciente.NombrePacientesDTO;
 import com.salud.consultorio.model.enums.EntidadEstado;
 import com.salud.consultorio.model.payload.MensajeResponse;
+import com.salud.consultorio.model.entity.Paciente;
 import com.salud.consultorio.service.IPacienteServicio;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -86,6 +89,21 @@ public class PacienteController {
         return new ResponseEntity<>(MensajeResponse.builder()
                 .mensaje("LISTA DE PACIENTES")
                 .object(leerPacientes).build(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Obtener el paciente del usuario autenticado")
+    @GetMapping("/actual")
+    public ResponseEntity<MensajeResponse> pacienteActual(Authentication authentication){
+
+        Paciente paciente = pacienteServicio.obtenerPorUsuario(authentication.getName())
+                .orElseThrow(() -> new EntityNotFoundException("El usuario autenticado no es un paciente"));
+
+        PacienteDetalleLeerDTO dto = pacienteServicio.traerPacientePorId(paciente.getId());
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("PACIENTE AUTENTICADO")
+                .object(dto).build(), HttpStatus.OK);
+
     }
 
     @Operation(summary = "Obtener paciente por ID")

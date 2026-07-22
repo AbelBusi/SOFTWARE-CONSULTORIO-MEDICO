@@ -20,6 +20,8 @@ public interface IPacienteServicio{
 
     Optional<Paciente> obtenerPorId(Integer id);
 
+    Optional<Paciente> obtenerPorUsuario(String usuario);
+
     Boolean existePaciente(Integer id);
 
     PacienteRespuestaDTO crear(PacienteCrearDTO dto);

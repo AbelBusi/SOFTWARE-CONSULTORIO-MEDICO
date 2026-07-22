@@ -78,6 +78,18 @@ public class CitaMedicaController {
 
     }
 
+    @Operation(summary = "Listar las citas del paciente autenticado")
+    @GetMapping("/paciente/mias")
+    public ResponseEntity<MensajeResponse> misCitasPaciente(Authentication authentication){
+
+        List<PacienteCitaDTO> citas = citaMedicaServicio.citasPaciente(authentication.getName());
+
+        return new ResponseEntity<>(MensajeResponse.builder()
+                .mensaje("CITAS DEL PACIENTE")
+                .object(citas).build(), HttpStatus.OK);
+
+    }
+
     @Operation(summary = "Atender y cerrar una cita registrando la información clínica")
     @PostMapping("/{id}/atender")
     public ResponseEntity<MensajeResponse> atenderCita(

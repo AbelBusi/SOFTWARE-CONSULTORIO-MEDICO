@@ -73,6 +73,9 @@ SELECT new com.salud.consultorio.dto.paciente.PacienteDetalleLeerDTO(
     @Query("SELECT p FROM Paciente p JOIN FETCH p.persona WHERE p.id = :id")
     Optional<Paciente> findByIdConPersona(@Param("id") Integer id);
 
+    @Query("SELECT p FROM Paciente p JOIN Usuario u ON u.persona = p.persona WHERE u.usuario = :usuario")
+    Optional<Paciente> findByUsuario(@Param("usuario") String usuario);
+
     @Modifying
     @Query("UPDATE Paciente p SET p.estado =:estado WHERE p.id=:id" )
     void PacienteCambiarEstado(@Param("estado")Integer estado, @Param("id") Integer id);

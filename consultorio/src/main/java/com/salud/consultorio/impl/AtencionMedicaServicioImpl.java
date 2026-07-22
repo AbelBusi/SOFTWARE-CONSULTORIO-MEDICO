@@ -8,6 +8,7 @@ import com.salud.consultorio.model.entity.Doctor;
 import com.salud.consultorio.repository.IAtencionMedicaRepositorio;
 import com.salud.consultorio.repository.ICitaMedicaRepositorio;
 import com.salud.consultorio.repository.IDoctorRepositorio;
+import com.salud.consultorio.repository.IPacienteRepositorio;
 import com.salud.consultorio.service.IAtencionMedicaServicio;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class AtencionMedicaServicioImpl implements IAtencionMedicaServicio {
     private final IAtencionMedicaRepositorio atencionMedicaRepositorio;
     private final ICitaMedicaRepositorio citaMedicaRepositorio;
     private final IDoctorRepositorio doctorRepositorio;
+    private final IPacienteRepositorio pacienteRepositorio;
 
     @Transactional
     @Override
@@ -69,5 +71,13 @@ public class AtencionMedicaServicioImpl implements IAtencionMedicaServicio {
     @Override
     public List<AtencionLeerDTO> historiaPorPaciente(Integer pacienteId) {
         return atencionMedicaRepositorio.historiaPorPaciente(pacienteId);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<AtencionLeerDTO> historiaPorUsuario(String usuario) {
+        return pacienteRepositorio.findByUsuario(usuario)
+                .map(paciente -> atencionMedicaRepositorio.historiaPorPaciente(paciente.getId()))
+                .orElseGet(List::of);
     }
 }

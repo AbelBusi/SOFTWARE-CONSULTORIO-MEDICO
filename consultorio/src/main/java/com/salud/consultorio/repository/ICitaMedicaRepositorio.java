@@ -3,6 +3,7 @@ package com.salud.consultorio.repository;
 import com.salud.consultorio.dto.citaMedica.CitaMedicaLeerDTO;
 import com.salud.consultorio.dto.citaMedica.DoctorCitaAtendidaDTO;
 import com.salud.consultorio.dto.citaMedica.DoctorCitaDTO;
+import com.salud.consultorio.dto.citaMedica.PacienteCitaDTO;
 import com.salud.consultorio.dto.doctor.DoctorEspecialidadLeerDTO;
 import com.salud.consultorio.dto.horario.AgendaCitaDTO;
 import com.salud.consultorio.model.entity.CitaMedica;
@@ -188,6 +189,31 @@ public interface ICitaMedicaRepositorio extends JpaRepository<CitaMedica,Integer
     WHERE u.usuario = :usuario AND c.estado = :estado
     """)
     List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctorPorUsuarioYEstado(@Param("usuario") String usuario, @Param("estado") Integer estado);
+
+    @Query("""
+    SELECT new com.salud.consultorio.dto.citaMedica.PacienteCitaDTO(
+        c.id,
+        CONCAT(pd.nombre, ' ', pd.apellidos),
+        e.nombre,
+        c.fecha,
+        c.horaInicio,
+        c.horaSalida,
+        c.estado,
+        CONCAT(pr.nombre, ' ', pr.apellidos)
+    )
+    FROM CitaMedica c
+    JOIN c.paciente pa
+    JOIN pa.persona pp
+    JOIN Usuario u ON u.persona = pp
+    JOIN c.doctor d
+    JOIN d.persona pd
+    JOIN c.especialidad e
+    JOIN c.recepcionista r
+    JOIN r.persona pr
+    WHERE u.usuario = :usuario
+    ORDER BY c.fecha DESC, c.horaInicio DESC
+    """)
+    List<PacienteCitaDTO> citasPacientePorUsuario(@Param("usuario") String usuario);
 
     @Modifying
     @Query("UPDATE CitaMedica c SET c.estado =:estado WHERE c.id=:id" )

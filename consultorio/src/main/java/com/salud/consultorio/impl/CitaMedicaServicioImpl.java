@@ -257,4 +257,10 @@ public class CitaMedicaServicioImpl implements ICitaMedicaServicio {
     public List<com.salud.consultorio.dto.doctor.PacienteDoctorDTO> pacientesDoctor(String usuario, Integer estado) {
         return citaMedicaRepositorio.pacientesDoctorPorUsuarioYEstado(usuario, estado);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<PacienteCitaDTO> citasPaciente(String usuario) {
+        return citaMedicaRepositorio.citasPacientePorUsuario(usuario);
+    }
 }
