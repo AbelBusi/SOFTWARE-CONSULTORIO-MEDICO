@@ -11,7 +11,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
-    canActivate: [authGuard], // El padre también debe estar protegido
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./layouts/dashboard-layout/dashboard-layout.component').then(
         (m) => m.DashboardLayoutComponent,
@@ -44,7 +44,7 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'CITA_CREATE' },
             loadComponent: () =>
               import('./features/clinica/citas/pages/crear-cita/crear-cita.component').then(
@@ -53,7 +53,7 @@ export const routes: Routes = [
           },
           {
             path: 'por-doctor',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'CITA_READ' },
             loadComponent: () =>
               import('./features/clinica/citas/pages/lista-citas/lista-citas-medicas-component').then(
@@ -86,7 +86,7 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'DOCTOR_READ' },
             loadComponent: () =>
               import('./features/clinica/doctores/pages/lista-doctores/lista-doctores.component').then(
@@ -95,7 +95,7 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'DOCTOR_CREATE' },
             loadComponent: () =>
               import('./features/clinica/doctores/pages/crear-doctor/crear-doctor.component').then(
@@ -106,7 +106,7 @@ export const routes: Routes = [
       },
       {
         path: 'especialidades',
-        canActivate: [authGuard], // <--- APLICADO
+        canActivate: [authGuard],
         data: { permisoRequerido: 'ESPECIALIDAD_GESTIONAR' },
         loadComponent: () =>
           import('./features/clinica/especialidad/pages/lista-especialidad/lista-especialidad.component').then(
@@ -118,7 +118,7 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'RECEPCIONISTA_READ' },
             loadComponent: () =>
               import('./features/clinica/recepcionistas/pages/lista-recepcionistas/lista-recepcionistas.component').then(
@@ -127,7 +127,7 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'RECEPCIONISTA_CREATE' },
             loadComponent: () =>
               import('./features/clinica/recepcionistas/pages/crear-recepcionista/crear-recepcionista.component').then(
@@ -138,7 +138,7 @@ export const routes: Routes = [
       },
       {
         path: 'roles',
-        canActivate: [authGuard], // <--- APLICADO
+        canActivate: [authGuard],
         data: { permisoRequerido: 'ROLES_CRUD' },
         loadComponent: () =>
           import('./features/admin/roles/pages/lista-roles/lista-roles.component').then(
@@ -150,7 +150,7 @@ export const routes: Routes = [
         children: [
           {
             path: '',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'USUARIO_READ' },
             loadComponent: () =>
               import('./features/admin/usuarios/pages/lista-usuarios/lista-usuarios.component').then(
@@ -159,7 +159,7 @@ export const routes: Routes = [
           },
           {
             path: 'nuevo',
-            canActivate: [authGuard], // <--- APLICADO
+            canActivate: [authGuard],
             data: { permisoRequerido: 'USUARIO_CREATE' },
             loadComponent: () =>
               import('./features/admin/usuarios/pages/crear-usuario/crear-usuario.component').then(
