@@ -97,14 +97,14 @@ export class DashboardLayoutComponent implements OnInit {
       icon: 'dashboard',
       sub: [
         { label: 'Resumen', route: '/dashboard/inicio' },
-        { label: 'Mi horario', route: '/dashboard/horario' },
-        { label: 'Gestión de horarios', route: '/dashboard/horarios', roles: ['ADMINISTRADOR'] },
+        { label: 'Mi horario', route: '/dashboard/horario', roles: ['XD'] },
+        { label: 'Gestión de horarios', route: '/dashboard/horarios', roles: ['ADMINISTRADORXD'] },
       ],
     },
     {
       label: 'Citas',
       icon: 'calendar_today',
-      roles: ['ADMINISTRADOR', 'RECEPCIONISTA'],
+      roles: ['ADMINISTRADORXD', 'RECEPCIONISTA'],
       sub: [
         { label: 'Ver citas', route: '/dashboard/citas', roles: ['ADMINISTRADOR'] },
         { label: 'Agendar cita', route: '/dashboard/citas/nuevo', roles: ['ADMINISTRADOR', 'RECEPCIONISTA'] },
@@ -115,7 +115,7 @@ export class DashboardLayoutComponent implements OnInit {
     {
       label: 'Mi Consultorio',
       icon: 'medical_services',
-      roles: ['DOCTOR'],
+      roles: ['DOCTORXD'],
       sub: [
         { label: 'Mis citas', route: '/dashboard/mis-citas', roles: ['DOCTOR'] },
         { label: 'Mis pacientes', route: '/dashboard/mis-pacientes', roles: ['DOCTOR'] },
@@ -141,7 +141,7 @@ export class DashboardLayoutComponent implements OnInit {
     },
     {
       label: 'Doctores',
-      roles: ['ADMINISTRADOR'],
+      roles: ['ADMINISTRADORXD'],
       icon: 'medical_services',
       sub: [
         { label: 'Ver doctores', route: '/dashboard/doctores', roles: ['ADMINISTRADOR'] },
@@ -158,7 +158,7 @@ export class DashboardLayoutComponent implements OnInit {
     },
     {
       label: 'Recepcionistas',
-      roles: ['ADMINISTRADOR'],
+      roles: ['ADMINISTRADORXD'],
       icon: 'support_agent',
       sub: [
         { label: 'Ver recepcionistas', route: '/dashboard/recepcionistas', roles: ['ADMINISTRADOR'] },
@@ -167,7 +167,7 @@ export class DashboardLayoutComponent implements OnInit {
     },
     {
       label: 'Usuarios',
-      roles: ['ADMINISTRADOR'],
+      roles: ['ADMINISTRADORXD'],
       icon: 'manage_accounts',
       sub: [
         { label: 'Ver usuarios', route: '/dashboard/usuarios', roles: ['ADMINISTRADOR'] },

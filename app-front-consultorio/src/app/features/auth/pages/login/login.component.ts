@@ -2,12 +2,13 @@ import { Component, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { RecuperarClaveComponent } from '../recuperar-clave/recuperar-clave.component';
 import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, RecuperarClaveComponent],
   templateUrl: './login.component.html',
   styles: [],
 })
@@ -15,7 +16,7 @@ export class LoginComponent {
   onLogin = output<void>();
 
   private router = inject(Router);
-  private authService = inject(AuthService); // Inyectamos el servicio de autenticación
+  private authService = inject(AuthService);
 
   showPass = signal<boolean>(false);
   usuario = signal<string>('');
@@ -23,6 +24,8 @@ export class LoginComponent {
   cargando = signal<boolean>(false);
   error = signal<string | null>(null);
   serverError = signal<string | null>(null);
+  recordarme = signal<boolean>(false);
+  vista = signal<'login' | 'recuperar'>('login');
 
   stats = signal([
     { label: 'Pacientes', value: '1,240' },
@@ -30,8 +33,34 @@ export class LoginComponent {
     { label: 'Citas hoy', value: '94' },
   ]);
 
+  constructor() {
+    this.cargarUsuarioRecordado();
+  }
+
+  private cargarUsuarioRecordado(): void {
+    const usuarioGuardado = localStorage.getItem('usuario_recordado');
+
+    if (usuarioGuardado) {
+      this.usuario.set(usuarioGuardado);
+      this.recordarme.set(true);
+    }
+  }
+
+  private guardarUsuarioRecordado(): void {
+    if (this.recordarme()) {
+      localStorage.setItem('usuario_recordado', this.usuario());
+    } else {
+      localStorage.removeItem('usuario_recordado');
+    }
+  }
+
   toggleShowPass(): void {
     this.showPass.update((value) => !value);
+  }
+
+  abrirRecuperacion(): void {
+    this.error.set(null);
+    this.vista.set('recuperar');
   }
 
   handleSubmit(event: Event): void {
@@ -54,6 +83,7 @@ export class LoginComponent {
     this.authService.login(credenciales).subscribe({
       next: (response) => {
         this.cargando.set(false);
+        this.guardarUsuarioRecordado();
         this.onLogin.emit();
         this.router.navigate(['/dashboard']);
       },

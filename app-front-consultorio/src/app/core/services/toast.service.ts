@@ -19,13 +19,14 @@ export interface ConfirmConfig {
 })
 export class ToastService {
   toast = signal<ToastConfig | null>(null);
-  confirmacion = signal<ConfirmConfig | null>(null); // <-- Signal para la alerta de confirmación
+  confirmacion = signal<ConfirmConfig | null>(null);
+  private timer?: ReturnType<typeof setTimeout>;
 
-  show(mensaje: string, tipo: ToastType = 'info', duration: number = 4000): void {
+  show(mensaje: string, tipo: ToastType = 'info', duration = 4000): void {
+    clearTimeout(this.timer);
     this.toast.set({ mensaje, tipo });
-    setTimeout(() => this.toast.set(null), duration);
+    this.timer = setTimeout(() => this.toast.set(null), duration);
   }
-
   success(mensaje: string): void {
     this.show(mensaje, 'success');
   }
