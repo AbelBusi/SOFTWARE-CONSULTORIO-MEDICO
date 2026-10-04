@@ -18,7 +18,6 @@ export class PasoVerificacionComponent {
 
   readonly codigoCompleto = computed(() => this.codigo().length === LONGITUD_CODIGO);
 
-  /** Solo permite dígitos y limita a 6 caracteres */
   alEscribir(event: Event): void {
     const input = event.target as HTMLInputElement;
     const limpio = input.value.replace(/\D/g, '').slice(0, LONGITUD_CODIGO);

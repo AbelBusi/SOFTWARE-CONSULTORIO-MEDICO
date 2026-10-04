@@ -9,10 +9,6 @@ import { PasoNuevaClaveComponent } from './components/paso-nueva-clave/paso-nuev
 import { PasoSolicitudComponent } from './components/paso-solicitud/paso-solicitud.component';
 import { PasoVerificacionComponent } from './components/paso-verificacion/paso-verificacion.component';
 
-/**
- * Componente "inteligente": maneja el estado del flujo y las llamadas HTTP.
- * Los pasos hijos son de presentación: reciben inputs y emiten eventos.
- */
 @Component({
   selector: 'app-recuperar-clave',
   standalone: true,
@@ -20,7 +16,6 @@ import { PasoVerificacionComponent } from './components/paso-verificacion/paso-v
   templateUrl: './recuperar-clave.component.html',
 })
 export class RecuperarClaveComponent {
-  /** Se emite cuando el usuario quiere regresar al login */
   volver = output<void>();
 
   private readonly servicio = inject(RecuperacionClaveService);
@@ -80,7 +75,6 @@ export class RecuperarClaveComponent {
     this.paso.set('solicitud');
   }
 
-  /** Ejecuta una petición manejando carga y errores de forma uniforme */
   private ejecutar<T>(peticion: Observable<T>, alExito: (resp: T) => void): void {
     this.cargando.set(true);
 

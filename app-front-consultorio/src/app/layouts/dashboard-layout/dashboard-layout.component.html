@@ -120,40 +120,70 @@
       <nav class="flex-1 py-3 overflow-y-auto px-2 space-y-1">
         @for (item of navItems(); track item.label) {
           <div>
-            <button
-              (click)="toggleMenu(item.label)"
-              class="sass-nav-item w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 transition-colors"
-              [class.justify-center]="!open"
-              [class.bg-neutral-100]="expandedItem === item.label && open"
-              [class.text-neutral-900]="expandedItem === item.label && open"
-              [class.font-medium]="expandedItem === item.label && open"
-              [class.border-l-2]="expandedItem === item.label && open"
-              [class.border-[#D9182A]]="expandedItem === item.label && open"
-            >
-              <span class="material-icons text-xl text-neutral-400" [class.text-[#58595B]]="expandedItem === item.label">
-                {{ item.icon }}
-              </span>
-              @if (open) {
-                <span class="flex-1 text-left">{{ item.label }}</span>
-                @if (item.sub) {
-                  <span
-                    class="material-icons text-neutral-400 text-sm transition-transform duration-150"
-                    [class.rotate-90]="expandedItem === item.label"
-                  >chevron_right</span>
-                }
-              }
-            </button>
 
-            @if (item.sub && expandedItem === item.label && open) {
-              <div class="mt-1 mb-2 pl-4 border-l border-neutral-200 ml-5 space-y-1">
-                @for (sub of item.sub; track sub.route) {
-                  <a
-                    [routerLink]="sub.route"
-                    routerLinkActive="text-[#D9182A] font-medium"
-                    class="sass-nav-item block px-2 py-1.5 text-xs text-neutral-500 hover:text-neutral-900 transition-colors"
-                  >{{ sub.label }}</a>
+            @if (item.encabezado) {
+              @if (open) {
+                <p class="px-3 pt-4 pb-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-400">
+                  {{ item.encabezado }}
+                </p>
+              } @else {
+                <div class="mx-2 my-2 border-t border-neutral-200"></div>
+              }
+            }
+
+            @if (item.route) {
+
+              <a
+                [routerLink]="item.route"
+                routerLinkActive="bg-neutral-100 text-neutral-900 font-medium border-l-2 border-[#D9182A]"
+                [title]="open ? '' : item.label"
+                class="sass-nav-item w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 transition-colors"
+                [class.justify-center]="!open"
+              >
+                <span class="material-icons text-xl text-neutral-400">{{ item.icon }}</span>
+                @if (open) {
+                  <span class="flex-1 text-left">{{ item.label }}</span>
                 }
-              </div>
+              </a>
+
+            } @else {
+
+              <button
+                (click)="toggleMenu(item.label)"
+                class="sass-nav-item w-full flex items-center gap-3 px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900 transition-colors"
+                [class.justify-center]="!open"
+                [class.bg-neutral-100]="expandedItem === item.label && open"
+                [class.text-neutral-900]="expandedItem === item.label && open"
+                [class.font-medium]="expandedItem === item.label && open"
+                [class.border-l-2]="expandedItem === item.label && open"
+                [class.border-[#D9182A]]="expandedItem === item.label && open"
+              >
+          <span class="material-icons text-xl text-neutral-400" [class.text-[#58595B]]="expandedItem === item.label">
+            {{ item.icon }}
+          </span>
+                @if (open) {
+                  <span class="flex-1 text-left">{{ item.label }}</span>
+                  @if (item.sub) {
+                    <span
+                      class="material-icons text-neutral-400 text-sm transition-transform duration-150"
+                      [class.rotate-90]="expandedItem === item.label"
+                    >chevron_right</span>
+                  }
+                }
+              </button>
+
+              @if (item.sub && expandedItem === item.label && open) {
+                <div class="mt-1 mb-2 pl-4 border-l border-neutral-200 ml-5 space-y-1">
+                  @for (sub of item.sub; track sub.route) {
+                    <a
+                      [routerLink]="sub.route"
+                      routerLinkActive="text-[#D9182A] font-medium"
+                      class="sass-nav-item block px-2 py-1.5 text-xs text-neutral-500 hover:text-neutral-900 transition-colors"
+                    >{{ sub.label }}</a>
+                  }
+                </div>
+              }
+
             }
           </div>
         }
@@ -166,7 +196,9 @@
           [class.justify-center]="!open"
         >
           <span class="material-icons text-lg">logout</span>
-          @if (open) { <span>Cerrar sesión</span> }
+          @if (open) {
+            <span>Cerrar sesión</span>
+          }
         </button>
       </div>
 
@@ -189,7 +221,8 @@
               alt="Ministerio de Salud del Perú"
               class="hidden md:block h-8 w-auto"
             />
-            <button class="sass-action relative p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-50 transition-colors">
+            <button
+              class="sass-action relative p-1.5 text-neutral-400 hover:text-neutral-600 hover:bg-neutral-50 transition-colors">
               <span class="material-icons text-xl">notifications</span>
               <span class="absolute top-1 right-1 w-2 h-2 bg-[#D9182A] rounded-full"></span>
             </button>

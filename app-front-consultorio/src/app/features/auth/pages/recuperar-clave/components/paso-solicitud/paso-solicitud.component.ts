@@ -5,7 +5,6 @@ import {
 } from '../../../../models/recuperacion-clave.model';
 
 const REGEX_CORREO = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-// Celular peruano: 9 dígitos empezando en 9, con o sin +51 y separadores
 const REGEX_CELULAR = /^(\+?51[\s-]?)?9\d{2}[\s-]?\d{3}[\s-]?\d{3}$/;
 
 @Component({
@@ -15,7 +14,6 @@ const REGEX_CELULAR = /^(\+?51[\s-]?)?9\d{2}[\s-]?\d{3}[\s-]?\d{3}$/;
 })
 export class PasoSolicitudComponent implements OnInit {
   readonly cargando = input<boolean>(false);
-  /** Datos previos para no perder lo escrito si el usuario regresa a este paso */
   readonly inicial = input<RecuperarClaveRequest | null>(null);
 
   readonly enviar = output<RecuperarClaveRequest>();
