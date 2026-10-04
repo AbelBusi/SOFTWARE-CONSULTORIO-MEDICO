@@ -94,7 +94,7 @@ export const MENU_BASE: NavItem[] = [
     ],
   },
   {
-    grupo: 'PINGA PENE',
+    grupo: 'ATENCION MEDICA',
     label: 'Especialidades',
     roles: ['ADMINISTRADOR'],
     icon: 'local_hospital',
