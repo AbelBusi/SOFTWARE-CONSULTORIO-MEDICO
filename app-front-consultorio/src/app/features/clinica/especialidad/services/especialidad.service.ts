@@ -10,6 +10,7 @@ import {
   EspecialidadActualizar,
   MensajeResponseResumen,
 } from '../interface/especialidad.interface';
+import { MensajeResponses } from '../../../../shared/models/mensaje-response.model';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +22,14 @@ export class EspecialidadService {
 
   listarActivos(): Observable<MensajeResponse> {
     const params = new HttpParams().set('estado', 'activo');
+    return this.http.get<MensajeResponse>(this.baseUrl, { params });
+  }
+
+  listar(estado?: 'activo' | 'inactivo'): Observable<MensajeResponse> {
+    let params = new HttpParams();
+    if (estado) {
+      params = params.set('estado', estado);
+    }
     return this.http.get<MensajeResponse>(this.baseUrl, { params });
   }
 
@@ -38,6 +47,12 @@ export class EspecialidadService {
 
   listarResumen(): Observable<MensajeResponseResumen> {
     return this.http.get<MensajeResponseResumen>(`${this.baseUrl}/resumen`);
+  }
+
+  cambiarEstado(id: number, estado: 'ACTIVO' | 'INACTIVO'): Observable<MensajeResponses<null>> {
+    const params = new HttpParams().set('estado', estado);
+
+    return this.http.patch<MensajeResponses<null>>(`${this.baseUrl}/${id}`, null, { params });
   }
 
 }
